@@ -48,9 +48,9 @@ public final class Drawing
 		// what will happen at each point when it runs.
 		public void		paintComponent(Graphics graphics)
 		{
-			You complete me.
+			//You complete me.
 
-			(You also compile, test, and document me thoroughly.)
+			//(You also compile, test, and document me thoroughly.)
 		}
 
 		// Use this to load images (and make sure they're done loading). The
