@@ -1,0 +1,95 @@
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+
+public class DoSListView extends JFrame implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+	/** The associated model for this view */
+	MediaModel model;
+	/** The list of linked MediaMakers found */
+	JList<MediaMaker> mediaMakerList;
+	/** The list of linked Media found */
+	JList<Media> mediaList;
+	
+	JSplitPane splitPane;
+
+	JScrollPane makersScroller;
+	JScrollPane mediaScroller;
+	
+	/**
+	 * The base constructor for DoSListView objects
+	 */
+	public DoSListView() {
+		
+	}
+	
+	/**
+	 * The main constructor for DoSListView objects
+	 * 
+	 * @param mm1			First MediaMaker (node)
+	 * @param mm2			Second MediaMaker (one searching for connection to)
+	 * @param model			MediaModel to set for this view
+	 */
+	public DoSListView(MediaMaker mm1, MediaMaker mm2, MediaModel model, ArrayList<MediaMaker> matches, ArrayList<Media> mmatches) 
+	{
+		this.model = model;
+		
+		if (!matches.isEmpty())
+		{
+			DefaultListModel<MediaMaker> makerListModel = new DefaultListModel<MediaMaker>();
+			for (int i = 0; i < matches.size(); ++i)
+				makerListModel.addElement(matches.get(i));
+			mediaMakerList = new JList<MediaMaker>(makerListModel);
+			mediaMakerList.setLayoutOrientation(JList.VERTICAL);
+			mediaMakerList.setVisibleRowCount(-1);
+			makersScroller = new JScrollPane(mediaMakerList);
+		}
+		if (!mmatches.isEmpty())
+		{
+			DefaultListModel<Media> mediaListModel = new DefaultListModel<Media>();
+			for (int i = 0; i < mmatches.size(); ++i)
+				mediaListModel.addElement(mmatches.get(i));
+			mediaList = new JList<Media>(mediaListModel);
+			mediaList.setLayoutOrientation(JList.VERTICAL);
+			mediaList.setVisibleRowCount(-1);
+			mediaScroller = new JScrollPane(mediaList);
+		}
+		
+		if (!matches.isEmpty() && !mmatches.isEmpty())
+			splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, makersScroller, mediaScroller);
+		
+		JPanel jplHeader = new JPanel(new GridLayout(1, 0, 5, 5));
+		jplHeader.add(new JLabel(mm1.toString() + " vs. " + mm2.toString()));
+		
+		setTitle("Degrees of seperation for " + mm1.toString() + " : " + mm2.toString());
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setLayout(new GridLayout(0, 1, 5, 5));
+		setSize(500, 500);
+		add(jplHeader);
+		if (!matches.isEmpty() && !mmatches.isEmpty())
+			add(splitPane);
+		pack();
+		setVisible(true);
+	}
+	
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (model == null)
+			return;
+		
+	}
+	
+	
+	
+}

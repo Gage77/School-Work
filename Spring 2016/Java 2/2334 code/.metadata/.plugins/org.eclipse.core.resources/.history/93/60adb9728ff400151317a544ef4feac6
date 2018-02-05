@@ -1,0 +1,195 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
+/**
+ * This class will construct Database objects and allow the 
+ * user to search through these databases to find specific information
+ */
+public class Database 
+{
+	
+	/** ArrayList of all Movie objects */
+	private ArrayList<Movie> movies;
+	/** ArrayList of all Series objects/Episode objects */
+	private ArrayList<Series> series;
+	/** ArrayList of all MediaMaker objects */
+	private ArrayList<MediaMaker> people;
+	/** LinkedHashMap containing references to all MediaMakers */
+	private LinkedHashMap<String, MediaMaker> mediaMakerMap;
+	
+	/**
+	 * Base constructor for this class with no parameters
+	 */
+	public Database()
+	{
+		
+	}
+	
+	/**
+	 * Main constructor for this class, taking in an int to 
+	 * determine which class variables to initialize
+	 * 
+	 * @param a		int that determines which class variables to initialize
+	 * 				a = 0: initialize movies and series
+	 * 				a = 1: initialize people
+	 */
+	public Database(int a)
+	{
+		if (a == 0)
+		{
+			movies = new ArrayList<Movie>();
+		}
+		else if (a == 1)
+		{
+			people = new ArrayList<MediaMaker>();
+			mediaMakerMap = new LinkedHashMap<String, MediaMaker>();
+		}
+		else if (a == 2)
+		{
+			series = new ArrayList<Series>();
+		}
+	}
+	
+	/**
+	 * Inserts a Movie object into ArrayList movies
+	 * 
+	 * @param m		Movie object to insert
+	 */
+	public void insertMovie(Movie m)
+	{
+		
+	}
+	
+	/**
+	 * Inserts a Series object into ArrayList series
+	 * 
+	 * @param s		Series object to insert
+	 */
+	public void insertSeries(Series s)
+	{
+		
+	}
+	
+	/**
+	 * Inserts a MediaMaker object into ArrayList people
+	 * 
+	 * @param p		MediaMaker object to insert
+	 */
+	public void insertPerson(MediaMaker p)
+	{
+		
+	}
+	
+	/**
+	 * Takes in a file and goes through it, creating MediaMaker objects
+	 * based on information found, and adding that MediaMaker to a LinkedHashMap
+	 * so that further information can easily be added in the future
+	 * 
+	 * @param fileName	File containing information about actors
+	 * @throws IOException 
+	 */
+	public void parseActor(String fileName) throws IOException
+	{
+		FileReader fr = new FileReader(fileName);
+		BufferedReader br = new BufferedReader(fr);
+		String nameHolder = "";
+		ArrayList<String> names = new ArrayList<String>();
+		
+		String line = br.readLine();
+		while (line != null)
+		{
+			String[] t = line.split("\t");
+			if (!t[0].equals(null))
+			{
+				if (t[0].contains(","))
+				{
+					names.add(t[0]);
+					nameHolder = t[0];
+				}
+			}
+			
+			line = br.readLine();
+		}
+		
+		br = new BufferedReader(fr);
+		line = br.readLine();
+		
+		for (int i = 0; i < names.size(); ++i)
+		{
+			MediaMaker m = new MediaMaker(names.get(i));
+			System.out.println(m.getName());
+		}
+	}
+	
+	/**
+	 * Takes in a file and goes through it, adding information to existing 
+	 * MediaMakers through the LinkedHashMap containing their name, or adding
+	 * them to the hashmap if they do not already exist
+	 * 
+	 * @param fileName	File containing information about actors
+	 */
+	public void parseDirector(String fileName)
+	{
+		
+	}
+	
+	/**
+	 * Takes in a file and goes through it, adding information to existing
+	 * MediaMakers through the LinkedHashMap containing their name, or adding 
+	 * them to the hashmap if they do not already exist
+	 * 
+	 * @param fileName
+	 */
+	public void parseProducer(String fileName)
+	{
+		
+	}
+	
+	/**
+	 * Add a MediaMaker to the mediaMakersMap linked hash map keyed on 
+	 * the MediaMaker's names
+	 * 
+	 * @param m		MediaMaker to add to linked hash map
+	 */
+	public void addMediaMaker(MediaMaker m)
+	{
+		//Insert a MediaMaker into the linked hash map keyed on their names
+		mediaMakerMap.put(m.getName(), m);
+	}
+	
+	/**
+	 * Will evaluate Array param to determine search/sort parameters, then
+	 * go through and search that Database object's ArrayList for matches,
+	 * assigning them to ArrayList display and sorting based on param
+	 * 
+	 * @param param		String Array holding the answers to questions
+	 * 					asked to the user
+	 * @param display	ArrayList of type string that will hold all of
+	 * 					the matches found in a format fit for display 
+	 * 					to the user
+	 */
+	public void searchMedia(String[] param, ArrayList<String> display)
+	{
+		
+	}
+	
+	/**
+	 * Will evaluate Array param to determine search/sort parameters, then
+	 * go through and search that Database object's ArrayList for matches,
+	 * assigning them to ArrayList display and sorting based on param
+	 * 
+	 * @param param		String Array holding the answers to questions
+	 * 					asked to the user
+	 * @param display	ArrayList of type string that will hold all of
+	 * 					the matches found in a format fit for display 
+	 * 					to the user
+	 */
+	public void searchPeople(String[] param, ArrayList<String> display)
+	{
+		
+	}
+}

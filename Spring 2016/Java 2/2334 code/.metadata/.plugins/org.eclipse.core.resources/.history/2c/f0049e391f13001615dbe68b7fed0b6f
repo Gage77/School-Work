@@ -1,0 +1,68 @@
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+
+public class DoSListView extends JFrame implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+	MediaModel model;
+	JList<MediaMaker> mediaMakerList;
+	JList<Media> mediaList;
+	
+	JSplitPane splitPane;
+
+	JScrollPane makersScroller;
+	JScrollPane mediaScroller;
+	
+	/**
+	 * The base constructor for DoSListView objects
+	 */
+	public DoSListView() {
+		
+	}
+	
+	/**
+	 * The main constructor for DoSListView objects
+	 * 
+	 * @param mm1			First MediaMaker (node)
+	 * @param mm2			Second MediaMaker (one searching for connection to)
+	 * @param model			MediaModel to set for this view
+	 */
+	public DoSListView(MediaMaker mm1, MediaMaker mm2, MediaModel model) 
+	{
+		this.model = model;
+		
+		DefaultListModel<MediaMaker> makerListModel = new DefaultListModel<MediaMaker>();
+		makerListModel.addElement(mm1);
+		makerListModel.addElement(mm2);
+		mediaMakerList = new JList<MediaMaker>(makerListModel);
+		
+		makersScroller = new JScrollPane(mediaMakerList);
+		JPanel panel = new JPanel(new GridLayout(1, 0, 5, 5));
+		panel.add(makersScroller);
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setSize(300, 100);
+		setLayout(new GridLayout(0, 1, 5, 5));
+		add(panel);
+		setVisible(true);
+	}
+	
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (model == null)
+			return;
+		
+	}
+	
+	
+	
+}

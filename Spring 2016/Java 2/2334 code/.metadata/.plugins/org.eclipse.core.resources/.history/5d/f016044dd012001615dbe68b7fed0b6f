@@ -1,0 +1,68 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+
+public class DoSListView extends JFrame implements ActionListener {
+
+	MediaModel model;
+	JList mediaMakerList;
+	JList mediaList;
+	
+	JLabel jlbMakers;
+	JLable jlbMedia;
+	
+	JSplitPane splitPane;
+	
+	JScrollPane displayScroller;
+	
+	/**
+	 * Base constructor for DoSListView objects
+	 */
+	public DoSListView() 
+	{
+		
+	}
+	
+	public DoSListView(ArrayList<MediaMaker> makers, ArrayList<Media> media)
+	{
+		if (!makers.isEmpty())
+		{
+			DefaultListModel<MediaMaker> makerListModel = new DefaultListModel<MediaMaker>();
+			for (int i = 0; i < makers.size(); ++i)
+			{
+				makerListModel.addElement(makers.get(i));
+			}
+			mediaMakerList = new JList<MediaMaker>(makerListModel);
+			mediaMakerList.setLayoutOrientation(JList.VERTICAL);
+			mediaMakerList.setVisibleRowCount(-1);
+			displayScroller = new JScrollPane(mediaMakerList);
+		}
+		if (!media.isEmpty())
+		{
+			DefaultListModel<Media> mediaListModel = new DefaultListModel<Media>();
+			for (int i = 0; i < media.size(); ++i)
+			{
+				mediaListModel.addElement(media.get(i));
+			}
+			mediaList = new JList<Media>(mediaListModel);
+			mediaList.setLayoutOrientation(JList.VERTICAL);
+			mediaList.setVisibleRowCount(-1);
+			displayScroller = new JScrollPane(mediaList);
+		}
+		
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent arg0) 
+	{
+		
+	}
+
+}

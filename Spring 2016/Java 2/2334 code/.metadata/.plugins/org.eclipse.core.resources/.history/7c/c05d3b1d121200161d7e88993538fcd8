@@ -1,0 +1,575 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
+import javax.swing.JOptionPane;
+
+public class ParseFile extends Driver {
+	
+	/**
+	 * This method contains the specific characters that are arrows. It helps
+	 * the parser method
+	 * @param         Char c    		Contains individual characters.
+	 * @return        boolean			Returns true or false
+	 */
+	
+	private final static boolean removeArrow (char c) {
+		return c == '<' || c == '>';
+	}
+	
+	private final static boolean removeComma(char c) {
+		return c == ',';
+	}
+	
+	/**
+	 * This method contains the specific characters that are brackets. It helps
+	 * the parser method
+	 * @param         Char c    		Contains individual characters.
+	 * @return        boolean			Returns true or false
+	 */
+	private final static boolean removeBracket(char c) {
+		return c == '[' || c == ']';
+	}
+	
+	/**
+	 * This method contains the specific numbers that are digits. It helps
+	 * the parser method
+	 * @param         Char c    		Contains individual characters.
+	 * @return        boolean			Returns true or false
+	 */
+	private final static boolean isDigit(char c){
+		return c>= '0' && c <= '9';
+	}
+	
+	/**
+	 * This method contains the specific characters that are considered spaces or tabs. 
+	 * It helps the parser method
+	 * @param         Char c    		Contains individual characters.
+	 * @return        boolean			Returns true or false
+	 */
+	private final static boolean whiteSpace(char c) {
+	 return	c == ' ' || c == '\t';
+	}
+	
+	/**
+	 * This method contains the specific characters that are parentheses. It helps
+	 * the parser method
+	 * @param         Char c    		Contains individual characters.
+	 * @return        boolean			Returns true or false
+	 */
+	private final static boolean isParentheses(char c) {
+		return c == '(' || c == ')';	
+	}
+	
+	/**
+	 * This method contains the specific numbers that are digits. It helps
+	 * the parser method
+	 * @param         Char c    		Contains individual characters.
+	 * @return        boolean			Returns true or false
+	 */
+	private final static boolean isReleaseType(char c) {
+		return c == 'T' || c == 'V';
+	}
+	
+	private final static boolean removeCurlyBrace(char c) {
+		return c == '{' || c == '}';
+	}
+	
+	private final static boolean removeHastag(char c) {
+		return c == '#';
+	}
+	
+	private final static boolean removeQuestionMark(char c) {
+		return c == '?';
+	}
+	private final static boolean removeDashSlashAndPeriods(char c) {
+		return c == '-' || c == '.' || c == '/';
+	}
+	
+	private final static boolean letterCheck(char c) {
+		return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
+	}
+	
+	
+	
+	/**
+	 * This method is to use a line from a file to create a Movie object. This
+	 * method should simultaneously create the Movie object and add it to the
+	 * List parameter. It should also check to see if the Media object already
+	 * exists in the list before adding it 
+	 * 
+	 * @param line			The line to be parsed	
+	 * @return				The new Movie object being created
+	 */
+	public static Movie parseMovie(String line) {
+
+		/** String year
+		 *  the year of the movie.
+		 *  This will be converted to a Integer below.
+		 */
+		 String year = "";
+		 
+		 /** String movieName
+		  *  the name of the movie
+		  */
+		 String movieName = "";
+		 
+		 /** String movieInfo
+		  *  contains additional information
+		  *  of the movie
+		  */
+		 String movieInfo = "";
+		 
+		 /** String releaseInfo
+		  *  contains information on how the movie was released
+		  */
+		 String releaseInfo = "";
+		 
+		 /** General Idea: treat the line like a character array.
+		  * Make use of the string.charAt(int) method, to retrieve
+		  * characters from the string. Keep an index variable to track
+		  * where in the array you are.*/
+		 
+		 int index = line.length()-1;
+		 
+		 // Parse year
+		 while (isDigit(line.charAt(index)))
+		 {
+			 year = line.charAt(index) + year;
+			 index--;
+		 }
+		 
+		 // If no year was parsed, remove any question marks
+		 if (year.length() == 0) {
+			 while (removeQuestionMark(line.charAt(index))) {
+				 index--;
+			 }
+		 }
+		 
+		 /*Skip whitespace*/
+		 while (whiteSpace(line.charAt(index))) 
+		 {
+			 index--;
+			 
+			 if (isParentheses(line.charAt(index))) 
+			 {
+				 index--; // removes first parentheses
+				 
+				 while (isReleaseType(line.charAt(index))) 
+				 {
+					 // stores the release info of each movie object
+					 releaseInfo = line.charAt(index) + releaseInfo;
+					 index--;
+					 
+					 if (isParentheses(line.charAt(index))) 
+					 {
+						 index--; // skips the last parentheses
+					 } 
+				 }
+				 
+				 // If there are question marks in parentheses, remove the question marks
+				 while (removeQuestionMark(line.charAt(index))) {
+					index--;
+					
+					if (isParentheses(line.charAt(index))) {
+						index--;
+					}
+				 }
+				 
+				 // this while statement will check for additional movie
+				 // information
+				 while (isDigit(line.charAt(index))) 
+				 {
+					movieInfo = line.charAt(index) + movieInfo;
+					index--;
+							
+					if (isParentheses(line.charAt(index))) {
+						index--;
+					}
+				 }
+			 }
+		 }
+		 // the remaining index should contain the title:
+		 while (index >= 0)
+		 {
+			 movieName = line.charAt(index) + movieName;
+			 index--;	 
+		 }
+		
+//		 Integer yearReleased;
+//		 // If the line did not contain a year number, parse yearReleased as 0
+//		 if (year.length() == 0) {
+//			 yearReleased = new Integer(0);
+//		 } else {
+//			yearReleased = Integer.parseInt(year);
+//		 }
+		 
+		 Movie newMovie = new Movie(movieName, year, releaseInfo);
+		 return newMovie;
+	}
+	
+	
+	
+
+	/**
+	 * This method will take a line from a file and create a Series object.This
+	 * method should simultaneously create the Series object and add it to the
+	 * List parameter . It should also check to see if the Media object already
+	 * exists in the list before adding it using
+	 * "list.contains(new object here);"
+	 * 
+	 * @param line
+	 * @param list
+	 * @throws IOException 
+	 */
+	public static void parseSeries(File file, ArrayList<Media> series, ArrayList<Media> episodes) throws IOException {
+		String line = "";
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+				
+		while((line = br.readLine()) != null) 
+		{
+			String releaseYear = "";
+
+			String[] divided = line.split(" ");
+			String seriesTest = divided[divided.length - 1];
+			//Series creator
+			if (seriesTest.contains("-"))
+			{
+				String title = "";
+				String[] tabDivide = divided[divided.length - 1].split("\t");
+				String releaseYearRange = tabDivide[tabDivide.length - 1];
+				releaseYear = releaseYearRange.substring(0, 4);
+				for (int i = 0; i < divided.length - 1; ++i)
+				{
+					if (divided[i].contains("(") && divided[i].contains(")"))
+					{
+						break;
+					}
+					else
+					{
+						title = title + divided[i] + " ";
+					}
+				}
+				Series newSeries = new Series(title, releaseYear, releaseYearRange);
+				System.out.println(newSeries);
+				series.add(newSeries);
+			}
+			
+			//Episode creator
+			else
+			{
+				int titleIndex = 0;
+				String episodeTitle = "";
+				String episodeNumber = "";
+				String episodeTitleNumber = "";
+				String episodeReleaseYear = "";
+				String seriesTitle = "";
+				String[] tabDivide = divided[divided.length - 1].split("\t");
+				
+				for (int i = 0; i < divided.length; ++i)
+				{
+					if (divided[i].contains("{"))
+					{
+						titleIndex = i;
+						break;
+					}
+				}
+				for (int i = titleIndex; i <divided.length; ++i)
+				{
+					episodeTitleNumber = episodeTitleNumber + divided[i] + " ";		
+				}
+				episodeTitleNumber = episodeTitleNumber.replace("{", "");
+				episodeTitleNumber = episodeTitleNumber.replace("}", "");
+				//System.out.println(episodeTitleNumber);
+				
+				String[] episodeInfoDivided = episodeTitleNumber.split(" ");
+				episodeReleaseYear = tabDivide[tabDivide.length - 1];
+				//System.out.println(episodeReleaseYear);
+				for (int i = 0; i < episodeInfoDivided.length - 1; ++i)
+				{
+					if (episodeInfoDivided[i].contains("."))
+					{
+						break;
+					}
+					else
+					{
+						episodeTitle = episodeTitle + episodeInfoDivided[i] + " ";
+					}
+				}
+				for (int i = 0; i < divided.length - 1; ++i)
+				{
+					if (divided[i].contains("."))
+					{
+						episodeNumber = divided[i];
+					}
+				}
+				//System.out.println(episodeTitle);		
+				
+				for (int i = 0; i < divided.length - 1; ++i)
+				{
+					if (divided[i].contains("(") && divided[i].contains(")"))
+					{
+						break;
+					}
+					else
+					{
+						seriesTitle = seriesTitle + divided[i] + " ";
+					}
+				}
+				seriesTitle.replace("\"", "");
+				//System.out.println(seriesTitle);
+				
+				Episode newEpisode = new Episode(episodeTitle, seriesTitle, episodeNumber, episodeReleaseYear);
+				episodes.add(newEpisode);
+				System.out.println(newEpisode);
+				for (int i = 0; i < series.size(); ++i)
+				{
+					if (series.get(i).getTitle().contains(seriesTitle))
+					{
+						Series inputSeries = (Series)series.get(i);
+						inputSeries.addEpisode(newEpisode);
+					}
+				}
+			}
+		}
+		br.close();
+	}
+
+	
+	
+	
+	/**
+	 * This method will take a line from a file and use it to add acting credits
+	 * to a MediaMaker object stored in a LinkedHashMap.
+	 * 
+	 * 1st: The method will isolate an actor NAME, create a MediaMaker object
+	 * which will be stored in the HashMap. The actors name will be the key, The
+	 * MediaMaker object will be the value stored.
+	 * 
+	 * 
+	 * **When a MediaMaker object is created it will initialize several empty
+	 * ArrayLists of <Series> or <Movies> which can be accessed with the
+	 * MediaMaker class' add methods.**
+	 * 
+	 * 2nd: The method will call parseMovie or parseSeries depending on the
+	 * Media Type. Some kind of marker will be used to determine which type
+	 * we're dealing with.
+	 * 
+	 * 3rd: The Movie or Series will be added to the LinkedHashMap. You can
+	 * access the object with
+	 * The parse
+	 * movie method will add any movies to the list of Media objects that arent
+	 * already in there so dont worry about doing that here.
+	 * 
+	 * ***NOTE*** We will have to nest this process in some kind of loop that
+	 * repeats it until it comes across a line that has a new actor's name.
+	 * 
+	 * 
+	 * @param fileLine
+	 *            A line from the Actors file.
+	 * @param people
+	 *            A HashMap where the info will be stored.
+	 */
+	public static MediaMaker parseCredits(File file, String mediaMakerType, ArrayList<Media> movies, ArrayList<Media> seriesList, 
+			ArrayList<Media> episodes, ArrayList<MediaMaker> mms) {
+		
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+		
+		ArrayList<String> names = new ArrayList<String>();
+		ArrayList<Actor> actors = new ArrayList<Actor>();
+		
+		String line = "";
+		String name = "";
+		String tempName = "";
+		
+		String mediaInfo = "";
+								
+		while ((line = br.readLine()) != null)
+		{
+			
+			//Parse the name of the MediaMaker
+			String[] firstTabSplit = line.split("\t");
+			if (firstTabSplit[0].length() > 1) 
+			{
+				tempName = firstTabSplit[0];
+				String[] nameSplit = tempName.split(" ");
+				if (nameSplit.length == 2)
+				{
+					name = nameSplit[1];
+					name = name + " " + nameSplit[0].substring(0, nameSplit[0].length() - 1); //gets rid of the comma
+				}
+				else if (nameSplit.length == 3)
+				{
+					name = nameSplit[1];
+					name = name + " " + nameSplit[0].substring(0, nameSplit[0].length() - 1); //gets rid of the comma
+					name = name + " " + nameSplit[2];
+				}
+				else if (nameSplit.length == 4)
+				{
+					name = nameSplit[1];
+					name = name + " " + nameSplit[2];
+					name = name + " " + nameSplit[3];
+					name = name + " " + nameSplit[0].substring(0, nameSplit[0].length() - 1); //gets rid of the comma
+				}
+				//Adds the name to the overall name list if not already present, and then the actors list
+				if (!names.contains(name))
+				{
+					names.add(name);
+					if (mediaMakerType.equals("Actor"))
+						mms.add(new Actor(name));
+					else if (mediaMakerType.equals("Director"))
+						mms.add(new Director(name));
+					else if (mediaMakerType.equals("Producer"))
+						mms.add(new Producer(name));
+				}
+			}
+			
+			mediaInfo = firstTabSplit[firstTabSplit.length - 1];
+			String[] mediaInfoSplit = mediaInfo.split(" ");
+			String title = "";
+			String releaseYear = "";
+			String venue = "";
+			
+			String seriesTitle = "";
+			String episodeTitle = "";
+			String episodeNumber = "";
+			
+			//New Movie to create and add to current MediaMaker
+			if (!mediaInfoSplit[0].contains("\""))
+			{
+				//get title of movie
+				for (int i = 0; i < mediaInfoSplit.length; ++i)
+				{
+					if (mediaInfoSplit[i].contains("(") && mediaInfoSplit[i].contains(")"))
+					{
+						break;
+					}
+					else
+					{
+						title = title + " " + mediaInfoSplit[i];
+					}
+				}
+				//get release year of the movie
+				for (int i = 0; i < mediaInfoSplit.length; ++i)
+				{
+					if (mediaInfoSplit[i].contains("(") && mediaInfoSplit[i].length() == 6)
+					{
+						releaseYear = mediaInfoSplit[i].substring(1, mediaInfoSplit[i].length() - 1);
+					}
+					else if (mediaInfoSplit[i].contains("(") && mediaInfoSplit[i].contains("/"))
+					{
+						releaseYear = mediaInfoSplit[i].substring(1, mediaInfoSplit[i].length() - 1);
+					}
+				}
+				//get venue of the movie
+				for (int i = 0; i < mediaInfoSplit.length; ++i)
+				{
+					if (mediaInfoSplit[i].contains("(V)") || mediaInfoSplit[i].contains("(TV)"))
+					{
+						venue = mediaInfoSplit[i].substring(1, mediaInfoSplit[i].length() - 1);
+					}
+				}
+				
+				//Create new Movie object, and add it to the list of Movies if not already present, as well ass
+				//the current MediaMaker
+				Movie movie = new Movie(title, releaseYear, venue);
+				if (!movies.contains(movie))
+					movies.add(movie);
+				
+				if (names.contains(name))
+				{
+					for (int i = 0; i < actors.size(); ++i)
+					{
+						if (actors.get(i).getName().equals(name))
+							actors.get(i).addMovieCredit(movie);
+					}
+				}
+			}
+			
+			//New Episode to create and add to respective lists
+			else if (mediaInfoSplit[0].contains("\""))
+			{
+				//get the series title
+				for (int i = 0; i < mediaInfoSplit.length; ++i)
+				{
+					if (mediaInfoSplit[i].contains("("))
+						break;
+					else 
+						seriesTitle = seriesTitle + " " + mediaInfoSplit[i];
+				}
+				//get the release year for the series
+				for (int i = 0; i < mediaInfoSplit.length; ++i)
+				{
+					if (mediaInfoSplit[i].contains("(") && mediaInfoSplit[i].length() == 6)
+					{
+						releaseYear = mediaInfoSplit[i].substring(1, mediaInfoSplit[i].length() - 1);
+					}
+				}
+				//get the episode title
+				int episodeTitleIndex = 0;
+				for (int i = 0; i < mediaInfoSplit.length; ++i)
+				{
+					if (mediaInfoSplit[i].contains("{"))
+						episodeTitleIndex = i;
+				}
+				for (int i = episodeTitleIndex; i < mediaInfoSplit.length; ++i)
+				{
+					if (mediaInfoSplit[i].contains("#") || (mediaInfoSplit[i].contains("(") && mediaInfoSplit[i].contains("-")))
+					{
+						episodeNumber = mediaInfoSplit[i];
+						break;
+					}
+					else if (mediaInfoSplit[i].contains("[") || mediaInfoSplit[i].contains("archive"))
+						break;
+					else
+					{
+						episodeTitle = episodeTitle + " " + mediaInfoSplit[i];
+					}
+				}
+				//fix up the title and number
+				episodeTitle = episodeTitle.replace("{", "");
+				episodeNumber = episodeNumber.replace("(", " ");
+				episodeNumber = episodeNumber.replace(")", " ");
+				episodeNumber = episodeNumber.replace("{", " ");
+				episodeNumber = episodeNumber.replace("}", " ");
+				
+				Series series = new Series(seriesTitle, releaseYear, null);
+				Episode episode = new Episode(episodeTitle, seriesTitle, episodeNumber, releaseYear);
+				
+				if (!seriesList.contains(series))
+				{
+					seriesList.add(series);
+				}
+				for (int i = 0; i < seriesList.size(); ++i)
+				{
+					if (seriesList.get(i).getTitle().equals(seriesTitle))
+					{
+						seriesList.get(i).addEpisode(episode);
+					}
+				}
+				if (!episodes.contains(episode))
+					episodes.add(episode);
+				if (names.contains(name))
+				{
+					for (int i = 0; i < actors.size(); ++i)
+					{
+						if (actors.get(i).getName().equals(name))
+							actors.get(i).addEpisodeCredit(episode);
+					}
+				}
+			}			
+			
+		}		
+		
+	}
+
+}

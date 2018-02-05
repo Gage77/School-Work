@@ -1,0 +1,94 @@
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.util.ArrayList;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+
+public class DoSListView extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	MediaModel model;
+	JList<MediaMaker> mediaMakerList;
+	JList<Media> mediaList;
+	
+	JLabel jlbMakers;
+	JLabel jlbMedia;
+	
+	JSplitPane splitPane;
+	
+	JScrollPane makersScroller;
+	JScrollPane mediaScroller;
+	
+	/**
+	 * Base constructor for DoSListView objects
+	 */
+	public DoSListView(MediaMaker mm1, MediaMaker mm2) 
+	{
+		DefaultListModel<MediaMaker> makerListModel = new DefaultListModel<MediaMaker>();
+		mediaMakerList = new JList<MediaMaker>(makerListModel);
+		
+		makersScroller = new JScrollPane(mediaMakerList);
+		JPanel panel = new JPanel(new GridLayout(1, 0, 5, 5));
+		panel.add(makersScroller);
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setLayout(new GridLayout(0, 1, 5, 5));
+		add(panel);
+		setVisible(true);
+	}
+	
+	public DoSListView(ArrayList<MediaMaker> makers, ArrayList<Media> media)
+	{
+		Dimension minimumSize = new Dimension(100, 50);
+		if (!makers.isEmpty())
+		{
+			DefaultListModel<MediaMaker> makerListModel = new DefaultListModel<MediaMaker>();
+			for (int i = 0; i < makers.size(); ++i)
+			{
+				makerListModel.addElement(makers.get(i));
+			}
+			mediaMakerList = new JList<MediaMaker>(makerListModel);
+			mediaMakerList.setLayoutOrientation(JList.VERTICAL);
+			mediaMakerList.setVisibleRowCount(-1);
+			makersScroller = new JScrollPane(mediaMakerList);
+			makersScroller.setMinimumSize(minimumSize);
+		}
+		if (!media.isEmpty())
+		{
+			DefaultListModel<Media> mediaListModel = new DefaultListModel<Media>();
+			for (int i = 0; i < media.size(); ++i)
+			{
+				mediaListModel.addElement(media.get(i));
+			}
+			mediaList = new JList<Media>(mediaListModel);
+			mediaList.setLayoutOrientation(JList.VERTICAL);
+			mediaList.setVisibleRowCount(-1);
+			mediaScroller = new JScrollPane(mediaList);
+			mediaScroller.setMinimumSize(minimumSize);
+		}
+		
+		jlbMakers = new JLabel("Makers", JLabel.RIGHT);
+		jlbMedia = new JLabel("Media", JLabel.RIGHT);
+		
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, makersScroller, mediaScroller);
+		splitPane.setOneTouchExpandable(true);
+		
+		JPanel jplDoS = new JPanel(new GridLayout(1, 0, 5, 5));
+		jplDoS.add(splitPane);
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setLayout(new GridLayout(0, 1, 5, 5));
+		if (!media.isEmpty() && !makers.isEmpty())
+			add(jplDoS);
+		pack();
+		setVisible(true);	
+		
+	}
+	
+}

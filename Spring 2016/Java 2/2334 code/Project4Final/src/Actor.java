@@ -1,0 +1,20 @@
+public class Actor extends MediaMaker {
+
+	/**
+	 * This is the base constructor for Actor objects
+	 * 
+	 * @param name		Name set through super method
+	 */
+	public Actor(String name) {
+		super(name);
+		super.setMakerType("ACTOR");
+	}
+	
+	/**
+	 * This overrides the toString method, returning a string representation 
+	 * of the object
+	 */
+	public String toString(){
+		return "ACTOR: " + this.getName();
+	}
+}

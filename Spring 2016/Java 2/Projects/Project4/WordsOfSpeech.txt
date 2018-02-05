@@ -1,0 +1,30 @@
+Nouns:
+	Movie
+	Series
+	Episode
+	Media Maker
+	Actor
+	Director
+	Producer
+	Model
+	Controller
+	Selection View
+	Add View
+	Edit View
+	Histogram
+	PiChart
+	Radio Button
+Verbs:
+	Display
+	Save
+	Load
+	Export
+	Import
+	Add
+	Edit
+	Delete
+	Clear
+	Clear All
+Adjectives
+	Binary 
+	Action Listener

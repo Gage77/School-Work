@@ -1,0 +1,17 @@
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class ParseFileTest {
+
+	@Test
+	public void testParseMovie() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testParseCredits() {
+		fail("Not yet implemented");
+	}
+
+}

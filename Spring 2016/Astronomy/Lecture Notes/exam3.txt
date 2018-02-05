@@ -1,0 +1,92 @@
+Evolution of Low Mass Stars:
+
+	Pre-Main Sequence Evolution Track
+	- mass establishes a stars evolutionary track
+	- falls to main sequence after being a protostar
+
+	- Stars are constantly radiating energy by converting hydrogen to helium in their cores
+	- eventually fusion sources change
+	- stars life depends primarily on mass and composition
+	- 0.8M 
+	- Main sequence stars fuse hydrogen to helium in cores
+	- helium core doesn't fuse, gravity wins over pressure, crushing the helium
+	- core becomes more dense, and becomes electron-degenerate (quantom mechanical effect of pressure)
+	Moves to Red Giant Branch
+	- When fuel runs out of core, the luminosity increases
+	- when the core shrinks, its gravitational pull gets stronger
+	- helium fuses to carbon via the triple-alpha process (helium flash)
+		- so now carbon core with helium shell then hydrogen shell
+	- ration of hydrogen to helium in the hydrogen shell is 3/1
+	Asymptotic Giant Branch
+	- Mass loss means the star becomes very puffed up, and cannot hold onto the outer layers easily
+	- outer layers ejected to space
+	- this is the planetary nebula stuff
+	- after that, the outer layers are ejected revealing the white dwarf within
+
+	Binary Stars
+	- most stars are binary systems
+	- in each pair of low-mass stars, the more massive one evolves first
+	- can only expand so much before it begins to lose material due to the other star's gravitational pull
+	- when enough mass gets passed to the smaller star (white dwarf), nuclear reactions can start, and the star gets much brighter temporarily
+	- this is called a nova
+	- another phenomena is when the mass gets so large that it exceeds the Chandrasekhar limit (1.4M), at which point the star explodes
+	- this is called a Type 1a Supernova
+	- supernova is as luminous as 10 billion suns
+
+Evolution of High-Mass Stars
+
+	- High mass stars live different, faster lives
+	- on main sequence, energy is generated from the CNO cycle, with carbon as a catalyst
+	- once H is exhausted from the core, the star leaves the MS and expands and cools, moving right in the H-R diagram into the Supergiant area
+	- once there, they can fall into the instability strip, becoming variable stars called cephaes
+	- Ignite He in a non-degenerate core, unlike lowmass stars
+	- central temperature continues to rise
+	- heavier elemtns fuse, generating energy
+	- more massive the star, the heavier the elemtns that can fuse
+	- high mass stars will fuse elemnts up until iron
+	- the fusion shells build up like layers of an onion
+	- fusion of iron or more massive elemtns requires energy
+	0 once the star has an iron core, it cannot generate more energy
+	- each stage of burning is progressively shorter
+		- C burning lasts for 1000 years
+		- Si burning only lasts for a few days
+	- Nutrinoes are produced throughout this process, contributing to the short time of change
+	Cepheid Variables
+		- High mass
+	RR Lyrae Variables
+		- low-mass 
+	- Massive stars have winds
+	- core collapse, central temp rises
+	- photodisintegration, neutrino colling reduces pressure, collapse accelerates
+	- electron degeneracy cannot help
+	- Collapses until it reaches nuclear densities
+		- at this high densities nuclear forces repel atoms
+	- core stops, bounces back, driving a shock wave through the star, causing the star to explode
+	- Called a Type II supernova, leaving a core (nutron star) or a black hole, depending on the mass
+	Binary Systems
+	- Neutron star left over from supernova
+	- mass above 1.4M
+	- binary systems result in strong X-rays
+	- others are found as pulsars (rapidly rotating neutron stars)
+		- highly magnetized
+	- if the mass of a neutron star exceeds 3M it will collapse to a black hole
+	Star cluster
+	- high mass stars evolve first. We can use this turnover point as an aging point for the cluster
+
+Relativity
+	
+	- galileo's transformation
+	- mass and energy are the same thing
+	- the speed of light is the ultimate speed limit
+	- time passes more slowly in a moving reference frame
+	- "simultaneous" is relative
+	- Twins paradox effect
+	- mass distors the geometry of spacetime
+	- can think of mass as warping a rubber sheet
+	- the presence of the mass changes how objects move on the rubber sheet
+	- gravitational redshift stretches the wavelength of light leaving a large ass
+	- gravitational waves shoudl travel through the fabric of spacetime at the speed of light
+	- Schwarchild radius
+	- gravitational field of a black hole = singularity
+	- radiate hawking energy
+	

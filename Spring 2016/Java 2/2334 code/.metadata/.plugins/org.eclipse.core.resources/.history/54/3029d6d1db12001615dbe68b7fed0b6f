@@ -1,0 +1,597 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
+import javax.swing.JOptionPane;
+
+public class MediaModel implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	/** This is the ArrayList that will contain all ActionListeners associated with this model */
+	private ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
+	/** This is the LinkedHashMap that contains all MediaMakers */
+	private LinkedHashMap<String, MediaMaker> people = new LinkedHashMap<String, MediaMaker>();
+	/** This is the ArrayList that contains all Movie objects */
+	private ArrayList<Media> movies = new ArrayList<Media>();
+	/** This is the ArrayList that contains all Series objects */
+	private ArrayList<Media> series = new ArrayList<Media>();
+	/** This is the ArrayList that contains all Episode objects */
+	private ArrayList<Media> episodes = new ArrayList<Media>();
+	/** This is the ArrayList that contains all names of all MediaMakers */
+	private ArrayList<String> names = new ArrayList<String>();
+	/** This is the ArrayList that contains all Actor objects */
+	private ArrayList<MediaMaker> actors = new ArrayList<MediaMaker>();
+	/** This is the ArrayList that contains all Director objects */
+	private ArrayList<MediaMaker> directors = new ArrayList<MediaMaker>();
+	/** This is the ArrayList that contains all Producer objects */
+	private ArrayList<MediaMaker> producers = new ArrayList<MediaMaker>();
+
+	/**
+	 * This method takes in a File from the MediaController and sends it to the ParseFile class
+	 * to be parsed
+	 * 	
+	 * @param file		File to be parsed
+	 * @param type		Type of objects in the file
+	 */
+	public void parseSelectedFile(File file, String type) {
+		try {
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			String line = "";
+
+			if (type.equals("Movies")) 
+			{
+				while ((line = br.readLine()) != null) 
+				{
+					addObject(ParseFile.parseMovie(line));
+				}
+			}
+			else if (type.equals("Series/Episode")) 
+			{
+				ParseFile.parseSeries(file, series, episodes);
+				processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Alteration"));
+			}
+			else if (type.equals("Actors")) 
+			{
+				ParseFile.parseCredits(file, "Actor", movies, series, episodes, actors, people, names);
+				processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Alteration"));
+			} 
+			else if (type.equals("Directors")) 
+			{
+				ParseFile.parseCredits(file, "Director", movies, series, episodes, directors, people, names);
+				processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Alteration"));
+			} 
+			else if (type.equals("Producers")) 
+			{
+				ParseFile.parseCredits(file, "Producer", movies, series, episodes, producers, people, names);
+				processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Alteration"));
+			}
+
+			br.close();
+
+		}
+
+		catch (FileNotFoundException e) 
+		{
+			JOptionPane.showMessageDialog(null, "That file does not exist. \n Please try again.");
+		}
+		catch (IOException e) 
+		{
+			JOptionPane.showMessageDialog(null, "Error reading the file. \n Please try again.");
+		}
+	}
+	
+
+	//Create methods to add objects to the Model's various class variables
+		public void addObject(Movie m) {
+			movies.add(m);
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Alteration"));
+		}
+
+		public void addObject(Series s) {
+			series.add(s);
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Alteration"));
+		}
+
+		public void addObject(Episode e) {
+			episodes.add(e);
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Alteration"));
+		}
+		
+		public void addObject(MediaMaker obj) {
+			people.put(obj.getName(), obj);
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Alteration"));
+		}
+		public void addObject(Actor a) {
+			actors.add(a);
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Alteration"));
+		}
+
+		public void addObject(Director d) {
+			directors.add(d);
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Alteration"));
+		}
+
+		public void addObject(Producer p) {
+			producers.add(p);
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Alteration"));
+		}
+
+	/**
+	 * This method clears all data from the model, setting all class
+	 * lists to null/empty, and notifying listeners
+	 */
+	public void clearAll() {
+		people.clear();
+		movies.clear();
+		series.clear();
+		episodes.clear();
+		actors.clear();
+		directors.clear();
+		producers.clear();
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "All Cleared"));
+	}
+
+	/**
+	 * This method clears the specified categories list in the model, and notifying listeners
+	 * 
+	 * @param category		Type of list to cleared
+	 */
+	public void clear(String category) {
+
+		switch (category) {
+		case "Media":
+			movies.clear();
+			series.clear();
+			episodes.clear();
+			for (MediaMaker a : actors)
+			{
+				a.clearMovieCredits();
+				a.clearEpisodeCredits();
+			}
+			for (MediaMaker d : directors)
+			{
+				d.clearMovieCredits();
+				d.clearEpisodeCredits();
+			}
+			for (MediaMaker p : producers)
+			{
+				p.clearMovieCredits();
+				p.clearEpisodeCredits();
+			}
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Cleared"));
+			break;
+		case "Movies":
+			movies.clear();
+			for (MediaMaker a : actors)
+				a.clearMovieCredits();
+			for (MediaMaker d : directors)
+				d.clearMovieCredits();
+			for (MediaMaker p : producers)
+				p.clearMovieCredits();
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Cleared"));
+			break;
+		case "Series":
+			series.clear();
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Cleared"));
+
+			break;
+		case "Episodes":
+			episodes.clear();
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Cleared"));
+			for (MediaMaker a : actors)
+				a.clearEpisodeCredits();
+			for (MediaMaker d : directors)
+				d.clearEpisodeCredits();
+			for (MediaMaker p : producers)
+				p.clearEpisodeCredits();
+			break;
+		case "Makers":
+			people.clear();
+			actors.clear();
+			directors.clear();
+			producers.clear();
+			processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Cleared"));
+
+			break;
+		case "Actors":
+			for (MediaMaker a : people.values()) {
+				if (a.getMakerType() == "ACTOR") {
+					deleteObject(a);
+				}
+				actors.clear();
+				processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Cleared"));
+			}
+			break;
+		case "Directors":
+			for (MediaMaker a : people.values()) {
+				if (a.getMakerType() == "DIRECTOR") {
+					deleteObject(a);
+				}
+				directors.clear();
+				processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Cleared"));
+			}
+			break;
+		case "Producers":
+			for (MediaMaker a : people.values()) {
+				if (a.getMakerType() == "PRODUCER") {
+					deleteObject(a);
+				}
+				producers.clear();
+				processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Cleared"));
+			}
+
+			break;
+		}
+		
+	}
+
+	//Create various delete methods for each type of object
+	public void deleteObject(Media obj) {
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Deleted"));
+
+	}
+
+	public void deleteObject(Movie obj) {
+		this.movies.remove(obj);
+		
+		for (MediaMaker me : actors)
+		{
+			ArrayList<Movie> acCredits = me.getMovieCredits();
+			if (acCredits.contains(obj))
+				me.removeMovieCredit(acCredits.indexOf(obj));
+		}
+		for (MediaMaker me : directors)
+		{
+			ArrayList<Movie> diCredits = me.getMovieCredits();
+			if (diCredits.contains(obj))
+				me.removeMovieCredit(diCredits.indexOf(obj));
+		}
+		for (MediaMaker me : producers)
+		{
+			ArrayList<Movie> prCredits = me.getMovieCredits();
+			if (prCredits.contains(obj))
+				me.removeMovieCredit(prCredits.indexOf(obj));
+		}
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Deleted"));
+	}
+
+	public void deleteObject(Series obj) {
+		this.series.remove(obj);
+		
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Deleted"));
+	}
+
+	public void deleteObject(Episode obj) {
+		this.episodes.remove(obj);
+			
+		for (MediaMaker me : actors)
+		{
+			ArrayList<Episode> acCredits = me.getEpisodeCredits();
+			if (acCredits.contains(obj))
+				me.removeEpisodeCredit(acCredits.indexOf(obj));
+		}
+		for (MediaMaker me : directors)
+		{
+			ArrayList<Episode> diCredits = me.getEpisodeCredits();
+			if (diCredits.contains(obj))
+				me.removeEpisodeCredit(diCredits.indexOf(obj));
+		}
+		for (MediaMaker me : producers)
+		{
+			ArrayList<Episode> prCredits = me.getEpisodeCredits();
+			if (prCredits.contains(obj))
+				me.removeEpisodeCredit(prCredits.indexOf(obj));
+		}
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Deleted"));
+	}
+
+	public void deleteObject(MediaMaker obj) {
+		this.people.remove(obj.getName());
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Deleted"));
+	}
+
+	public void deleteObject(Actor obj) {
+		this.actors.remove(obj);
+		this.people.remove(obj.getName());
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Deleted"));
+	}
+
+	public void deleteObject(Director obj) {
+		this.directors.remove(obj);
+		this.people.remove(obj.getName());
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Deleted"));
+	}
+
+	public void deleteObject(Producer obj) {
+		this.producers.remove(obj);
+		this.people.remove(obj.getName());
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "MediaMaker Deleted"));
+	}
+	
+	
+	//Create edit methods for different types of objects
+	public void editObject(Movie newMovie, Movie oldMovie) {
+		for (int i = 0; i < movies.size(); ++i)
+		{
+			if (movies.get(i).getTitle().equalsIgnoreCase(newMovie.getTitle()))
+			{
+				movies.set(i, newMovie);
+			}
+		}
+		for (int i = 0; i < actors.size(); ++i)
+		{
+			if (actors.get(i).getMovieCredits().contains(oldMovie))
+			{
+				int index = actors.get(i).getMovieCredits().indexOf(oldMovie);
+				actors.get(i).getMovieCredits().set(index, newMovie);
+			}
+		}
+		for (int i = 0; i < directors.size(); ++i)
+		{
+			if (directors.get(i).getMovieCredits().contains(oldMovie))
+			{
+				int index = directors.get(i).getMovieCredits().indexOf(oldMovie);
+				directors.get(i).getMovieCredits().set(index, newMovie);
+			}
+		}
+		for (int i = 0; i < producers.size(); ++i)
+		{
+			if (producers.get(i).getMovieCredits().contains(oldMovie))
+			{
+				int index = producers.get(i).getMovieCredits().indexOf(oldMovie);
+				producers.get(i).getMovieCredits().set(index, newMovie);
+			}
+		}
+		
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Alteration"));
+	}
+	
+	public void editObject(Series newSeries, Series oldSeries) {
+		for (int i = 0; i < series.size(); ++i)
+		{
+			if (series.get(i).getTitle().equalsIgnoreCase(newSeries.getTitle()))
+			{
+				movies.set(i, newSeries);
+			}
+		}
+		
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Alteration"));
+	}
+	
+	public void editObject(Episode newEpisode, Episode oldEpisode) {
+		for (int i = 0; i < episodes.size(); ++i)
+		{
+			if (episodes.get(i).getTitle().equalsIgnoreCase(newEpisode.getTitle()))
+			{
+				movies.set(i, newEpisode);
+			}
+		}
+		for (int i = 0; i < actors.size(); ++i)
+		{
+			if (actors.get(i).getEpisodeCredits().contains(oldEpisode))
+			{
+				int index = actors.get(i).getEpisodeCredits().indexOf(oldEpisode);
+				actors.get(i).getEpisodeCredits().set(index, newEpisode);
+			}
+		}
+		for (int i = 0; i < directors.size(); ++i)
+		{
+			if (directors.get(i).getEpisodeCredits().contains(oldEpisode))
+			{
+				int index = directors.get(i).getEpisodeCredits().indexOf(oldEpisode);
+				directors.get(i).getEpisodeCredits().set(index, newEpisode);
+			}
+		}
+		for (int i = 0; i < producers.size(); ++i)
+		{
+			if (producers.get(i).getEpisodeCredits().contains(oldEpisode))
+			{
+				int index = producers.get(i).getEpisodeCredits().indexOf(oldEpisode);
+				producers.get(i).getEpisodeCredits().set(index, newEpisode);
+			}
+		}
+		
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Media Alteration"));
+	}
+	
+	public void editObject(Actor a) {
+		
+	}
+	
+	public void editObject(Director d) {
+	
+	}
+	
+	public void editObject(Producer p) {
+	
+	}
+
+	//Create methods to return the various lists
+		public ArrayList<Media> getMediaObjects() {
+			ArrayList<Media> allMedia = new ArrayList<Media>();
+			allMedia.addAll(movies);
+			allMedia.addAll(series);
+			allMedia.addAll(episodes);
+			
+			return allMedia;
+		}
+
+		public ArrayList<Media> getMovieObjects() {
+
+			return movies;
+		}
+
+		public ArrayList<Media> getSeriesObjects() {
+
+			return series;
+		}
+
+		public ArrayList<Media> getEpisodeObjects() {
+
+			return episodes;
+		}
+
+		public ArrayList<MediaMaker> getMediaMakerObjects() {
+			ArrayList<MediaMaker> results = new ArrayList<MediaMaker>();
+
+			results.addAll(people.values());
+			return results;
+		}
+
+		public ArrayList<MediaMaker> getActorObjects() {
+
+			return actors;
+		}
+
+		public ArrayList<MediaMaker> getDirectorObjects() {
+
+			return directors;
+		}
+
+		public ArrayList<MediaMaker> getProducerObjects() {
+
+			return producers;
+		}
+	
+		/**
+		 * This method will write all existing information in the model
+		 * to the specified text file by going through each list containing
+		 * information and writing to the file using a BufferedWriter
+		 * 
+		 * @param file				The specified File to write to
+		 * @throws IOException		To be caught in the controller
+		 */
+	public void saveTxt(File file) throws IOException {
+		FileWriter fw = new FileWriter(file);
+		BufferedWriter bw = new BufferedWriter(fw);
+		
+		//Write all media to file, if media is present
+		//Movies
+		if (!movies.isEmpty())
+		{
+			for (int i = 0; i < movies.size(); ++i)
+			{
+				bw.write(movies.get(i).toString());
+				bw.newLine();
+			}
+		}
+		//Series
+		if (!series.isEmpty())
+		{
+			for (int i = 0; i < series.size(); ++i)
+			{
+				bw.write(series.get(i).toString());
+				bw.newLine();
+			}
+		}
+		//Episodes
+		if (!episodes.isEmpty())
+		{
+			for (int i = 0; i < episodes.size(); ++i)
+			{
+				bw.write(episodes.get(i).toString());
+				bw.newLine();
+			}
+		}
+		//Write all actors to file, if actors are present
+		if (!actors.isEmpty())
+		{
+			for (int i = 0; i < actors.size(); ++i)
+			{
+				bw.write(actors.get(i).toString());
+				bw.newLine();
+			}
+		}
+		//Write all directors to file, if directors are present
+		if (!directors.isEmpty())
+		{
+			for (int i = 0; i < directors.size(); ++i)
+			{
+				bw.write(directors.get(i).toString());
+				bw.newLine();
+			}
+		}
+		//Write all producers to file, if producers are present
+		if (!producers.isEmpty())
+		{
+			for (int i = 0; i < producers.size(); ++i)
+			{
+				bw.write(producers.get(i).toString());
+				bw.newLine();
+			}
+		}
+		
+		//close the BufferedWriter
+		bw.close();
+		
+		JOptionPane.showMessageDialog(null, "Successfully saved to specified file");
+	}
+	
+	public void saveBinary(File file) throws IOException {
+		FileOutputStream fos = new FileOutputStream(file);
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		
+		oos.writeObject(this);
+		oos.close();
+	}
+	
+	public static MediaModel readModel(File file) throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream(file);
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		
+		MediaModel newModel = (MediaModel)ois.readObject();
+		ois.close();
+		return newModel;
+	}
+
+	/**
+	 * This method adds the specified listener to the models ActionListener list
+	 * 
+	 * @param listener		ActionListener to add
+	 */
+	public synchronized void addActionListener(ActionListener listener) {
+		if (listeners == null) {
+			listeners = new ArrayList<ActionListener>();
+		}
+		listeners.add(listener);
+	}
+
+	/**
+	 * This methods removes the specified ActionLister from the ActionListener List
+	 * @param listener
+	 */
+	public synchronized void removeActionListener(ActionListener listener) {
+		if (listeners != null && listeners.contains(listener))
+			listeners.remove(listener);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void processEvent(ActionEvent event) {
+		// Borrowed from lab 7. May need to be altered.
+			ArrayList<ActionListener> list;
+			synchronized (this) {
+				if (listeners == null)
+					return;
+				// Do not worry about the cast warning here.
+			list = (ArrayList<ActionListener>) listeners.clone();
+			}
+			for (int i = 0; i < list.size(); i++) {
+				ActionListener listener = list.get(i);
+				listener.actionPerformed(event);
+			}
+	}
+}

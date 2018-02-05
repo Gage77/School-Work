@@ -1,0 +1,36 @@
+MODEL:
+
+CONTROLLER:
+	
+SELECTION VIEW:
+	Title - "MDb"
+	Menu Bar:
+		- File:
+			- Load (Loads a text file which will be chosen from a popup window)
+			- Save (to text)
+			- Export (to binary)
+			- Import (Binary file, ask what type of object is being imported; Movie, Series/Episode, Actors...)
+		- Edit:
+			- Add (Pulls up data entry view to input information for selected type)
+			- Edit (Pulls up edit view to edit selected info from content pane)
+			- Delete (Pulls up confirmation window, then deletes selected info)
+			- Clear (Pulls up confirmation window, then deletes every line of info of selected type in content pane)
+			- Clear All (Pulls up confirmation window, then deletes all data of all types from the system)
+		- Display: Both of these must be actively updated
+			- Pi Chart
+			- Histogram
+	Radio Buttons:
+		- Media
+		- Movies
+		- Series
+		- Episodes
+		- Makers
+		- Actors
+		- Directors
+		- Producers
+
+
+Various Entry Views:
+
+Various Edit Views:
+

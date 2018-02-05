@@ -1,0 +1,414 @@
+import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+
+public class SelectionView extends JFrame implements ActionListener{
+	
+	/** Default generated serialVersionUID */
+	static final long serialVersionUID = 1L;
+
+	/** This is the model that this selectionView can access to get information */
+	MediaModel model;
+
+	/** This list will display Media objects such as Movie, Series, Episode */
+	DefaultListModel<Media> listModelMedia = new DefaultListModel<Media>();
+	JList<Media> jlMedia = new JList<Media>(listModelMedia);
+
+	/** This list will display MediaMaker objects such as Actor, Director, Producer */
+	DefaultListModel<MediaMaker> listModelMakers = new DefaultListModel<MediaMaker>();
+	JList<MediaMaker> jlMediaMaker = new JList<MediaMaker>(listModelMakers);
+
+	/** Empty list */
+	DefaultListModel<String> noData = new DefaultListModel<String>();
+	JList<String> jlNoData = new JList<String>(noData);
+
+	/** Radio button for Media Objects */
+	JRadioButton jrbMedia = new JRadioButton("Media");
+	/** Radio button for Movie Objects */
+	JRadioButton jrbMovies = new JRadioButton("Movies");
+	/** Radio button for Series Objects */
+	JRadioButton jrbSeries = new JRadioButton("Series");
+	/** Radio button for Episode Objects */
+	JRadioButton jrbEpisodes = new JRadioButton("Episodes");
+	/** Radio button for MediaMaker Objects */
+	JRadioButton jrbMakers = new JRadioButton("Makers");
+	/** Radio button for Actor Objects */
+	JRadioButton jrbActors = new JRadioButton("Actors");
+	/** Radio button for Director Objects */
+	JRadioButton jrbDirectors = new JRadioButton("Directors");
+	/** Radio button for Producer Objects */
+	JRadioButton jrbProducers = new JRadioButton("Producers");
+	
+	/** 'File', 'Edit', and 'Display' menu */
+	JMenu fileMenu = new JMenu("File");
+	JMenu editMenu = new JMenu("Edit");
+	JMenu displayMenu = new JMenu("Display");
+
+	/** JMenuItems for 'File' menu */
+	JMenuItem jmiLoad = new JMenuItem("Load");
+	JMenuItem jmiSave = new JMenuItem("Save");
+	JMenuItem jmiImport = new JMenuItem("Import");
+	JMenuItem jmiExport = new JMenuItem("Export");
+
+	/** JMenuItems for 'Edit' menu */
+	JMenuItem jmiAdd = new JMenuItem("Add");
+	JMenuItem jmiEdit = new JMenuItem("Edit");
+	JMenuItem jmiDelete = new JMenuItem("Delete");
+	JMenuItem jmiClear = new JMenuItem("Clear");
+	JMenuItem jmiClearAll = new JMenuItem("Clear All");
+
+	/** JMenuItems for 'Display' menu */
+	JMenuItem jmiPieChart = new JMenuItem("Pie Chart");
+	JMenuItem jmiHistogram = new JMenuItem("Histogram");
+
+	/** This will hold all of the JMenu objects */
+	JMenuBar menuBar = new JMenuBar();
+
+	/** Scroll panes that will contain JLists to display info */
+	JScrollPane scrollPaneStart, scrollPaneMedia, scrollPaneMediaMaker;
+
+	/** Split pane which will hold radio buttons on the left and scroll panes on the right */
+	JSplitPane splitPane;
+
+	/** JPanels for the buttons and scrollpanes */
+	JPanel buttonList, scrollPanes;
+
+	/** Group for radio buttons to ensure 1 button being pushed at one time */
+	ButtonGroup buttons;
+
+	/**
+	 * This is the main constructor for the SelectionView object
+	 */
+	public SelectionView() {
+		jlMedia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		jlMediaMaker.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		noData.addElement("Click a button to display data");
+		noData.addElement("If nothing appears, there is no data present for that category.");
+
+		// Creating JScrollPane for data display on startup...
+		scrollPaneStart = new JScrollPane(jlNoData);
+		scrollPaneStart.setWheelScrollingEnabled(true);
+		scrollPaneStart.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneStart.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneStart.setSize(600, 600);
+		scrollPaneStart.setVisible(true);
+
+		// Creating JScrollPane for Media data display...
+		scrollPaneMedia = new JScrollPane(jlMedia);
+		scrollPaneMedia.setWheelScrollingEnabled(true);
+		scrollPaneMedia.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneMedia.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneMedia.setSize(600, 600);
+		scrollPaneMedia.setVisible(true);
+
+		// Creating JScrollPane for MediaMaker data display...
+		scrollPaneMediaMaker = new JScrollPane(jlMediaMaker);
+		scrollPaneMediaMaker.setWheelScrollingEnabled(true);
+		scrollPaneMediaMaker.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneMediaMaker.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneMediaMaker.setSize(600, 600);
+		scrollPaneMediaMaker.setVisible(true);
+
+		// Adding JScrollPanes to a JPanel with card layout...
+		scrollPanes = new JPanel(new CardLayout());
+		scrollPanes.add(scrollPaneMedia, "Media");
+		scrollPanes.add(scrollPaneStart, "Startup");
+		scrollPanes.add(scrollPaneMediaMaker, "Maker");
+
+		scrollPanes.setSize(600, 600);
+		scrollPanes.setVisible(true);
+
+		// Initializing buttons...
+		jrbEpisodes = new JRadioButton("Episodes");
+		jrbSeries = new JRadioButton("Series");
+		jrbMovies = new JRadioButton("Movies");
+		jrbMakers = new JRadioButton("Makers");
+		jrbActors = new JRadioButton("Actors");
+		jrbDirectors = new JRadioButton("Directors");
+		jrbProducers = new JRadioButton("Producers");
+
+		// Grouping Media buttons...
+		buttons = new ButtonGroup();
+		buttons.add(jrbMedia);
+		buttons.add(jrbMovies);
+		buttons.add(jrbEpisodes);
+		buttons.add(jrbSeries);
+
+		// Grouping Maker buttons...
+		buttons.add(jrbMakers);
+		buttons.add(jrbActors);
+		buttons.add(jrbDirectors);
+		buttons.add(jrbProducers);
+
+		// Adding all buttons to JPanel...
+		buttonList = new JPanel();
+		buttonList.add(jrbMedia);
+		buttonList.add(jrbMovies);
+		buttonList.add(jrbSeries);
+		buttonList.add(jrbEpisodes);
+		buttonList.add(jrbMakers);
+		buttonList.add(jrbActors);
+		buttonList.add(jrbDirectors);
+		buttonList.add(jrbProducers);
+		// Setting button layout...
+		buttonList.setLayout(new BoxLayout(buttonList, BoxLayout.Y_AXIS));
+		buttonList.setSize(300, 300);
+		buttonList.setVisible(true);
+
+		// Adding button and data list components to a JSplitPane
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, buttonList, scrollPanes);
+		splitPane.setSize(700, 700);
+		splitPane.setVisible(true);
+
+		// Setting up "File" menu...
+		fileMenu.add(jmiLoad);
+		fileMenu.add(jmiImport);
+		fileMenu.add(jmiSave);
+		jmiSave.setEnabled(false);
+		fileMenu.add(jmiExport);
+		jmiExport.setEnabled(false);
+
+
+		// Setting up "Edit" menu...
+		editMenu.add(jmiAdd);
+		editMenu.add(jmiEdit);
+		jmiEdit.setEnabled(false);
+		editMenu.add(jmiDelete);
+		jmiDelete.setEnabled(false);
+		editMenu.add(jmiClear);
+		jmiClear.setEnabled(false);
+		editMenu.add(jmiClearAll);
+		jmiClearAll.setEnabled(false);
+
+
+		// Setting up "Display" menu...
+		displayMenu.add(jmiPieChart);
+		displayMenu.add(jmiHistogram);
+		displayMenu.setEnabled(false);
+
+		// Setting up menu bar...
+		menuBar.setVisible(true);
+		menuBar.add(fileMenu);
+		menuBar.add(editMenu);
+		menuBar.add(displayMenu);
+		menuBar.setVisible(true);
+
+		// Adding menu bar and split pane to the JFrame...
+		setJMenuBar(menuBar);
+		add(splitPane);
+		CardLayout cl = (CardLayout) (scrollPanes.getLayout());
+		cl.show(scrollPanes, "Startup");
+		// JFrame layout...
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new GridLayout(1, 2));
+		pack();
+		setTitle("MDB");
+
+		setVisible(true);
+	}
+
+	/**
+	 * This method sets the model for this SelectionView
+	 * 
+	 * @param model		MediaModel to set
+	 */
+	public void setModel(MediaModel model) {
+		this.model = model;
+		
+	}
+
+	/**
+	 * This method re-fires all selected buttons
+	 */
+	public void refireSelectedButton() {
+		for (Component a : this.buttonList.getComponents()) {
+
+			if (((JRadioButton) a).isSelected()) {
+				((JRadioButton) a).doClick();
+				
+			}
+		}
+
+	}
+
+	/**
+	 * This method adds specified objects to the MediaMaker JList that is being displayed to the user,
+	 * determined by the radio buttons
+	 * 
+	 * @param makers		MediaMakers to populate list with
+	 */
+	public void populateList(Collection<MediaMaker> makers) {
+		listModelMakers.clear();
+		for (MediaMaker a : makers) {
+			listModelMakers.addElement(a);
+		}
+
+		jlMediaMaker.setModel(listModelMakers);
+		CardLayout cl = (CardLayout) (scrollPanes.getLayout());
+		cl.show(scrollPanes, "Maker");
+	}
+
+	/**
+	 * This method adds specified objects to the Media JLIst that is being displayed to the user,
+	 * determined by the radio buttons
+	 * 
+	 * @param media			Media to populate list with
+	 */
+	public void populateList(ArrayList<Media> media) {
+		listModelMedia.clear();
+		for (Media a : media) {
+			listModelMedia.addElement(a);
+		}
+
+		jlMedia.setModel(listModelMedia);
+		CardLayout cl = (CardLayout) (scrollPanes.getLayout());
+		cl.show(scrollPanes, "Media");
+
+	}
+
+	/**
+	 * Action performed method. Performs specified action
+	 */
+	public void actionPerformed(ActionEvent actionEvent) {
+		CardLayout cl = (CardLayout) (scrollPanes.getLayout());
+		switch (actionEvent.getActionCommand()) {
+		case "All Cleared":
+			listModelMedia.clear();
+			listModelMakers.clear();
+			cl.show(scrollPanes, "Startup");
+			jmiSave.setEnabled(false);
+			jmiExport.setEnabled(false);
+			jmiEdit.setEnabled(false);
+			jmiDelete.setEnabled(false);
+			jmiClear.setEnabled(false);
+			jmiClearAll.setEnabled(false);
+			break;
+		case "Media Cleared":
+//			refireSelectedButton();
+			break;
+		case "MediaMaker Cleared":
+//			refireSelectedButton();
+			break;
+		case "Media Alteration":
+//			refireSelectedButton();
+			jmiSave.setEnabled(true);
+			jmiExport.setEnabled(true);
+			jmiEdit.setEnabled(true);
+			jmiDelete.setEnabled(true);
+			jmiClear.setEnabled(true);
+			jmiClearAll.setEnabled(true);
+			break;
+		case "MediaMaker Alteration":
+			refireSelectedButton();
+			jmiSave.setEnabled(true);
+			jmiExport.setEnabled(true);
+			jmiEdit.setEnabled(true);
+			jmiDelete.setEnabled(true);
+			jmiClear.setEnabled(true);
+			jmiClearAll.setEnabled(true);
+			displayMenu.setEnabled(true);
+			System.out.println("alteration");
+			break;
+		}
+	}
+	
+	// Create addListener methods for all of the radio buttons
+	public void addMediaButtonListener(ActionListener addMediaListener) {
+		jrbMedia.addActionListener(addMediaListener);
+	}
+
+	public void addMoviesButtonListener(ActionListener addMoviesListener) {
+		jrbMovies.addActionListener(addMoviesListener);
+	}
+
+	public void addSeriesButtonListener(ActionListener addSeriesListener) {
+		jrbSeries.addActionListener(addSeriesListener);
+	}
+
+	public void addEpisodeButtonListener(ActionListener addEpisodesListener) {
+		jrbEpisodes.addActionListener(addEpisodesListener);
+	}
+
+	public void addMakersButtonListener(ActionListener addMakersListener) {
+		jrbMakers.addActionListener(addMakersListener);
+	}
+
+	public void addActorsButtonListener(ActionListener addActorsListener) {
+		jrbActors.addActionListener(addActorsListener);
+	}
+
+	public void addDirectorsButtonListener(ActionListener addDirectorsListener) {
+		jrbDirectors.addActionListener(addDirectorsListener);
+	}
+
+	public void addProducersButtonListener(ActionListener addProducersListener) {
+		jrbProducers.addActionListener(addProducersListener);
+	}
+
+	// Create addListener methods for the menu items in jmFile
+	public void addLoadButtonListener(ActionListener addLoadListener) {
+		jmiLoad.addActionListener(addLoadListener);
+	}
+
+	public void addSaveButtonListener(ActionListener addSaveListener) {
+		jmiSave.addActionListener(addSaveListener);
+	}
+
+	public void addImportButtonListener(ActionListener addImportListener) {
+		jmiImport.addActionListener(addImportListener);
+	}
+
+	public void addExportButtonListener(ActionListener addExportListener) {
+		jmiExport.addActionListener(addExportListener);
+	}
+
+	// Create addListener methods for the menu items in jmEdit
+	public void addAddButtonListener(ActionListener addAddListener) {
+		jmiAdd.addActionListener(addAddListener);
+	}
+
+	public void addEditButtonListener(ActionListener addEditListener) {
+		jmiEdit.addActionListener(addEditListener);
+	}
+
+	public void addDeleteButtonListener(ActionListener addDeleteListener) {
+		jmiDelete.addActionListener(addDeleteListener);
+	}
+
+	public void addClearButtonListener(ActionListener addClearListener) {
+		jmiClear.addActionListener(addClearListener);
+	}
+
+	public void addClearAllButtonListener(ActionListener addClearAllListener) {
+		jmiClearAll.addActionListener(addClearAllListener);
+	}
+
+	// Create addListener methods for the menu items in jmDisplay
+	public void addPieChartButtonListener(ActionListener addPieChartListener) {
+		jmiPieChart.addActionListener(addPieChartListener);
+	}
+
+	public void addHistogramButtonListener(ActionListener addHistogramListener) {
+		jmiHistogram.addActionListener(addHistogramListener);
+	}
+
+}

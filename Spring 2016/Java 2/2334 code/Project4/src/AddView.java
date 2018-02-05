@@ -1,0 +1,225 @@
+import java.awt.GridLayout;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+public class AddView extends JFrame 
+{
+	private static final long serialVersionUID = 1L;
+	
+	JButton jbtAdd = new JButton("Add");
+	
+	JTextField jtfTitle;
+	JLabel jlTitle;
+	JTextField jtfSeriesTitle;
+	JLabel jlSeriesTitle;
+	JTextField jtfReleaseYear;
+	JLabel jlReleaseYear;
+	JTextField jtfReleaseFormat;
+	JLabel jlReleaseFormat;
+	
+	JTextField jtfStartYear;
+	JLabel jlStartYear;
+	JTextField jtfEndYear;
+	JLabel jlEndYear;
+	
+	JTextField jtfEpisodeNumber;
+	JLabel jlEpisodeNumber;
+	JTextField jtfSeriesNumber;
+	JLabel jlSeriesNumber;
+	
+	JTextField jtfName;
+	JLabel jlName;
+	
+	JList<Movie> movieDisplay;
+	JList<Episode> episodeDisplay;
+	JScrollPane movieScroller;
+	JScrollPane episodeScroller;
+	
+	public AddView()
+	{
+		
+	}
+	
+	
+	public AddView(int typeBeingAdded)
+	{
+		//Movie add view
+		if (typeBeingAdded == 1)
+		{
+			jtfTitle = new JTextField("", 20);
+			jtfReleaseYear = new JTextField("", 20);
+			jtfReleaseFormat = new JTextField("", 20);
+			
+			jlTitle = new JLabel("Title:", JLabel.RIGHT);
+			jlReleaseYear = new JLabel("Release Year:", JLabel.RIGHT);
+			jlReleaseFormat = new JLabel("Release Format:", JLabel.RIGHT);
+			
+			JPanel jplTitle = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplTitle.add(jlTitle);
+			jplTitle.add(jtfTitle);
+			
+			JPanel jplReleaseYear = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplReleaseYear.add(jlReleaseYear);
+			jplReleaseYear.add(jtfReleaseYear);
+			
+			JPanel jplReleaseFormat = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplReleaseFormat.add(jlReleaseFormat);
+			jplReleaseFormat.add(jtfReleaseFormat);
+			
+			JPanel jplButton = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplButton.add(jbtAdd);
+			
+			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			setLayout(new GridLayout(0, 1, 5, 5));
+			setTitle("Movie Add View");
+			add(jplTitle);
+			add(jplReleaseYear);
+			add(jplReleaseFormat);
+			add(jplButton);
+			pack();
+			setVisible(true);	
+		}
+		
+		//Series add view
+		else if (typeBeingAdded == 2)
+		{
+			jtfTitle = new JTextField("", 20);
+			jtfStartYear = new JTextField("", 20);
+			jtfEndYear = new JTextField("", 20);
+			
+			jlTitle = new JLabel("Title:", JLabel.RIGHT);
+			jlStartYear = new JLabel("Start Year:", JLabel.RIGHT);
+			jlEndYear = new JLabel("End Year:", JLabel.RIGHT);
+			
+			JPanel jplTitle = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplTitle.add(jlTitle);
+			jplTitle.add(jtfTitle);
+			
+			JPanel jplStartYear = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplStartYear.add(jlStartYear);
+			jplStartYear.add(jtfStartYear);
+			
+			JPanel jplEndYear = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplEndYear.add(jlEndYear);
+			jplEndYear.add(jtfEndYear);
+
+			JPanel jplButton = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplButton.add(jbtAdd);
+			
+			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			setLayout(new GridLayout(0, 1, 5, 5));
+			setTitle("Series Add View");
+			add(jplTitle);
+			add(jplStartYear);
+			add(jplEndYear);
+			add(jplButton);
+			pack();
+			setVisible(true);
+		}
+		
+		//Episode add view
+		else if (typeBeingAdded == 3)
+		{
+			jtfTitle = new JTextField("", 20);
+			jtfSeriesTitle = new JTextField("", 20);
+			jtfReleaseYear = new JTextField("", 20);
+			jtfEpisodeNumber = new JTextField("", 20);
+			jtfSeriesNumber = new JTextField("", 20);
+			
+			jlTitle = new JLabel("Episode Title:", JLabel.RIGHT);
+			jlSeriesTitle = new JLabel("Series Title:", JLabel.RIGHT);
+			jlReleaseYear = new JLabel("Release Year:", JLabel.RIGHT);
+			jlEpisodeNumber = new JLabel("Episode Number:", JLabel.RIGHT);
+			jlSeriesNumber = new JLabel("Series Number:", JLabel.RIGHT);
+			
+			JPanel jplTitle = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplTitle.add(jlTitle);
+			jplTitle.add(jtfTitle);
+			
+			JPanel jplSeriesTitle = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplSeriesTitle.add(jlSeriesTitle);
+			jplSeriesTitle.add(jtfSeriesTitle);
+			
+			JPanel jplReleaseYear = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplReleaseYear.add(jlReleaseYear);
+			jplReleaseYear.add(jtfReleaseYear);
+			
+			JPanel jplEpisodeNumber = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplEpisodeNumber.add(jlEpisodeNumber);
+			jplEpisodeNumber.add(jtfEpisodeNumber);
+			
+			JPanel jplSeriesNumber = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplSeriesNumber.add(jlSeriesNumber);
+			jplSeriesNumber.add(jtfSeriesNumber);
+
+			JPanel jplButton = new JPanel(new GridLayout(1, 0, 5, 5));
+			jplButton.add(jbtAdd);
+			
+			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			setLayout(new GridLayout(0, 1, 5, 5));
+			setTitle("Episode Add View");
+			add(jplTitle);
+			add(jplSeriesTitle);
+			add(jplReleaseYear);
+			add(jplEpisodeNumber);
+			add(jplSeriesNumber);
+			add(jplButton);
+			pack();
+			setVisible(true);
+		}
+	}
+	
+	public AddView(int type, Movie[] moviesToPick, Episode[] episodesToPick) {
+		jtfName = new JTextField("", 20);
+		
+		jlName = new JLabel("Name:", JLabel.RIGHT);
+		
+		if (moviesToPick != null)
+		{
+		movieDisplay = new JList<Movie>(moviesToPick);
+		movieDisplay.setLayoutOrientation(JList.VERTICAL);
+		movieDisplay.setVisibleRowCount(-1);
+		movieScroller = new JScrollPane(movieDisplay);
+		}
+		
+		if (episodesToPick != null)
+		{
+		episodeDisplay = new JList<Episode>(episodesToPick);
+		episodeDisplay.setLayoutOrientation(JList.VERTICAL);
+		episodeDisplay.setVisibleRowCount(-1);
+		episodeScroller = new JScrollPane(episodeDisplay);
+		}
+		
+		JPanel jplName = new JPanel(new GridLayout(1, 0, 5, 5));
+		jplName.add(jlName);
+		jplName.add(jtfName);
+		
+		JPanel jplButton = new JPanel(new GridLayout(1, 0, 5, 5));
+		jplButton.add(jbtAdd);
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setLayout(new GridLayout(0, 1, 5, 5));
+		setTitle("Media Maker Add View");
+		add(jplName);
+		if (moviesToPick != null)
+			add(movieScroller);
+		if (episodesToPick != null)
+			add(episodeScroller);
+		add(jplButton);
+		pack();
+		setVisible(true);
+	}
+	
+	public void addAddButtonListener(ActionListener addEpisodeListener) {
+		jbtAdd.addActionListener(addEpisodeListener);
+	}
+
+}

@@ -1,0 +1,20 @@
+Milestone #1: Implement Serializable for the classes necessary to save and load all application data		(10 pts)
+	We met this milestone
+Milestone #2: Use object serialization to save and load the application data to and from a binary file 		(15 pts)
+	We kind of met this milestone. We were unable to test whether or not this works, but most
+	of the implementation is there
+Milestone #3: Implement a simple graphical display for showing counts of the application data			(25 pts)
+	We didn't really meet this milestone. We ran out of time to get the graphical display
+	to work.
+Milestone #4: Create appropriate classes to store information on media makers					(10 pts)
+	We met this milestone by implementing a MediaMaker class which contained all information
+	for each individual MediaMaker (acting/directing/producing). These MediaMaker objects are 
+	then stored in a Database object for further encapsulation.
+Milestone #5: Use LinkedHashMaps to save to and retrieve information on media makers				(10 pts)
+	We met this milestone by implementing a LinkedHashMap into the pdb Database object. This 
+	LinkedHashMap contains MediaMaker objects with the key being their name (last, first).
+
+Other points of grading:
+	1) Develop and use a proper design (see Milestone 4 above)						(15 pts)
+	2) Use proper documentation and formatting								(15 pts)
+	

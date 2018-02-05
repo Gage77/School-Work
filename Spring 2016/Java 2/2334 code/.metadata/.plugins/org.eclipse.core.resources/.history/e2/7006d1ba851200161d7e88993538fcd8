@@ -1,0 +1,59 @@
+import java.awt.*;
+import javax.swing.*;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot3D;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
+import org.jfree.util.Rotation;
+
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Constructs a pie chart that displays acting, directing, and producing credits
+ * for one media maker.
+ * This class implements and OUTSIDE LIBRARY (jcommon-1.0.23) and (jfreechart-1.0.19)
+ */
+public class PieChart extends JFrame 
+{
+	
+	public PieChart(String appTitle, String chartTitle, int nam, int nae, int ndm, int nde, 
+			int npm, int npe)
+	{
+		PieDataset dataset = createDataset(nam, nae, ndm, nde, npm, npe);
+		JFreeChart chart = createChart(dataset, chartTitle);
+		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setPreferredSize(new java.awt.Dimension(500, 300));
+		setContentPane(chartPanel);
+	}
+	
+	private PieDataset createDataset(int nam, int nae, int ndm, int nde, int npm, int npe) 
+	{
+		DefaultPieDataset result = new DefaultPieDataset();
+		result.setValue("Acting Movie Credits", nam);
+		result.setValue("Acting Episode Credits", nae);
+		result.setValue("Directing Movie Credits", ndm);
+		result.setValue("Directing Episode Credits", nde);
+		result.setValue("Producing Movie Credits", npm);
+		result.setValue("Producing Episode Credits", npe);
+		
+		return result;
+	}
+	
+	private JFreeChart createChart(PieDataset dataset, String title)
+	{
+		JFreeChart chart = ChartFactory.createPieChart3D(title, dataset, true, true, false);
+		PiePlot3D plot = (PiePlot3D)chart.getPlot();
+		plot.setStartAngle(0);
+		plot.setDirection(Rotation.CLOCKWISE);
+		plot.setForegroundAlpha(0.5f);
+		
+		return chart;
+	}
+
+}
+
