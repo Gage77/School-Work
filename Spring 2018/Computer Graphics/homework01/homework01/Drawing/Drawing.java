@@ -49,8 +49,133 @@ public final class Drawing
 		public void		paintComponent(Graphics graphics)
 		{
 			//You complete me.
+			// Where to send drawing commands for rendering
+			Graphics2D g = (Graphics2D)graphics;
+			Stroke stroke = g.getStroke();
+
+			/****************************
+			* The drawing of each element of the proposed drawing
+			* has been broken down into associated groups, with each
+			* group taking up a method below. The groups are as follows:
+			* Text, Tree, Clouds, Cat-Ball, Flowers, Background
+			*****************************/
+
+			drawText(g);	// Draw text "SO MUCH COLORRRR!"
+			drawTree(g);	// Draw tree, probably an oak-pine
+			drawClouds(g);	// Draw clouds, weather's a'changin
+			drawCatBall(g);	// Draw cat and ball, aka Oscar - Basketball Superstar
+			drawFlowers(g);	// Draw flowers, one normal and one psychadelic
+			drawBackground(g);	// Draw background, rest of the owl
 
 			//(You also compile, test, and document me thoroughly.)
+		}
+
+		// This method will draw all text in the drawing, including any graphics
+		// related to said text (rectangles, colors, etc.)
+		// Status = DONE
+		private void drawText(Graphics2D g)
+		{
+			// Setup required things for drawing text //
+			String so = "so";
+			String much = "much";
+			String colortext = "color!";
+	 		Font font = new Font("Serif", Font.PLAIN, 30); // Setup font
+
+			/****************************
+			* Draw "so"
+			*****************************/
+			Color textColor = new Color(0, 0, 0); // Set color to black
+			g.setColor(textColor); // Set graphics color
+			g.setFont(font); // Set graphics font
+			g.drawString(so, 75, 100); // Draw "so" in relative position
+
+			/****************************
+			* Draw "much" and box
+			*****************************/
+			Stroke stroke = new BasicStroke(1.0f);	// Setup stroke for rectangle
+			FontMetrics fm = g.getFontMetrics(font);	// Get font measurements
+
+			// Get minimal bounding box of "much", as if it were drawn at the origin
+			Rectangle2D rm = fm.getStringBounds(much, g);
+			double x = rm.getX();
+			double y = rm.getY();
+			double w = rm.getWidth();
+			double h = rm.getHeight();
+			// Shift rectangle to where it should be
+			Rectangle2D.Double r = new Rectangle2D.Double(x + 120.0, y + 115.0, w, h);
+			g.setStroke(stroke);	// Set graphics stroke
+			g.draw(r);
+
+			textColor = new Color(255, 0, 0);	// Set color to red
+			g.setColor(textColor);	// Set graphics color
+			g.setFont(font);	// Set graphics font
+			g.drawString(much, 120, 115);	// Draw "much"
+
+			/****************************
+			* Draw "color!" and soft rectangle
+			*****************************/
+
+			font = new Font("Serif", Font.ITALIC, 30);
+			fm = g.getFontMetrics(font);
+			Color fillColor = new Color(0, 144, 146);	// Set fill color for rounded rectangle
+
+			// Get minimal bounding box of "color!", as if it were drawn at the origin
+			Rectangle2D rrm = fm.getStringBounds(colortext, g);
+			x = rrm.getX();
+			y = rrm.getY();
+			w = rrm.getWidth();
+			h = rrm.getHeight();
+			// Shift rounded rectangle to where it should be
+			RoundRectangle2D.Double rr =
+				new RoundRectangle2D.Double(x + 200.0, y + 140.0, w, h, 30.0, 30.0);
+
+			stroke = new BasicStroke(2.0f);	// Set thicker stroke
+			g.setStroke(stroke);	// Set graphics stroke to new, thicker stroke
+			g.setColor(fillColor);	// Set color to fill color
+			g.fill(rr);	// Fill in the rounded rectangle
+			g.setColor(new Color(0, 0, 0));	// Reset color to black
+			g.draw(rr);	// Draw the rounded rectangle
+
+			textColor = new Color(255, 255, 255);	// Set color to white
+			g.setColor(textColor);	// Set graphics color
+			g.setFont(font);	// Set graphics font
+			g.drawString(colortext, 200, 140);
+		}
+
+		// Draw all attributes related to the tree
+		// Status = NOT STARTED
+		private void drawTree(Graphics2D g)
+		{
+
+		}
+
+		// Draw all attributes related to the clouds
+		// Status = NOT STARTED
+		private void drawClouds(Graphics2D g)
+		{
+
+		}
+
+		// Draw all attributes related to the cat and ball
+		// Status = NOT STARTED
+		private void drawCatBall(Graphics2D g)
+		{
+
+		}
+
+		// Draw all attributes related to the flowers
+		// Status = NOT STARTED
+		private void drawFlowers(Graphics2D g)
+		{
+
+		}
+
+		// Draw all attributes related to the background
+		// including the sky, ground, road, and grass
+		// Status = NOT STARTED
+		private void drawBackground(Graphics2D g)
+		{
+
 		}
 
 		// Use this to load images (and make sure they're done loading). The
