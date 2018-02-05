@@ -146,7 +146,39 @@ public final class Drawing
 		// Status = NOT STARTED
 		private void drawTree(Graphics2D g)
 		{
+			Color trunkcolor = new Color(134, 98, 13);	// Create trunk color
+			Color treecolor = new Color(26, 150, 2);	// Create tree leaves color
+			Color treeoutline = new Color(0, 78, 0);	// Color of tree leaf outline
 
+			/****************************
+			* Draw tree trunk
+			*****************************/
+			Stroke stroke = new BasicStroke(1.0f);	// Setup stroke for tree trunk
+
+			Rectangle2D.Double treetrunk =
+				new Rectangle2D.Double(40.0, 140.0, 10.0, 175.0);
+			g.setColor(new Color(0, 0, 0));	// Set color to black for outline
+			g.setStroke(stroke);	// Set graphics stroke
+			g.draw(treetrunk);
+
+			g.setColor(trunkcolor);	// Set color to fill trunk
+			g.fill(treetrunk);	// Fill in the tree trunk with brown
+
+			/****************************
+			* Draw tree leaves using Path2D
+			*****************************/
+			stroke = new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
+				BasicStroke.JOIN_ROUND);	// Thicken and round stroke
+			g.setStroke(stroke);	// Set new graphics stroke
+			g.setColor(treeoutline);	// Set color to tree leaf outline
+
+			Path2D.Double trianglepath = new Path2D.Double(); //Setup trianble path
+			trianglepath.moveTo(45.0, 70.0);	// Start path here
+			trianglepath.lineTo(20.0, 200.0);
+			trianglepath.lineTo(70.0, 200.0);
+			trianglepath.lineTo(45.0, 70.0);
+
+			g.fill(trianglepath);
 		}
 
 		// Draw all attributes related to the clouds
