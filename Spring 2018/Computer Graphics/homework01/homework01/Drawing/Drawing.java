@@ -386,7 +386,20 @@ public final class Drawing
 			drawDemFlowers(g, 345.0, 167.0, w, h);
 
 			// Special flower boi
-			drawDemFlowers(g, 312.0, 175.0, w, h);
+
+			// Colors needed
+			Color petalp = new Color(148, 96, 255);
+			Color petalw = new Color(198, 230, 233);
+			Color stemg = new Color(135, 99, 15);
+			Color stemw = new Color(182, 167, 88);
+
+			GradientPaint stem = new GradientPaint(312, 180, stemw, 315, 180, stemg, true);
+			g.setPaint(stem);
+			g.fill(new Rectangle2D.Double(312.0, 175.0, w, h));
+
+			Ellipse2D.Double crazypetal = new Ellipse2D.Double(300.0, 150.0, 30.0, 30.0);
+			g.setPaint(petalp);
+			g.fill(crazypetal);
 		}
 
 		// Draw normal flowers given paremters to prevent clutter
