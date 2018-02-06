@@ -67,9 +67,8 @@ public final class Drawing
 			drawCat(g);	// Draw cat, aka Oscar - Basketball Superstar
 			drawFlowers(g);	// Draw flowers, one normal and one psychedelic
 
-			Image image = fullyLoadImage("sun.png");
-
-			g.drawImage(image, 280, 0, null);
+			Image image = fullyLoadImage("sun.png");	// Load in image of sun
+			g.drawImage(image, 280, 0, null);	// Place sun in top right corner
 		}
 
 		// This method will draw all text in the drawing, including any graphics
@@ -438,7 +437,7 @@ public final class Drawing
 			Color road = new Color(145, 145, 145); // Color of road
 			Color arrow = new Color(225, 251, 0); // Color of arrows on road
 			Color grass = new Color(0, 142, 0);	// Color of the diagonal grass
-			Stroke stroke = new BasicStroke(2.0f);	// Outline stroke for arrows
+			Stroke stroke = new BasicStroke(1.5f);	// Outline stroke for arrows
 
 			/****************************
 			* Setup and draw sky
@@ -459,8 +458,13 @@ public final class Drawing
 			/****************************
 			* Setup and draw grass
 			*****************************/
-
-
+			stroke = new BasicStroke(3.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
+			g.setStroke(stroke);
+			g.setColor(grass);
+			for (double i = 0.0; i < 400.0; i = i + 5.0)
+			{
+				g.draw(new Line2D.Double(i, 280, i - 5.0, 325));
+			}
 			/****************************
 			* Setup and draw roads
 			*****************************/
@@ -471,7 +475,56 @@ public final class Drawing
 			/****************************
 			* Setup and draw arrows on road
 			*****************************/
+			// Gonna be one big path
+			stroke = new BasicStroke(1.5f);	// Outline stroke for arrows
+			Path2D.Double arrowpath = new Path2D.Double();
+			// Left arrow
+			arrowpath.moveTo(100.0, 335.0);	// Top left
+			arrowpath.lineTo(80.0, 345.0);	// Left point
+			arrowpath.lineTo(100.0, 355.0);	// Bottom left
+			arrowpath.lineTo(100.0, 350.0);	// Bottom left middle
+			arrowpath.lineTo(120.0, 350.0);	// Bottom right middle
+			arrowpath.lineTo(120.0, 355.0);	// Bottom right
+			arrowpath.lineTo(140.0, 345.0);	// Right point
+			arrowpath.lineTo(120.0, 335.0);	// Top right
+			arrowpath.lineTo(120.0, 340.0);	// Top right middle
+			arrowpath.lineTo(100.0, 340.0);	// Top left middle
+			arrowpath.lineTo(100.0, 335.0);	// Back to top left
 
+			// Middle arrow
+			double m = 100.0;	// Move over the next arrow by this much
+			arrowpath.moveTo(100.0 + m, 335.0);	// Top left
+			arrowpath.lineTo(80.0 + m, 345.0);	// Left point
+			arrowpath.lineTo(100.0 + m, 355.0);	// Bottom left
+			arrowpath.lineTo(100.0 + m, 350.0);	// Bottom left middle
+			arrowpath.lineTo(120.0 + m, 350.0);	// Bottom right middle
+			arrowpath.lineTo(120.0 + m, 355.0);	// Bottom right
+			arrowpath.lineTo(140.0 + m, 345.0);	// Right point
+			arrowpath.lineTo(120.0 + m, 335.0);	// Top right
+			arrowpath.lineTo(120.0 + m, 340.0);	// Top right middle
+			arrowpath.lineTo(100.0 + m, 340.0);	// Top left middle
+			arrowpath.lineTo(100.0 + m, 335.0);	// Back to top left
+
+			// Right arrow
+			m = 200.0;	// Move over the next arrow by this much
+			arrowpath.moveTo(100.0 + m, 335.0);	// Top left
+			arrowpath.lineTo(80.0 + m, 345.0);	// Left point
+			arrowpath.lineTo(100.0 + m, 355.0);	// Bottom left
+			arrowpath.lineTo(100.0 + m, 350.0);	// Bottom left middle
+			arrowpath.lineTo(120.0 + m, 350.0);	// Bottom right middle
+			arrowpath.lineTo(120.0 + m, 355.0);	// Bottom right
+			arrowpath.lineTo(140.0 + m, 345.0);	// Right point
+			arrowpath.lineTo(120.0 + m, 335.0);	// Top right
+			arrowpath.lineTo(120.0 + m, 340.0);	// Top right middle
+			arrowpath.lineTo(100.0 + m, 340.0);	// Top left middle
+			arrowpath.lineTo(100.0 + m, 335.0);	// Back to top left
+
+			// Draw arrows
+			g.setColor(new Color(0, 0, 0));
+			g.setStroke(stroke);
+			g.draw(arrowpath);
+			g.setColor(arrow);
+			g.fill(arrowpath);
 		}
 
 		// Use this to load images (and make sure they're done loading). The
