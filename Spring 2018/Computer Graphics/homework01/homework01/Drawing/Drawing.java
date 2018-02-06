@@ -242,8 +242,8 @@ public final class Drawing
 			double w = 40.0;	// Width of bounding rectangle
 			Color red = new Color(252, 54, 37);	// Lower left color
 			Color salmon = new Color(233, 142, 145); // Upper right color
-			Ellipse2D.Double ball = new Ellipse2D.Double(140.0, 225.0, w, h);	// Create ball
-			GradientPaint ballpaint = new GradientPaint(135, 230, red, 170, 210, salmon);	// Set gradient paint
+			Ellipse2D.Double ball = new Ellipse2D.Double(110.0, 225.0, w, h);	// Create ball
+			GradientPaint ballpaint = new GradientPaint(105, 230, red, 130, 210, salmon);	// Set gradient paint
 			g.setPaint(ballpaint);	// Set graphics gradient paint
 			g.fill(ball);	// Draw and fill ball
 
@@ -253,41 +253,173 @@ public final class Drawing
 			h = 20.0;
 			w = 40.0;
 			Color ballshadow = new Color(117, 86, 18, 85);	// Set color for shadow with alpha
-			Ellipse2D.Double shadow = new Ellipse2D.Double(115.0, 265.0, w, h);	// Create shadow
+			Ellipse2D.Double shadow = new Ellipse2D.Double(90.0, 265.0, w, h);	// Create shadow
 			g.setColor(ballshadow);
 			g.fill(shadow);
 		}
 
 		// Draw all attributes related to the cat
-		// Status = NOT STARTED
+		// Status = DONE
 		private void drawCat(Graphics2D g)
 		{
 			/****************************
-			* Cat body and legs
+			* Setup colors/stroke for Cat body and legs
 			*****************************/
 			Color catbod = new Color(197, 230, 223);	// Set color for body of cat
 			Color cateye = new Color(0, 144, 146);	// Set color for eye of catch
+			Color outline = new Color(0, 0, 0);	// Black outline
+			Stroke stroke = new BasicStroke(1.5f);	// Stroke for outline of cat/whiskers
+			double h = 30.0;	// Height for ellipse, can be adjusted and reused
+			double w = 40.0;	// Width for ellipse, can be adjusted and reused
 
 			/****************************
-			* Cat head, ears, eyes, and whiskers
+			* Setup and draw cat head, ears, eyes, and whiskers
 			*****************************/
+			// Back ear
+			Path2D.Double ear = new Path2D.Double();
+
+			ear.moveTo(195.0, 165.0);
+			ear.lineTo(187.0, 175.0);
+			ear.lineTo(200.0, 175.0);
+			ear.lineTo(195.0, 165.0);
+
+			g.setStroke(stroke);
+			g.setColor(outline);
+			g.draw(ear);
+			g.setColor(catbod);
+			g.fill(ear);
+
+			// Head
+			Ellipse2D.Double cathead = new Ellipse2D.Double(165.0, 170.0, w, h);
+			g.setColor(outline);
+			g.draw(cathead);
+			g.setColor(catbod);
+			g.fill(cathead);
+
+			// Eye
+			h = 5.0;
+			w = 6.0;
+			cathead = new Ellipse2D.Double(175.0, 175.0, w, h);
+			g.setColor(outline);
+			g.draw(cathead);
+			g.setColor(new Color(255, 255, 255));
+			g.fill(cathead);
+
+			// Iris
+			h = 4.0;
+			w = 4.0;
+			cathead = new Ellipse2D.Double(175.0, 175.8, w, h);
+			g.setColor(outline);
+			g.draw(cathead);
+			g.setColor(cateye);
+			g.fill(cathead);
+
+			// Front ear
+			ear = new Path2D.Double();
+
+			ear.moveTo(190.0, 165.0);
+			ear.lineTo(186.0, 175.0);
+			ear.lineTo(194.0, 175.0);
+			ear.lineTo(190.0, 165.0);
+
+			g.setStroke(stroke);
+			g.setColor(outline);
+			g.draw(ear);
+			g.setColor(catbod);
+			g.fill(ear);
+
+			// Whiskers
+			h = 30.0;	// For Arc2D
+			w = 35.0;	// For Arc2D
+			stroke = new BasicStroke(1.0f);
+			g.setStroke(stroke);
+			g.setColor(outline);
+			g.draw(new Arc2D.Double(150.0, 185.0, w, h, 90.0, 75.0, Arc2D.OPEN));
+			g.draw(new Arc2D.Double(155.0, 185.0, w, h, 90.0, 75.0, Arc2D.OPEN));
+			g.draw(new Arc2D.Double(160.0, 185.0, w, h, 90.0, 75.0, Arc2D.OPEN));
+
+			/****************************
+			* Setup and draw cat bod and legs
+			*****************************/
+			// Legs
+			stroke = new BasicStroke(5.0f);
+			g.setStroke(stroke);
+			g.setColor(outline);
+			g.draw(new Line2D.Double(210.0, 220.0, 165.0, 247.0));	// front legs
+			g.draw(new Line2D.Double(215.0, 220.0, 215.0, 257.0));
+			g.draw(new Line2D.Double(245.0, 218.0, 248.0, 258.0)); // back legs
+			g.draw(new Line2D.Double(254.0, 215.0, 260.0, 256.0));
+
+			// Paws
+			w = 15.0;	// height and width for paws are same to get circle
+			h = 15.0;
+			g.fill(new Ellipse2D.Double(159.0, 239.0, w, h));
+			g.fill(new Ellipse2D.Double(208.0, 255.0, w, h));
+			g.fill(new Ellipse2D.Double(240.0, 253.0, w, h));
+			g.fill(new Ellipse2D.Double(253.0, 253.0, w, h));
+
+			// Body
+			stroke = new BasicStroke(1.5f);
+			g.setStroke(stroke);
+			w = 80.0;
+			h = 55.0;
+			Ellipse2D.Double catbody = new Ellipse2D.Double(190.0, 180.0, w, h);
+			g.setColor(outline);
+			g.draw(catbody);
+			g.setColor(catbod);
+			g.fill(catbody);
+
 		}
 
 		// Draw all attributes related to the flowers
+		// and draw physcho flower
 		// Status = NOT STARTED
 		private void drawFlowers(Graphics2D g)
 		{
 			/****************************
 			* Setup and call drawDemFlowers
 			*****************************/
+			double w = 6.0;	// Adjustable width for stem
+			double h = 50.0;	// Adjustable height for stem
+			drawDemFlowers(g, 305.0, 155.0, w, h);
+			drawDemFlowers(g, 320.0, 147.0, w, h);
+			drawDemFlowers(g, 335.0, 158.0, w, h);
+			drawDemFlowers(g, 345.0, 167.0, w, h);
+
+			// Special flower boi
+			drawDemFlowers(g, 312.0, 175.0, w, h);
 		}
 
 		// Draw normal flowers given paremters to prevent clutter
-		private void drawDemFlowers(Graphics2D g)
+		private void drawDemFlowers(Graphics2D g, double x, double y,
+			double w, double h)
 		{
 			/****************************
 			* Draw allllll the flowers
 			*****************************/
+			Color stem = new Color(255, 201, 0);	// Color of stem of flower
+			Color flower = new Color(146, 151, 255);	// Color of petals
+			Stroke stroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
+				BasicStroke.JOIN_BEVEL, 0, new float[] {3, 2}, 0);	// Set dashed stroke
+
+			// Draw stem
+			g.setColor(stem);
+			g.fill(new Rectangle2D.Double(x, y, w, h));
+
+			// Draw petals
+			g.setColor(flower);
+			Path2D.Double petal = new Path2D.Double();
+			petal.moveTo(x + w/2.0, y - h/2.0);	// Top of petal
+			petal.lineTo(x - h/4.0, y - h/2.0 + h/4.0); // Left
+			petal.lineTo(x + w/2.0, y);	// Bottom
+			petal.lineTo(x + + 2*(w/2.0) + h/4.0, y - h/2.0 + h/4.0);	// Right
+			petal.lineTo(x + w/2.0, y - h/2.0);	// Back to top
+
+			g.setColor(flower);
+			g.fill(petal);
+			g.setStroke(stroke);
+			g.setColor(new Color(0, 0, 0));
+			g.draw(petal);
 		}
 
 		// Draw all attributes related to the background
@@ -296,8 +428,50 @@ public final class Drawing
 		private void drawBackground(Graphics2D g)
 		{
 			/****************************
-			* Setup background stuff and thangs
+			* Setup background colors and thangs
 			*****************************/
+			// Setup all colors that will be used in background
+			Color skytop = new Color(133, 191, 238); // Top of sky gradient
+			Color skybottom = new Color(228, 242, 255); // Bottom of sky gradient
+			Color dirtbrown = new Color(147, 129, 8); // Brown of dirt gradient
+			Color dirtpink = new Color(177, 84, 81); // Pink of dirt gradient
+			Color road = new Color(145, 145, 145); // Color of road
+			Color arrow = new Color(225, 251, 0); // Color of arrows on road
+			Color grass = new Color(0, 142, 0);	// Color of the diagonal grass
+			Stroke stroke = new BasicStroke(2.0f);	// Outline stroke for arrows
+
+			/****************************
+			* Setup and draw sky
+			*****************************/
+			GradientPaint sky = new GradientPaint(200, 0, skytop, 200, 175, skybottom);
+			Rectangle2D.Double skybox = new Rectangle2D.Double(0.0, 0.0, 400.0, 175.0);
+			g.setPaint(sky);
+			g.fill(skybox);
+
+			/****************************
+			* Setup and draw dirt
+			*****************************/
+			GradientPaint dirt = new GradientPaint(0, 200, dirtbrown, 65, 200, dirtpink, true);
+			Rectangle2D.Double dirtbox = new Rectangle2D.Double(0.0, 175.0, 400.0, 150.0);
+			g.setPaint(dirt);
+			g.fill(dirtbox);
+
+			/****************************
+			* Setup and draw grass
+			*****************************/
+
+
+			/****************************
+			* Setup and draw roads
+			*****************************/
+			Rectangle2D.Double roadbox = new Rectangle2D.Double(0.0, 325.0, 400.0, 95.0);
+			g.setColor(road);
+			g.fill(roadbox);
+
+			/****************************
+			* Setup and draw arrows on road
+			*****************************/
+
 		}
 
 		// Use this to load images (and make sure they're done loading). The
