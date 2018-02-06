@@ -59,15 +59,17 @@ public final class Drawing
 			* group taking up a method below. The groups are as follows:
 			* Text, Tree, Clouds, Cat-Ball, Flowers, Background
 			*****************************/
-
+			drawBackground(g);	// Draw background
 			drawText(g);	// Draw text "SO MUCH COLORRRR!"
 			drawTree(g);	// Draw tree, probably an oak-pine
 			drawClouds(g);	// Draw clouds, weather's a'changin
-			drawCatBall(g);	// Draw cat and ball, aka Oscar - Basketball Superstar
-			drawFlowers(g);	// Draw flowers, one normal and one psychadelic
-			drawBackground(g);	// Draw background, rest of the owl
+			drawBall(g);	// Draw ball
+			drawCat(g);	// Draw cat, aka Oscar - Basketball Superstar
+			drawFlowers(g);	// Draw flowers, one normal and one psychedelic
 
-			//(You also compile, test, and document me thoroughly.)
+			Image image = fullyLoadImage("sun.png");
+
+			g.drawImage(image, 280, 0, null);
 		}
 
 		// This method will draw all text in the drawing, including any graphics
@@ -80,6 +82,7 @@ public final class Drawing
 			String much = "much";
 			String colortext = "color!";
 	 		Font font = new Font("Serif", Font.PLAIN, 30); // Setup font
+			Stroke stroke = new BasicStroke(2.0f);
 
 			/****************************
 			* Draw "so"
@@ -89,10 +92,13 @@ public final class Drawing
 			g.setFont(font); // Set graphics font
 			g.drawString(so, 75, 100); // Draw "so" in relative position
 
+			// Draw underline
+			g.setStroke(stroke);
+			g.draw(new Line2D.Double(75.0, 105.0, 100.0, 105.0));
 			/****************************
 			* Draw "much" and box
 			*****************************/
-			Stroke stroke = new BasicStroke(1.0f);	// Setup stroke for rectangle
+			stroke = new BasicStroke(1.0f);	// Setup stroke for rectangle
 			FontMetrics fm = g.getFontMetrics(font);	// Get font measurements
 
 			// Get minimal bounding box of "much", as if it were drawn at the origin
@@ -143,17 +149,20 @@ public final class Drawing
 		}
 
 		// Draw all attributes related to the tree
-		// Status = NOT STARTED
+		// Status = DONE
 		private void drawTree(Graphics2D g)
 		{
+			/****************************
+			* Setup params for tree
+			*****************************/
 			Color trunkcolor = new Color(134, 98, 13);	// Create trunk color
-			Color treecolor = new Color(26, 150, 2);	// Create tree leaves color
+			Color treecolor = new Color(26, 250, 2, 90);	// Create tree leaves color
 			Color treeoutline = new Color(0, 78, 0);	// Color of tree leaf outline
 
 			/****************************
 			* Draw tree trunk
 			*****************************/
-			Stroke stroke = new BasicStroke(1.0f);	// Setup stroke for tree trunk
+			Stroke stroke = new BasicStroke(1.5f);	// Setup stroke for tree trunk
 
 			Rectangle2D.Double treetrunk =
 				new Rectangle2D.Double(40.0, 140.0, 10.0, 175.0);
@@ -172,34 +181,113 @@ public final class Drawing
 			g.setStroke(stroke);	// Set new graphics stroke
 			g.setColor(treeoutline);	// Set color to tree leaf outline
 
-			Path2D.Double trianglepath = new Path2D.Double(); //Setup trianble path
+			//Setup triangle path
+			Path2D.Double trianglepath = new Path2D.Double();
 			trianglepath.moveTo(45.0, 70.0);	// Start path here
 			trianglepath.lineTo(20.0, 200.0);
 			trianglepath.lineTo(70.0, 200.0);
 			trianglepath.lineTo(45.0, 70.0);
+			g.draw(trianglepath);
 
+			g.setColor(treecolor);
 			g.fill(trianglepath);
 		}
 
 		// Draw all attributes related to the clouds
-		// Status = NOT STARTED
+		// Status = DONE
 		private void drawClouds(Graphics2D g)
 		{
+			/****************************
+			* Setup params for cloud
+			*****************************/
+			Color cloudColor = new Color(183, 208, 229, 80);	// Set color of clouds with alpha
+			Color cloudOutline = new Color(161, 181, 198);
+			Stroke stroke = new BasicStroke(1.0f);	// Set stroke for cloud outline
+			double w = 60.0;	// Width of the Ellipse2D used to define the cloud
+			double h = 32.0; 	// Height of the Ellipse2D used to define the cloud
+			g.setStroke(stroke);	// Set stroke for cloud outline
 
+			/****************************
+			* Draw alllll the clouds
+			*****************************/
+			drawDemClouds(g, 65.0, 30.0, w, h, cloudColor, cloudOutline);
+			drawDemClouds(g, 55.0, 45.0, w, h, cloudColor, cloudOutline);
+			drawDemClouds(g, 45.0, 20.0, w, h, cloudColor, cloudOutline);
+			drawDemClouds(g, 80.0, 25.0, w, h, cloudColor, cloudOutline);
+			drawDemClouds(g, 90.0, 25.0, w, h, cloudColor, cloudOutline);
+			drawDemClouds(g, 85.0, 45.0, w, h, cloudColor, cloudOutline);
 		}
 
-		// Draw all attributes related to the cat and ball
-		// Status = NOT STARTED
-		private void drawCatBall(Graphics2D g)
+		// Draw clouds given parameters to prevent clutter
+		private void drawDemClouds(Graphics2D g, double x, double y, double w, double h, Color in, Color out)
 		{
+			/****************************
+			* Draw cloud given passed parameters
+			*****************************/
+			Ellipse2D.Double cloud = new Ellipse2D.Double(x, y, w, h);
+			g.setColor(out);
+			g.draw(cloud);
+			g.setColor(in);
+			g.fill(cloud);
+		}
 
+		// Draw all attributes related to the ball
+		// Status = DONE
+		private void drawBall(Graphics2D g)
+		{
+			/****************************
+			* Setup ball and draw ball
+			*****************************/
+			double h = 40.0;	// Height of bounding rectangle
+			double w = 40.0;	// Width of bounding rectangle
+			Color red = new Color(252, 54, 37);	// Lower left color
+			Color salmon = new Color(233, 142, 145); // Upper right color
+			Ellipse2D.Double ball = new Ellipse2D.Double(140.0, 225.0, w, h);	// Create ball
+			GradientPaint ballpaint = new GradientPaint(135, 230, red, 170, 210, salmon);	// Set gradient paint
+			g.setPaint(ballpaint);	// Set graphics gradient paint
+			g.fill(ball);	// Draw and fill ball
+
+			/****************************
+			* Setup ball shadow and draw ball shadow
+			*****************************/
+			h = 20.0;
+			w = 40.0;
+			Color ballshadow = new Color(117, 86, 18, 85);	// Set color for shadow with alpha
+			Ellipse2D.Double shadow = new Ellipse2D.Double(115.0, 265.0, w, h);	// Create shadow
+			g.setColor(ballshadow);
+			g.fill(shadow);
+		}
+
+		// Draw all attributes related to the cat
+		// Status = NOT STARTED
+		private void drawCat(Graphics2D g)
+		{
+			/****************************
+			* Cat body and legs
+			*****************************/
+			Color catbod = new Color(197, 230, 223);	// Set color for body of cat
+			Color cateye = new Color(0, 144, 146);	// Set color for eye of catch
+
+			/****************************
+			* Cat head, ears, eyes, and whiskers
+			*****************************/
 		}
 
 		// Draw all attributes related to the flowers
 		// Status = NOT STARTED
 		private void drawFlowers(Graphics2D g)
 		{
+			/****************************
+			* Setup and call drawDemFlowers
+			*****************************/
+		}
 
+		// Draw normal flowers given paremters to prevent clutter
+		private void drawDemFlowers(Graphics2D g)
+		{
+			/****************************
+			* Draw allllll the flowers
+			*****************************/
 		}
 
 		// Draw all attributes related to the background
@@ -207,7 +295,9 @@ public final class Drawing
 		// Status = NOT STARTED
 		private void drawBackground(Graphics2D g)
 		{
-
+			/****************************
+			* Setup background stuff and thangs
+			*****************************/
 		}
 
 		// Use this to load images (and make sure they're done loading). The
