@@ -18,11 +18,7 @@ package edu.ou.cs.hci.stages;
 //import java.lang.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import javax.swing.*;
-import edu.ou.cs.hci.resources.*;
-
-//******************************************************************************
 
 /**
  * The <CODE>BuildTest</CODE> class.<P>
@@ -30,38 +26,118 @@ import edu.ou.cs.hci.resources.*;
  * @author  Chris Weaver
  * @version %I%, %G%
  */
+
 public final class BuildTest
 {
-	//**********************************************************************
-	// Public Class Members
-	//**********************************************************************
-
+	//Public Class Members
 	private static final Font	FONT =
 		new Font(Font.SERIF, Font.ITALIC, 36);
 	private static final Color	FILL_COLOR = Color.YELLOW;
 	private static final Color	EDGE_COLOR = Color.RED;
 
-	//**********************************************************************
-	// Private Members
-	//**********************************************************************
-
-	// State (internal) variables
-	private static String		message;
-
-	//**********************************************************************
-	// Main
-	//**********************************************************************
-
+	//main
 	public static void main(String[] args)
 	{
-		message = "Build Test";	// Could use an arg for this
+		//creates the base JFrame on which everything will be displayed
+		JFrame			frame = new JFrame("FridgTrackr");
 
-		JFrame			frame = new JFrame("Build Test");
-		JPanel			panel = new HelloPanel(message);
+		//creates the 3 category panels
+		JPanel			recipes = new JPanel(new BorderLayout());
+		JPanel			fridge = new JPanel(new BorderLayout());
+		JPanel			groceries = new JPanel(new BorderLayout());
 
+		//adds a button to each of the 3 category panels so new data can e added
+		JButton			rAdd = new JButton("add");
+		JButton			fAdd = new JButton("add");
+		JButton			gAdd = new JButton("add");
+
+		//adds a title to each category panel
+		recipes.setBorder(BorderFactory.createTitledBorder("recipes"));
+		fridge.setBorder(BorderFactory.createTitledBorder("fridge"));
+		groceries.setBorder(BorderFactory.createTitledBorder("groceries"));
+
+		//sets the defualt size of the main window
 		frame.setBounds(50, 50, 600, 600);
 		frame.getContentPane().setLayout(new BorderLayout());
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
+
+		//creates the pane that will store the category tabs
+		JTabbedPane tabs = new JTabbedPane();
+		//sets icons for tabs
+		Icon fridgeIcon = new ImageIcon(BuildTest.class.getResource("refrigerator.png"));
+		Icon recipesIcon = new ImageIcon(BuildTest.class.getResource("contract.png"));
+		Icon groceriesIcon = new ImageIcon(BuildTest.class.getResource("groceries.png"));
+		//adds tabs to JTabbedPane
+		tabs.addTab("Fridge", fridgeIcon, fridge);
+		tabs.addTab("Recipes", recipesIcon, recipes);
+		tabs.addTab("Groceries", groceriesIcon, groceries);
+		//adds the JTabbedPane to the base pane
+		frame.getContentPane().add(tabs, BorderLayout.CENTER);
+
+		//creates the content of the fridge category panel
+		String[] colName = new String[] {"Name" ,"Amount", "Delete"};
+		Object[][] products = new Object[][] {
+                { "Apples" ,"15", "[x]" },
+                { "Oranges" ,"20", "[x]"},
+                { "Peaches" ,"10", "[x]"},
+							};
+		//creates a table to hold the fridge panel data
+    JTable fridgeTable = new JTable( products, colName );
+		//adds the data panel to the fridge category panel
+		fridge.add(new JScrollPane(fridgeTable));
+
+		//creates the content of the groceries category panel
+		String[] colName1 = new String[] {"Name" ,"Amount", "Delete"};
+		Object[][] products1 = new Object[][] {
+							 { "Apples" ,"15", "[x]" },
+							 { "Oranges" ,"20", "[x]"},
+							 { "Peaches" ,"10", "[x]"},
+						 };
+		//creates a table to hold the groceries panel data
+		JTable table1 = new JTable( products1, colName1 );
+		//adds the data panel to the fridge category panel
+		groceries.add(new JScrollPane(table1) );
+
+		//creates the content of the recipes category panel
+		String[] colName2 = new String[] {"Name","Delete"};
+    Object[][] products2 = new Object[][] {
+                { "Grilled Cheese", "[x]" },
+                { "Pizza", "[x]" },
+                { "Mac & Cheese", "[x]" },
+            };
+		//creates a table to hold the recipes panel data
+		JTable table2 = new JTable( products2, colName2);
+		//adds the data panel to the recipes category panel
+    recipes.add( new JScrollPane(table2));
+
+		//creates the filters
+		JPanel			filterPanel = new JPanel(new FlowLayout());
+		JCheckBox		favoritesBox = new JCheckBox();
+		JLabel			favoritesLabel = new JLabel("Favorites");
+		JCheckBox		expiredBox = new JCheckBox();
+		JLabel			expiredLabel = new JLabel("Expired");
+		JCheckBox		lowBox = new JCheckBox();
+		JLabel			lowLabel = new JLabel("Low Stock");
+		JCheckBox		leftoversBox = new JCheckBox();
+		JLabel			leftoversLabel = new JLabel("Leftovers");
+
+		//adds the filters to the filter panel
+		filterPanel.add(favoritesBox);
+		filterPanel.add(favoritesLabel);
+		filterPanel.add(expiredBox);
+		filterPanel.add(expiredLabel);
+		filterPanel.add(lowBox);
+		filterPanel.add(lowLabel);
+		filterPanel.add(leftoversBox);
+		filterPanel.add(leftoversLabel);
+		//adds the filter panel to the base frame
+		frame.getContentPane().add(filterPanel, BorderLayout.NORTH);
+
+    //adds the add buttons
+    fridge.add(fAdd, BorderLayout.PAGE_END);
+    recipes.add(rAdd, BorderLayout.PAGE_END);
+    groceries.add(gAdd, BorderLayout.PAGE_END);
+
+		//sets the base frame to visible & to end on exit
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -70,54 +146,8 @@ public final class BuildTest
 					System.exit(0);
 				}
 			});
-
-		ArrayList<String>	personaTitles =
-			Resources.getLines("personas/titles.txt");
 	}
 
-	//**********************************************************************
-	// Private Inner Classes
-	//**********************************************************************
-
-	private static final class HelloPanel extends JPanel
-	{
-		private final String	message;
-
-		public HelloPanel(String message)
-		{
-			this.message = ((message != null) ? message : "");
-		}
-
-		public HelloPanel()
-		{
-			this("");
-		}
-
-		public void	paintComponent(Graphics g)
-		{
-			FontMetrics	fm = g.getFontMetrics(FONT);
-			int			fw = fm.stringWidth(message);
-			int			fh = fm.getMaxAscent() + fm.getMaxDescent();
-			int			x = (getWidth() - fw) / 2;
-			int			y = (getHeight() - fh) / 2;
-			Rectangle		r = new Rectangle(x, y, fw + 4, fh + 1);
-
-			if (FILL_COLOR != null)
-			{
-				g.setColor(FILL_COLOR);
-				g.fillRect(r.x, r.y, r.width - 1, r.height - 1);
-			}
-
-			if (EDGE_COLOR != null)
-			{
-				g.setColor(EDGE_COLOR);
-				g.drawRect(r.x, r.y, r.width - 1, r.height - 1);
-
-				g.setFont(FONT);
-				g.drawString(message, r.x + 2, r.y + fm.getMaxAscent());
-			}
-		}
-	}
 }
 
 //******************************************************************************
