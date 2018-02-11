@@ -19,6 +19,8 @@ package edu.ou.cs.hci.stages;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.ArrayList;
+import edu.ou.cs.hci.resources.Resources;
 
 /**
  * The <CODE>BuildTest</CODE> class.<P>
@@ -29,17 +31,13 @@ import javax.swing.*;
 
 public final class BuildTest
 {
-	//Public Class Members
-	private static final Font	FONT =
-		new Font(Font.SERIF, Font.ITALIC, 36);
-	private static final Color	FILL_COLOR = Color.YELLOW;
-	private static final Color	EDGE_COLOR = Color.RED;
-
 	//main
 	public static void main(String[] args)
 	{
 		//creates the base JFrame on which everything will be displayed
 		JFrame			frame = new JFrame("FridgTrackr");
+
+		createScenarios();
 
 		//creates the 3 category panels
 		JPanel			recipes = new JPanel(new BorderLayout());
@@ -146,6 +144,64 @@ public final class BuildTest
 					System.exit(0);
 				}
 			});
+	}
+
+	public static void createScenarios()
+	{
+		//scenarios and personas JFrame
+		JFrame spFrame = new JFrame("Scenarios");
+
+		//sets the defualt size of the main window
+		spFrame.setBounds(700, 50, 600, 400);
+		spFrame.getContentPane().setLayout(new BorderLayout());
+
+		//get titles of scenarios from /resources/scenarios/titles.txt using
+		//Resources.java
+		ArrayList<String> sTitles = Resources.getLines("scenarios/titles.txt");
+		String[] sTitlesArray = new String[10];
+		sTitlesArray = sTitles.toArray(sTitlesArray);
+
+			//handle potential null error by displaying error message in JList
+			if (sTitlesArray[0] == null)
+			{
+				sTitlesArray[0] = "ERROR: No data found in provided path";
+			}
+
+		//create and populate scenarios title jlist for right side of split pane
+		//also ensure that JList is SINGLE_SELECTION
+		JList<String> scenarioTitle = new JList<String>(sTitlesArray);
+		scenarioTitle.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		//get descriptions of scenarios from /resources/scenarios/descriptions.txt
+		//using Resources.java
+		ArrayList<String> sDescription = Resources.getLines("scenarios/descriptions.txt");
+		String[] sDescriptionArray = new String[10];
+		sDescriptionArray = sDescription.toArray(sDescriptionArray);
+
+			//handle potential null error by displaying error message in JTextArea
+			if (sDescriptionArray[0] == null)
+			{
+				sDescriptionArray[0] = "ERROR: No data found in provided path";
+			}
+
+		//create non-editable text area for right side of split pane
+		//also ensure that JTextArea is not editable
+		JTextArea scenarioText = new JTextArea();
+		scenarioText.setEditable(false);
+
+		//create split pane
+		JSplitPane scenarioPane =
+			new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scenarioTitle, scenarioText);
+
+		//main panel
+		JPanel scenariosPanel = new JPanel(new BorderLayout());
+		scenariosPanel.add(scenarioPane, BorderLayout.CENTER);
+
+		//add dat stuff to da frame
+		spFrame.add(scenariosPanel, BorderLayout.CENTER);
+
+		spFrame.setVisible(true);
+		spFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 }
