@@ -257,16 +257,17 @@ public final class Stage3
 		JPanel q5 = new JPanel(new BorderLayout());
 
 		// Question 1
-		NumberFormat ageFormat = NumberFormat.getNumberInstance();
-		ageFormat.setMaximumIntegerDigits(3);
-		ageFormat.setMinimumIntegerDigits(1);
-		JFormattedTextField ageField = new JFormattedTextField(ageFormat);
+		// // Set format for entered text
+		// NumberFormat ageFormat = NumberFormat.getNumberInstance();
+		// ageFormat.setMaximumIntegerDigits(3);
+		// ageFormat.setMinimumIntegerDigits(1);
+		JTextField ageField = new JTextField(3);
 
 		JLabel ageLabel = new JLabel("Please enter your age: ");
 		ageLabel.setToolTipText("Enter age");
 
-		q1.add(ageLabel, BorderLayout.CENTER);
-		q1.add(ageField, BorderLayout.CENTER);
+		q1.add(ageLabel);
+		q1.add(ageField);
 		q1.setBorder(BorderFactory.createLineBorder(Color.black));
 		// Question 2
 
@@ -276,7 +277,7 @@ public final class Stage3
 
 		// Question 5
 
-		surveyFrame.add(q1, BorderLayout.CENTER);
+		surveyFrame.add(q1, BorderLayout.NORTH);
 
 		surveyFrame.setVisible(true);
 		surveyFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
