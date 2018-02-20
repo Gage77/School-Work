@@ -373,8 +373,8 @@ public final class Homework02
 		drawDatFence(gl, true, false, -0.32, height);
 
 		// Now draw the double plank fences
-		drawDatFence(gl, false, true, 0.30, height);
-		drawDatFence(gl, false, true, 0.46, height);
+		drawDatFence(gl, false, true, 0.29, height);
+		drawDatFence(gl, false, true, 0.45, height);
 		drawDatFence(gl, false, false, 0.91, height);
 	}
 
@@ -532,6 +532,9 @@ public final class Homework02
 
 		// Draw fancy house first
 		drawDatHouse(gl, true, false, -0.82, height);
+		// Draw brown houses next
+		drawDatHouse(gl, false, true, -0.05, height + 0.07);
+		drawDatHouse(gl, false, false, 0.6, height);
 	}
 
 	/****************************************
@@ -545,13 +548,6 @@ public final class Homework02
 	private void drawDatHouse(GL2 gl, boolean detailed, boolean hasStar,
 			double x, double y)
 	{
-		// Doorknob stuff
-		float theta = 2 * 3.1415926 / float(32);
-		float tangential_factor = tanf(theta);
-		float radial_factor = cosf(theta);
-		float dx = 0.01;
-		float dy = 0;
-
 		// Fancy green house
 		if (detailed)
 		{
@@ -642,22 +638,84 @@ public final class Homework02
 		}
 		else
 		{
+			// Draw Chimney
+			gl.glBegin(gl.GL_POLYGON);
+			gl.glColor3f(0.57647f, 0.0f, 0.0f);
+			gl.glVertex2d(x + 0.06, y + 0.45);
+			gl.glVertex2d(x + 0.06, y + 0.675);
+			gl.glVertex2d(x + 0.1, y + 0.675);
+			gl.glVertex2d(x + 0.1, y + 0.45);
+			gl.glEnd();
+			// Draw chimeny Lines
+			gl.glBegin(gl.GL_LINE_LOOP);
+			gl.glColor3f(0.0f, 0.0f, 0.0f);
+			gl.glVertex2d(x + 0.06, y + 0.45);
+			gl.glVertex2d(x + 0.06, y + 0.675);
+			gl.glVertex2d(x + 0.1, y + 0.675);
+			gl.glVertex2d(x + 0.1, y + 0.45);
+			gl.glEnd();
+
+			// Draw base house
+			gl.glBegin(gl.GL_POLYGON);
+			gl.glColor3f(0.56078f, 0.321568f, 0.03921f);
+			gl.glVertex2d(x, y);
+			gl.glVertex2d(x, y + 0.45);
+			gl.glVertex2d(x + 0.16, y + 0.675);
+			gl.glVertex2d(x + 0.32, y + 0.45);
+			gl.glVertex2d(x + 0.32, y);
+			gl.glEnd();
+			// Draw base house Lines
+			gl.glBegin(gl.GL_LINE_LOOP);
+			gl.glColor3f(0.0f, 0.0f, 0.0f);
+			gl.glVertex2d(x, y);
+			gl.glVertex2d(x, y + 0.45);
+			gl.glVertex2d(x + 0.16, y + 0.675);
+			gl.glVertex2d(x + 0.32, y + 0.45);
+			gl.glVertex2d(x + 0.32, y);
+			gl.glEnd();
+
+			// Draw door
+			gl.glBegin(gl.GL_POLYGON);
+			gl.glColor3f(0.8f, 0.56828f, 0.0f);
+			gl.glVertex2d(x + 0.01, y);
+			gl.glVertex2d(x + 0.01, y + 0.23);
+			gl.glVertex2d(x + 0.07, y + 0.23);
+			gl.glVertex2d(x + 0.07, y);
+			gl.glEnd();
+			// Draw door lines
+			gl.glBegin(gl.GL_LINE_LOOP);
+			gl.glColor3f(0.0f, 0.0f, 0.0f);
+			gl.glVertex2d(x + 0.01, y);
+			gl.glVertex2d(x + 0.01, y + 0.23);
+			gl.glVertex2d(x + 0.07, y + 0.23);
+			gl.glVertex2d(x + 0.07, y);
+			gl.glEnd();
+
 			// Draw star if house has star
 			if (hasStar)
 			{
-
+				gl.glBegin(gl.GL_POLYGON);
+				gl.glColor3f(1.0f, 1.0f, 0.0f);
+				gl.glEnd();
 			}
 			// Otherwise draw circle on door
 			else
 			{
-
+				gl.glBegin(gl.GL_POLYGON);
+				gl.glColor3f(1.0f, 1.0f, 0.56863f);
+				gl.glEnd();
 			}
 		}
 	}
 
 	private void drawDoorKnob(double x, double y, double r, int num_segments)
 	{
-		double theta = 2 * 3.1415926 / double(num_segnments);
+		// // Doorknob stuff
+		// double theta = 2.0 * 3.1415926 / 32.0;
+		// double tangential_factor = tanf(theta);
+		// double radial_factor = cosf(theta);
+		// double dx = 0.01;
+		// double dy = 0.0;
 	}
 
 	/****************************************
