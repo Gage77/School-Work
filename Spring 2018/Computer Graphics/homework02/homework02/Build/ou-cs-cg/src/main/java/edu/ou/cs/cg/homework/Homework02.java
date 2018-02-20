@@ -691,11 +691,99 @@ public final class Homework02
 			gl.glVertex2d(x + 0.07, y);
 			gl.glEnd();
 
+			// Draw first window
+			gl.glBegin(gl.GL_POLYGON);
+			gl.glColor3f(0.90588f, 0.8f, 0.90196f);
+			gl.glVertex2d(x + 0.13, y + 0.11);
+			gl.glVertex2d(x + 0.13, y + 0.22);
+			gl.glVertex2d(x + 0.19, y + 0.22);
+			gl.glVertex2d(x + 0.19, y + 0.11);
+			gl.glEnd();
+			// Draw first window line
+			gl.glBegin(gl.GL_LINE_LOOP);
+			gl.glColor3f(0.0f, 0.0f, 0.0f);
+			gl.glVertex2d(x + 0.13, y + 0.11);
+			gl.glVertex2d(x + 0.13, y + 0.22);
+			gl.glVertex2d(x + 0.19, y + 0.22);
+			gl.glVertex2d(x + 0.19, y + 0.11);
+			gl.glEnd();
+			// Draw first window inner Triangle
+			gl.glBegin(gl.GL_TRIANGLES);
+			gl.glColor3f(1.0f, 1.0f, 0.56863f);
+			gl.glVertex2d(x + 0.13, y + 0.11);
+			gl.glVertex2d(x + 0.16, y + 0.22);
+			gl.glVertex2d(x + 0.19, y + 0.11);
+			gl.glEnd();
+			// Draw first window inner triangle lines
+			gl.glBegin(gl.GL_LINE_LOOP);
+			gl.glColor3f(0.0f, 0.0f, 0.0f);
+			gl.glVertex2d(x + 0.13, y + 0.11);
+			gl.glVertex2d(x + 0.16, y + 0.22);
+			gl.glVertex2d(x + 0.19, y + 0.11);
+			gl.glEnd();
+			// Draw crosshatch on first window
+			gl.glBegin(gl.GL_LINES);
+			gl.glColor3f(0.0f, 0.0f, 0.0f);
+			gl.glVertex2d(x + 0.16, y + 0.11);	// vertical
+			gl.glVertex2d(x + 0.16, y + 0.22);
+			gl.glVertex2d(x + 0.13, y + 16.5);	// horizontal
+			gl.glVertex2d(x + 0.19, y + 16.5);
+			gl.glEnd();
+
+			// Draw second window
+			gl.glBegin(gl.GL_POLYGON);
+			gl.glColor3f(0.90588f, 0.8f, 0.90196f);
+			gl.glVertex2d(x + 0.21, y + 0.11);
+			gl.glVertex2d(x + 0.21, y + 0.22);
+			gl.glVertex2d(x + 0.27, y + 0.22);
+			gl.glVertex2d(x + 0.27, y + 0.11);
+			gl.glEnd();
+			// Draw second window line
+			gl.glBegin(gl.GL_LINE_LOOP);
+			gl.glColor3f(0.0f, 0.0f, 0.0f);
+			gl.glVertex2d(x + 0.21, y + 0.11);
+			gl.glVertex2d(x + 0.21, y + 0.22);
+			gl.glVertex2d(x + 0.27, y + 0.22);
+			gl.glVertex2d(x + 0.27, y + 0.11);
+			gl.glEnd();
+			// Draw second window inner Triangle
+			gl.glBegin(gl.GL_TRIANGLES);
+			gl.glColor3f(1.0f, 1.0f, 0.56863f);
+			gl.glVertex2d(x + 0.21, y + 0.11);
+			gl.glVertex2d(x + 0.24, y + 0.22);
+			gl.glVertex2d(x + 0.27, y + 0.11);
+			gl.glEnd();
+			// Draw second window inner triangle lines
+			gl.glBegin(gl.GL_LINE_LOOP);
+			gl.glColor3f(0.0f, 0.0f, 0.0f);
+			gl.glVertex2d(x + 0.21, y + 0.11);
+			gl.glVertex2d(x + 0.24, y + 0.22);
+			gl.glVertex2d(x + 0.27, y + 0.11);
+			gl.glEnd();
+			// Draw crosshatch on second window
+			gl.glBegin(gl.GL_LINES);
+			gl.glColor3f(0.0f, 0.0f, 0.0f);
+			gl.glVertex2d(x + 0.24, y + 0.11);	// vertical
+			gl.glVertex2d(x + 0.24, y + 0.22);
+			gl.glVertex2d(x + 0.21, y + 16.5);	// horizontal
+			gl.glVertex2d(x + 0.27, y + 16.5);
+			gl.glEnd();
+
 			// Draw star if house has star
 			if (hasStar)
 			{
 				gl.glBegin(gl.GL_POLYGON);
 				gl.glColor3f(1.0f, 1.0f, 0.0f);
+				gl.glVertex2d(x + 0.16, y + 0.625);	//a
+				gl.glVertex2d(x + 0.17, y + 0.575);
+				gl.glVertex2d(x + 0.20, y + 0.575);	//b
+				gl.glVertex2d(x + 0.178, y + 0.55);
+				gl.glVertex2d(x + 0.185, y + 0.525);	//c
+				gl.glVertex2d(x + 0.16, y + 515);
+				gl.glVertex2d(x + 0.135, y + 0.525); //d
+				gl.glVertex2d(x + 0.128, y + 0.55);
+				gl.glVertex2d(x + 0.12, y + 0.575); //e
+				gl.glVertex2d(x + 0.15, y + 0.575);
 				gl.glEnd();
 			}
 			// Otherwise draw circle on door
