@@ -21,7 +21,13 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.text.NumberFormat;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Hashtable;
+
 import edu.ou.cs.hci.resources.Resources;
 
 /**
@@ -247,34 +253,31 @@ public final class Stage3
 		JFrame surveyFrame = new JFrame("Survey");
 
 		//sets the defualt size of the main window
-		surveyFrame.setBounds(700, 50, 700, 700);
-		surveyFrame.getContentPane().setLayout(new GridLayout(5, 1));
+		surveyFrame.setBounds(700, 50, 700, 800);
+		surveyFrame.getContentPane().setLayout(new GridLayout(6, 1));
 
 		// Create panels for all 5 questions
-		JPanel q1 = new JPanel(new FlowLayout());
+		JPanel q1 = new JPanel(new GridLayout(1, 2));
 		JPanel q2 = new JPanel(new GridLayout(2, 1));
-		JPanel q3 = new JPanel(new FlowLayout());
-		JPanel q4 = new JPanel(new FlowLayout());
-		JPanel q5 = new JPanel(new FlowLayout());
+		JPanel q3 = new JPanel(new GridLayout(5, 2));
+		JPanel q4 = new JPanel(new GridLayout(1, 2));
+		JPanel q5 = new JPanel(new GridLayout(0, 1));
 
 		/************************************
-		* Question 1 - Text field
+		* Question 1 - Text field using JTextField
 		************************************/
-			// // Set format for entered text
-			// NumberFormat ageFormat = NumberFormat.getNumberInstance();
-			// ageFormat.setMaximumIntegerDigits(3);
-			// ageFormat.setMinimumIntegerDigits(1);
-			JTextField ageField = new JTextField(3);
+			// Setup text field for frustrations question
+			JTextField frustrationsField = new JTextField();
 
-			JLabel ageQuestion = new JLabel("Please enter your age: ");
-			ageQuestion.setToolTipText("Enter age");
+			// Setup label for frustrations question
+			JLabel frustrationsQuestion = new JLabel("<html>Please enter what frustrates you most<BR> about grocery shopping:</html>");
 
-			q1.add(ageQuestion);
-			q1.add(ageField);
+			q1.add(frustrationsQuestion);
+			q1.add(frustrationsField);
 			q1.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		/************************************
-		* Question 2 - Scale using
+		* Question 2 - Scale using JSlider
 		************************************/
 			// Setup parameters for slider
 			int sliderMin = 0;
@@ -314,22 +317,275 @@ public final class Stage3
 			q2.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		/************************************
-		* Question 3 -
+		* Question 3 - Non-mutually exclusive response using JCheckBoxes
 		************************************/
+			// Setup question label
+			JLabel nonMutualQuestion = new JLabel("<html>Of the stores listed below, select those<BR> that you visit relatively frequently:</html>");
+			JLabel emptyLabel = new JLabel("");
+
+			// Setup checkboxes for responses
+			JCheckBox box1 = new JCheckBox("Aldi");
+			JCheckBox box2 = new JCheckBox("Costco");
+			JCheckBox box3 = new JCheckBox("H-E-B");
+			JCheckBox box4 = new JCheckBox("Kroger");
+			JCheckBox box5 = new JCheckBox("Sam's Club");
+			JCheckBox box6 = new JCheckBox("Sprouts");
+			JCheckBox box7 = new JCheckBox("Target");
+			JCheckBox box8 = new JCheckBox("Trader Joes");
+			JCheckBox box9 = new JCheckBox("Walmart");
+			JCheckBox box10 = new JCheckBox("Whole Foods");
+
+			// Add question label at top
+			q3.add(nonMutualQuestion);
+			q3.add(emptyLabel);
+			// Add checkboxes below
+			q3.add(box1);
+			q3.add(box2);
+			q3.add(box3);
+			q3.add(box4);
+			q3.add(box5);
+			q3.add(box6);
+			q3.add(box7);
+			q3.add(box8);
+			q3.add(box9);
+			q3.add(box10);
+
+			// Add border to panel
+			q3.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		/************************************
-		* Question 4 -
+		* Question 4 - Small integer using JSpinner
 		************************************/
+			// Setup label for small interger question
+			JLabel smallIntQuestion = new JLabel("<html>Please give a rough estimate of how many<BR>items on average you keep in your<BR>fridge and pantry at any given time:</html>");
+
+			// Setup spinner model and spinner
+			SpinnerNumberModel bagModel = new SpinnerNumberModel(0/*default*/, 0/*min*/, 100/*max*/, 5/*incr.*/);
+			JSpinner smallIntSpinner = new JSpinner(bagModel);
+
+			// Add question label and spinner to panel
+			q4.add(smallIntQuestion);
+			q4.add(smallIntSpinner);
+
+			// Add border to panel
+			q4.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		/************************************
-		* Question 5 -
+		* Question 5 - Range using JRadioButtons
 		************************************/
+			// Setup label for range question
+			JLabel rangeQuestion = new JLabel("On average, how much time do you spend using a single app on your phone at a time?");
 
-		surveyFrame.add(q1);
-		surveyFrame.add(q2);
+			// Setup radio buttons with responses
+			JRadioButton range1 = new JRadioButton("< 0:30");
+			JRadioButton range2 = new JRadioButton("0:30 - 1:00");
+			JRadioButton range3 = new JRadioButton("1:00 - 1:30");
+			JRadioButton range4 = new JRadioButton("1:30 - 2:00");
+			JRadioButton range5 = new JRadioButton("2:00 - 2:30");
+			JRadioButton range6 = new JRadioButton("2:30 - 3:00");
+			JRadioButton range7 = new JRadioButton("> 3:00");
 
-		surveyFrame.setVisible(true);
-		surveyFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			// Create button group for JRadioButtons
+			ButtonGroup rangeButtons = new ButtonGroup();
+			rangeButtons.add(range1);
+			rangeButtons.add(range2);
+			rangeButtons.add(range3);
+			rangeButtons.add(range4);
+			rangeButtons.add(range5);
+			rangeButtons.add(range6);
+			rangeButtons.add(range7);
+
+			// Add question label to panel
+			q5.add(rangeQuestion);
+			// Add buttons to question panel
+			q5.add(range1);
+			q5.add(range2);
+			q5.add(range3);
+			q5.add(range4);
+			q5.add(range5);
+			q5.add(range6);
+			q5.add(range7);
+
+			// Add border to panel
+			q5.setBorder(BorderFactory.createLineBorder(Color.black));
+
+		/************************************
+		* Finish button
+		************************************/
+		JButton finish = new JButton("Finish");
+
+		ActionListener finishListener = new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				// Range question check
+				boolean rangeIsClicked = false;
+				String rangeAnswer = "";
+				if (range1.isSelected())
+				{
+					rangeAnswer = range1.getText();
+					rangeIsClicked = true;
+				}
+				else if (range2.isSelected())
+				{
+					rangeAnswer = range2.getText();
+					rangeIsClicked = true;
+				}
+				else if (range3.isSelected())
+				{
+					rangeAnswer = range3.getText();
+					rangeIsClicked = true;
+				}
+				else if (range4.isSelected())
+				{
+					rangeAnswer = range4.getText();
+					rangeIsClicked = true;
+				}
+				else if (range5.isSelected())
+				{
+					rangeAnswer = range5.getText();
+					rangeIsClicked = true;
+				}
+				else if (range6.isSelected())
+				{
+					rangeAnswer = range6.getText();
+					rangeIsClicked = true;
+				}
+				else if (range7.isSelected())
+				{
+					rangeAnswer = range7.getText();
+					rangeIsClicked = true;
+				}
+
+				// Non-mutually exlusive check
+				boolean selectIsClicked = false;
+				String selectAnswer = "";
+				if (box1.isSelected())
+				{
+					selectAnswer += box1.getText() + "\n";
+					selectIsClicked = true;
+				}
+				if (box2.isSelected())
+				{
+					selectAnswer += box2.getText() + "\n";
+					selectIsClicked = true;
+				}
+				if (box3.isSelected())
+				{
+					selectAnswer += box3.getText() + "\n";
+					selectIsClicked = true;
+				}
+				if (box4.isSelected())
+				{
+					selectAnswer += box4.getText() + "\n";
+					selectIsClicked = true;
+				}
+				if (box5.isSelected())
+				{
+					selectAnswer += box5.getText() + "\n";
+					selectIsClicked = true;
+				}
+				if (box6.isSelected())
+				{
+					selectAnswer += box6.getText() + "\n";
+					selectIsClicked = true;
+				}
+				if (box7.isSelected())
+				{
+					selectAnswer += box7.getText() + "\n";
+					selectIsClicked = true;
+				}
+				if (box8.isSelected())
+				{
+					selectAnswer += box8.getText() + "\n";
+					selectIsClicked = true;
+				}
+				if (box9.isSelected())
+				{
+					selectAnswer += box9.getText() + "\n";
+					selectIsClicked = true;
+				}
+				if (box10.isSelected())
+				{
+					selectAnswer += box10.getText() + "\n";
+					selectIsClicked = true;
+				}
+
+				// Get current value of spinner question
+				int spinnerVal = (Integer) smallIntSpinner.getValue();
+
+				// Get current slider value from slider question
+				int sliderVal = usefullnessSlider.getValue();
+				String sliderString = sliderTable.get(sliderVal).getText();
+
+				/************************************
+				* Final Write
+				************************************/
+				if (selectIsClicked && rangeIsClicked && !(frustrationsField.getText().isEmpty()))
+				{
+					BufferedWriter output = null;
+					try {
+						File file = new File("survey_results.txt");
+						output = new BufferedWriter(new FileWriter(file));
+
+						// Write text field answer
+						output.write(frustrationsQuestion.getText() + "\n");
+						output.write(frustrationsField.getText() + "\n\n");
+
+						// Write slider answer
+						output.write(" 5) How useful would an application that keeps "
+				        		+ "track of the items in your fridge and pantry and allows "
+				        		+ "you to set up reminders when you are running low on a "
+				        		+ "specific item be to you?\n");
+				    output.write(sliderString + "\n\n");
+
+						// Write checkbox answer
+						output.write(nonMutualQuestion.getText() + "\n");
+						output.write(selectAnswer + "\n\n");
+
+						// Write spinner answer
+						output.write(smallIntQuestion.getText() + "\n");
+						output.write(spinnerVal + "\n\n");
+
+						// Write radio button answer
+						output.write(rangeQuestion.getText() + "\n");
+						output.write(rangeAnswer + "\n\n");
+
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} finally {
+						if (output != null)
+						{
+							try {
+								output.close();
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						}
+					}
+
+					System.exit(0);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(surveyFrame, "Please answer all questions.");
+				}
+			}
+		};		finish.addActionListener(finishListener);
+
+		/************************************
+		* Add all JPanels to the survey frame
+		************************************/
+			surveyFrame.add(q1);
+			surveyFrame.add(q2);
+			surveyFrame.add(q3);
+			surveyFrame.add(q4);
+			surveyFrame.add(q5);
+			surveyFrame.add(finish);
+
+			surveyFrame.setVisible(true);
+			surveyFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	/*************************************
