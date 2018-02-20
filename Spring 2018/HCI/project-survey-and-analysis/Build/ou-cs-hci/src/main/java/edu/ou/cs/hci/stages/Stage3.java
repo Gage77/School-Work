@@ -18,50 +18,137 @@ package edu.ou.cs.hci.stages;
 //import java.lang.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import javax.swing.*;
-import edu.ou.cs.hci.resources.*;
-
-//******************************************************************************
+import java.util.ArrayList;
+import java.text.NumberFormat;
+import edu.ou.cs.hci.resources.Resources;
 
 /**
- * The <CODE>Stage3</CODE> class.<P>
+ * The <CODE>BuildTest</CODE> class.<P>
  *
  * @author  Chris Weaver
  * @version %I%, %G%
  */
+
 public final class Stage3
 {
-	//**********************************************************************
-	// Public Class Members
-	//**********************************************************************
-
+	//Public Class Members
 	private static final Font	FONT =
 		new Font(Font.SERIF, Font.ITALIC, 36);
 	private static final Color	FILL_COLOR = Color.YELLOW;
 	private static final Color	EDGE_COLOR = Color.RED;
 
-	//**********************************************************************
-	// Private Members
-	//**********************************************************************
-
-	// State (internal) variables
-	private static String		message;
-
-	//**********************************************************************
-	// Main
-	//**********************************************************************
-
+	//main
 	public static void main(String[] args)
 	{
-		message = "Questionnaire?";	// Could use an arg for this
+		//creates the base JFrame on which everything will be displayed
+		JFrame			frame = new JFrame("FridgTrackr");
 
-		JFrame			frame = new JFrame("Stage 3 - Survey & Analysis");
-		JPanel			panel = new HelloPanel(message);
+		//create the scenarios frame with relevant information. Comment
+		//out the below line to not generate Scenarios frame
+		createScenarios();
 
+		//create the survey frame with relevant questions.
+		//uncomment the following line to not show that frame.
+		createSurvey();
+
+		//creates the 3 category panels
+		JPanel			recipes = new JPanel(new BorderLayout());
+		JPanel			fridge = new JPanel(new BorderLayout());
+		JPanel			groceries = new JPanel(new BorderLayout());
+
+		//adds a button to each of the 3 category panels so new data can e added
+		JButton			rAdd = new JButton("add");
+		JButton			fAdd = new JButton("add");
+		JButton			gAdd = new JButton("add");
+
+		//adds a title to each category panel
+		recipes.setBorder(BorderFactory.createTitledBorder("recipes"));
+		fridge.setBorder(BorderFactory.createTitledBorder("fridge"));
+		groceries.setBorder(BorderFactory.createTitledBorder("groceries"));
+
+		//sets the defualt size of the main window
 		frame.setBounds(50, 50, 600, 600);
 		frame.getContentPane().setLayout(new BorderLayout());
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
+
+		//creates the pane that will store the category tabs
+		JTabbedPane tabs = new JTabbedPane();
+		//sets icons for tabs
+		Icon fridgeIcon = new ImageIcon(Stage3.class.getResource("refrigerator.png"));
+		Icon recipesIcon = new ImageIcon(Stage3.class.getResource("contract.png"));
+		Icon groceriesIcon = new ImageIcon(Stage3.class.getResource("groceries.png"));
+		//adds tabs to JTabbedPane
+		tabs.addTab("Fridge", fridgeIcon, fridge);
+		tabs.addTab("Recipes", recipesIcon, recipes);
+		tabs.addTab("Groceries", groceriesIcon, groceries);
+		//adds the JTabbedPane to the base pane
+		frame.getContentPane().add(tabs, BorderLayout.CENTER);
+
+		//creates the content of the fridge category panel
+		String[] colName = new String[] {"Name" ,"Amount", "Delete"};
+		Object[][] products = new Object[][] {
+                { "Apples" ,"15", "[x]" },
+                { "Oranges" ,"20", "[x]"},
+                { "Peaches" ,"10", "[x]"},
+							};
+		//creates a table to hold the fridge panel data
+    	JTable fridgeTable = new JTable( products, colName );
+		//adds the data panel to the fridge category panel
+		fridge.add(new JScrollPane(fridgeTable));
+
+		//creates the content of the groceries category panel
+		String[] colName1 = new String[] {"Name" ,"Amount", "Delete"};
+		Object[][] products1 = new Object[][] {
+							 { "Apples" ,"15", "[x]" },
+							 { "Oranges" ,"20", "[x]"},
+							 { "Peaches" ,"10", "[x]"},
+						 };
+		//creates a table to hold the groceries panel data
+		JTable table1 = new JTable( products1, colName1 );
+		//adds the data panel to the fridge category panel
+		groceries.add(new JScrollPane(table1) );
+
+		//creates the content of the recipes category panel
+		String[] colName2 = new String[] {"Name","Delete"};
+    	Object[][] products2 = new Object[][] {
+                { "Grilled Cheese", "[x]" },
+                { "Pizza", "[x]" },
+                { "Mac & Cheese", "[x]" },
+            };
+		//creates a table to hold the recipes panel data
+		JTable table2 = new JTable( products2, colName2);
+		//adds the data panel to the recipes category panel
+    	recipes.add( new JScrollPane(table2));
+
+		//creates the filters
+		JPanel			filterPanel = new JPanel(new FlowLayout());
+		JCheckBox		favoritesBox = new JCheckBox();
+		JLabel			favoritesLabel = new JLabel("Favorites");
+		JCheckBox		expiredBox = new JCheckBox();
+		JLabel			expiredLabel = new JLabel("Expired");
+		JCheckBox		lowBox = new JCheckBox();
+		JLabel			lowLabel = new JLabel("Low Stock");
+		JCheckBox		leftoversBox = new JCheckBox();
+		JLabel			leftoversLabel = new JLabel("Leftovers");
+
+		//adds the filters to the filter panel
+		filterPanel.add(favoritesBox);
+		filterPanel.add(favoritesLabel);
+		filterPanel.add(expiredBox);
+		filterPanel.add(expiredLabel);
+		filterPanel.add(lowBox);
+		filterPanel.add(lowLabel);
+		filterPanel.add(leftoversBox);
+		filterPanel.add(leftoversLabel);
+		//adds the filter panel to the base frame
+		frame.getContentPane().add(filterPanel, BorderLayout.NORTH);
+
+    	//adds the add buttons
+    	fridge.add(fAdd, BorderLayout.PAGE_END);
+    	recipes.add(rAdd, BorderLayout.PAGE_END);
+    	groceries.add(gAdd, BorderLayout.PAGE_END);
+
+		//sets the base frame to visible & to end on exit
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -70,60 +157,176 @@ public final class Stage3
 					System.exit(0);
 				}
 			});
-
-		//ArrayList<String>	personaTitles =
-		//	Resources.getLines("personas/titles.txt");
-
-		// This class is a renamed version of the BuildTest class. You can
-		// use it as the starter/main class that hooks into whatever code
-		// you've created in past stages. See the uncommented 'createScript'
-		// line in build.gradle to see how to make an executable that starts
-		// with a class like this one.
 	}
 
-	//**********************************************************************
-	// Private Inner Classes
-	//**********************************************************************
-
-	private static final class HelloPanel extends JPanel
+	/*************************************
+	*	Create scenarios frame with relavent information
+	* from /hci/resources/scenarios and
+	* /hci/resources/personas
+	*************************************/
+	public static void createScenarios()
 	{
-		private final String	message;
+		//scenarios and personas JFrame
+		JFrame spFrame = new JFrame("Scenarios");
 
-		public HelloPanel(String message)
-		{
-			this.message = ((message != null) ? message : "");
-		}
+		//sets the defualt size of the main window
+		spFrame.setBounds(700, 50, 600, 400);
+		spFrame.getContentPane().setLayout(new BorderLayout());
 
-		public HelloPanel()
-		{
-			this("");
-		}
-
-		public void	paintComponent(Graphics g)
-		{
-			FontMetrics	fm = g.getFontMetrics(FONT);
-			int			fw = fm.stringWidth(message);
-			int			fh = fm.getMaxAscent() + fm.getMaxDescent();
-			int			x = (getWidth() - fw) / 2;
-			int			y = (getHeight() - fh) / 2;
-			Rectangle		r = new Rectangle(x, y, fw + 4, fh + 1);
-
-			if (FILL_COLOR != null)
+		//get titles of scenarios from /resources/scenarios/titles.txt using
+		//Resources.java
+		ArrayList<String> sTitles = Resources.getLines("scenarios/titles.txt");
+			//handle potential null error by displaying error message in JList
+			if (sTitles.get(0) == null)
 			{
-				g.setColor(FILL_COLOR);
-				g.fillRect(r.x, r.y, r.width - 1, r.height - 1);
+				sTitles.set(0, "ERROR: No data found in provided path");
 			}
 
-			if (EDGE_COLOR != null)
+		//get descriptions of scenarios from /resources/scenarios/descriptions.txt
+		//using Resources.java
+		ArrayList<String> sDescription = Resources.getLines("scenarios/descriptions.txt");
+			//handle potential null error by displaying error message in JTextArea
+			if (sDescription.get(0) == null)
 			{
-				g.setColor(EDGE_COLOR);
-				g.drawRect(r.x, r.y, r.width - 1, r.height - 1);
-
-				g.setFont(FONT);
-				g.drawString(message, r.x + 2, r.y + fm.getMaxAscent());
+				sDescription.set(0, "ERROR: No data found in provided path");
 			}
+
+		//create and populate scenarios title jlist for right side of split pane
+		//also ensure that JList is SINGLE_SELECTION
+		JList<Scenario> scenarioTitle = new JList<Scenario>();
+		DefaultListModel<Scenario> model = new DefaultListModel<>();
+		scenarioTitle.setModel(model);
+		scenarioTitle.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		//create non-editable text area for right side of split pane
+		//also ensure that JTextArea is not editable
+		JTextArea scenarioText = new JTextArea();
+		scenarioText.setEditable(false);
+		scenarioText.setLineWrap(true);
+		scenarioText.setWrapStyleWord(true);
+
+		//populate JList scenarioTitle with Scenario objects created from
+		//ArrayList's sTitles and sDescription
+		for (int i = 0; i < sTitles.size(); i++)
+		{
+			model.addElement(new Scenario(sTitles.get(i), sDescription.get(i)));
+		}
+
+		//add listener to update stuff and thangs in the JTextArea
+		scenarioTitle.getSelectionModel().addListSelectionListener(e -> {
+			scenarioText.setText(null);
+			Scenario s = scenarioTitle.getSelectedValue();
+			scenarioText.append("Description: \n" + s.getDescription());
+		});
+
+		// Select the first title by default
+		scenarioTitle.setSelectedIndex(0);
+
+		//create split pane
+		JSplitPane scenarioPane =
+			new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(scenarioTitle), scenarioText);
+
+		//main panel
+		JPanel scenariosPanel = new JPanel(new BorderLayout());
+		scenariosPanel.add(scenarioPane, BorderLayout.CENTER);
+
+		//add dat stuff to da frame
+		spFrame.add(scenariosPanel, BorderLayout.CENTER);
+
+		spFrame.setVisible(true);
+		spFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+
+	/*************************************
+	*	Private class to hold Scenario information
+	* including the title and a relavent description
+	*************************************/
+	public static void createSurvey()
+	{
+		JFrame surveyFrame = new JFrame("Survey");
+
+		//sets the defualt size of the main window
+		surveyFrame.setBounds(700, 50, 600, 400);
+		surveyFrame.getContentPane().setLayout(new BorderLayout());
+
+		// Create panels for all 5 questions
+		JPanel q1 = new JPanel(new BorderLayout());
+		JPanel q2 = new JPanel(new BorderLayout());
+		JPanel q3 = new JPanel(new BorderLayout());
+		JPanel q4 = new JPanel(new BorderLayout());
+		JPanel q5 = new JPanel(new BorderLayout());
+
+		// Question 1
+		NumberFormat ageFormat = NumberFormat.getNumberInstance();
+		ageFormat.setMaximumIntegerDigits(3);
+		ageFormat.setMinimumIntegerDigits(1);
+		JFormattedTextField ageField = new JFormattedTextField(ageFormat);
+
+		JLabel ageLabel = new JLabel("Please enter your age: ");
+		ageLabel.setToolTipText("Enter age");
+
+		q1.add(ageLabel, BorderLayout.CENTER);
+		q1.add(ageField, BorderLayout.CENTER);
+		q1.setBorder(BorderFactory.createLineBorder(Color.black));
+		// Question 2
+
+		// Question 3
+
+		// Question 4
+
+		// Question 5
+
+		surveyFrame.add(q1, BorderLayout.CENTER);
+
+		surveyFrame.setVisible(true);
+		surveyFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+
+	/*************************************
+	*	Private class to hold Scenario information
+	* including the title and a relavent description
+	*************************************/
+	private static class Scenario
+	{
+		String title;	// Title of scenario
+		String description;	// Description of scenario
+
+		// Base constructor
+		public Scenario(String t, String d)
+		{
+			title = t;
+			description = d;
+		}
+
+		// Getters and setters
+		public String getTitle()
+		{
+			return title;
+		}
+
+		public String getDescription()
+		{
+			return description;
+		}
+
+		public void setTitle(String t)
+		{
+			title = t;
+		}
+
+		public void setDescription(String d)
+		{
+			description = d;
+		}
+
+		// Override toString method to just show the scenario title
+		@Override
+		public String toString()
+		{
+			return title;
 		}
 	}
+
 }
 
 //******************************************************************************
