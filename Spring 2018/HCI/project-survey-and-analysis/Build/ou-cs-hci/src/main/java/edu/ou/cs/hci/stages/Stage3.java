@@ -267,13 +267,16 @@ public final class Stage3
 		* Question 1 - Text field using JTextField
 		************************************/
 			// Setup text field for frustrations question
-			JTextField frustrationsField = new JTextField();
+			JTextArea frustrationsField = new JTextArea();
+			frustrationsField.setLineWrap(true);
+			frustrationsField.setWrapStyleWord(true);
+			JScrollPane frustrationScrollPane = new JScrollPane(frustrationsField);
 
 			// Setup label for frustrations question
 			JLabel frustrationsQuestion = new JLabel("<html>Please enter what frustrates you most<BR> about grocery shopping:</html>");
 
 			q1.add(frustrationsQuestion);
-			q1.add(frustrationsField);
+			q1.add(frustrationScrollPane);
 			q1.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		/************************************
@@ -524,6 +527,7 @@ public final class Stage3
 				************************************/
 				if (selectIsClicked && rangeIsClicked && !(frustrationsField.getText().isEmpty()))
 				{
+					// Write to txt file
 					BufferedWriter output = null;
 					try {
 						File file = new File("survey_results.txt");
@@ -534,7 +538,7 @@ public final class Stage3
 						output.write(frustrationsField.getText() + "\n\n");
 
 						// Write slider answer
-						output.write(" 5) How useful would an application that keeps "
+						output.write("How useful would an application that keeps "
 				        		+ "track of the items in your fridge and pantry and allows "
 				        		+ "you to set up reminders when you are running low on a "
 				        		+ "specific item be to you?\n");
@@ -565,7 +569,27 @@ public final class Stage3
 						}
 					}
 
-					System.exit(0);
+					//Print answers to console
+					System.out.println(frustrationsQuestion.getText() + "\n");
+					System.out.println(frustrationsField.getText() + "\n" + "========================" + "\n");
+
+					System.out.println("How useful would an application that keeps "
+									+ "track of the items in your fridge and pantry and allows "
+									+ "you to set up reminders when you are running low on a "
+									+ "specific item be to you?\n");
+					System.out.println(sliderString + "\n" + "========================" + "\n");
+
+					System.out.println(nonMutualQuestion.getText() + "\n");
+					System.out.println(selectAnswer + "\n" + "========================" + "\n");
+
+					System.out.println(smallIntQuestion.getText() + "\n");
+					System.out.println(spinnerVal + "\n" + "========================" + "\n");
+
+					System.out.println(rangeQuestion.getText() + "\n");
+					System.out.println(rangeAnswer + "\n" + "========================" + "\n");
+
+					// Close surveyFrame
+					surveyFrame.dispose();
 				}
 				else
 				{

@@ -1,0 +1,29 @@
+<html>Please enter what frustrates you most<BR> about grocery shopping:</html>
+
+When grocery shopping, I find that trying to remember exactly what I have in my fridge and pantry to be extremely frustrating, especially when I forget to bring a list with me.
+Additionally, I can never remember what items in my fridge are about to expire, so I never know when I need to restock.
+========================
+
+How useful would an application that keeps track of the items in your fridge and pantry and allows you to set up reminders when you are running low on a specific item be to you?
+
+Extremely Useful
+========================
+
+<html>Of the stores listed below, select those<BR> that you visit relatively frequently:</html>
+
+Sprouts
+Trader Joes
+Walmart
+Whole Foods
+
+========================
+
+<html>Please give a rough estimate of how many<BR>items on average you keep in your<BR>fridge and pantry at any given time:</html>
+
+50
+========================
+
+On average, how much time do you spend using a single app on your phone at a time?
+
+> 3:00
+========================
