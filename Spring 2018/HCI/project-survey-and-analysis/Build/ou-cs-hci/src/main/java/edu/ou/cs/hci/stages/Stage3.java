@@ -21,6 +21,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.text.NumberFormat;
+import java.util.Hashtable;
 import edu.ou.cs.hci.resources.Resources;
 
 /**
@@ -46,7 +47,7 @@ public final class Stage3
 
 		//create the scenarios frame with relevant information. Comment
 		//out the below line to not generate Scenarios frame
-		createScenarios();
+		//createScenarios();
 
 		//create the survey frame with relevant questions.
 		//uncomment the following line to not show that frame.
@@ -246,38 +247,86 @@ public final class Stage3
 		JFrame surveyFrame = new JFrame("Survey");
 
 		//sets the defualt size of the main window
-		surveyFrame.setBounds(700, 50, 600, 400);
-		surveyFrame.getContentPane().setLayout(new BorderLayout());
+		surveyFrame.setBounds(700, 50, 700, 700);
+		surveyFrame.getContentPane().setLayout(new GridLayout(5, 1));
 
 		// Create panels for all 5 questions
-		JPanel q1 = new JPanel(new BorderLayout());
-		JPanel q2 = new JPanel(new BorderLayout());
-		JPanel q3 = new JPanel(new BorderLayout());
-		JPanel q4 = new JPanel(new BorderLayout());
-		JPanel q5 = new JPanel(new BorderLayout());
+		JPanel q1 = new JPanel(new FlowLayout());
+		JPanel q2 = new JPanel(new GridLayout(2, 1));
+		JPanel q3 = new JPanel(new FlowLayout());
+		JPanel q4 = new JPanel(new FlowLayout());
+		JPanel q5 = new JPanel(new FlowLayout());
 
-		// Question 1
-		// // Set format for entered text
-		// NumberFormat ageFormat = NumberFormat.getNumberInstance();
-		// ageFormat.setMaximumIntegerDigits(3);
-		// ageFormat.setMinimumIntegerDigits(1);
-		JTextField ageField = new JTextField(3);
+		/************************************
+		* Question 1 - Text field
+		************************************/
+			// // Set format for entered text
+			// NumberFormat ageFormat = NumberFormat.getNumberInstance();
+			// ageFormat.setMaximumIntegerDigits(3);
+			// ageFormat.setMinimumIntegerDigits(1);
+			JTextField ageField = new JTextField(3);
 
-		JLabel ageLabel = new JLabel("Please enter your age: ");
-		ageLabel.setToolTipText("Enter age");
+			JLabel ageQuestion = new JLabel("Please enter your age: ");
+			ageQuestion.setToolTipText("Enter age");
 
-		q1.add(ageLabel);
-		q1.add(ageField);
-		q1.setBorder(BorderFactory.createLineBorder(Color.black));
-		// Question 2
+			q1.add(ageQuestion);
+			q1.add(ageField);
+			q1.setBorder(BorderFactory.createLineBorder(Color.black));
 
-		// Question 3
+		/************************************
+		* Question 2 - Scale using
+		************************************/
+			// Setup parameters for slider
+			int sliderMin = 0;
+			int sliderMax = 4;
+			int sliderInitial = 2;
+			// Create slider
+			JSlider usefullnessSlider = new JSlider(JSlider.HORIZONTAL, sliderMin,
+				sliderMax, sliderInitial);
 
-		// Question 4
+			// Create labels for slider in hashtable. Integer value corresponds to its
+			// cooresponding location on slider
+			Hashtable<Integer, JLabel> sliderTable = new Hashtable<Integer, JLabel>();
+			sliderTable.put(new Integer(0), new JLabel("Not Useful at All"));
+			sliderTable.put(new Integer(1), new JLabel("Kind of Useful"));
+			sliderTable.put(new Integer(2), new JLabel("Neutral"));
+			sliderTable.put(new Integer(3), new JLabel("Useful"));
+			sliderTable.put(new Integer(4), new JLabel("Extremely Useful"));
 
-		// Question 5
+			// Add labels to slider
+			usefullnessSlider.setLabelTable(sliderTable);
 
-		surveyFrame.add(q1, BorderLayout.NORTH);
+			// Make the slider more useful by adding the following
+			usefullnessSlider.setSnapToTicks(false);
+			usefullnessSlider.setMajorTickSpacing(10);
+			usefullnessSlider.setPaintLabels(true);
+
+			// Setup the question
+			String scaleQuestionText = "<html>How useful would an application that keeps "
+				+ "track of the items in your fridge and pantry <BR> and allows you to set up reminders "
+				+ "when you are running low on a specific item be to you?</html>";
+
+			JLabel scaleQuestion = new JLabel(scaleQuestionText);
+
+			// Add the question to the frame
+			q2.add(scaleQuestion);
+			q2.add(usefullnessSlider);
+			q2.setBorder(BorderFactory.createLineBorder(Color.black));
+
+		/************************************
+		* Question 3 -
+		************************************/
+
+		/************************************
+		* Question 4 -
+		************************************/
+
+		/************************************
+		* Question 5 -
+		************************************/
+
+		surveyFrame.add(q1);
+		surveyFrame.add(q2);
 
 		surveyFrame.setVisible(true);
 		surveyFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
