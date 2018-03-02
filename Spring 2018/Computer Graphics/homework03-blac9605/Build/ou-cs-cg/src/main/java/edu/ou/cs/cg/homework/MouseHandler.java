@@ -6,6 +6,7 @@
 /************************************************
 * Import necessary packages
 ************************************************/
+
 package edu.ou.cs.cg.homework;
 
 import java.awt.*;
@@ -18,16 +19,19 @@ import java.awt.geom.*;
 * @author Hunter Black
 * @version %I%, %G%
 ************************************************/
+
 public final class MouseHandler extends MouseAdapter
 {
   /************************************************
   * Private data
   ************************************************/
+
   private final View view;
 
   /************************************************
   * Constructor(s)
   ************************************************/
+  
   public MouseHandler(View view)
   {
     this.view = view;

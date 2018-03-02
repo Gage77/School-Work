@@ -6,6 +6,7 @@
 /************************************************
 * Import necessary packages
 ************************************************/
+
 package edu.ou.cs.cg.homework;
 
 import java.awt.*;
@@ -23,11 +24,13 @@ public final class KeyHandler extends KeyAdapter
   /************************************************
   * Private data
   ************************************************/
+
   private final View view;
 
   /************************************************
   * Constructor(s)
   ************************************************/
+
   public KeyHandler (View view)
   {
     this.view = view;

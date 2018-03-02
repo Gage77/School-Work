@@ -5,6 +5,7 @@
 /************************************************
 * Import necessary packages
 ************************************************/
+
 package edu.ou.cs.cg.homework;
 
 import java.awt.*;
@@ -25,11 +26,13 @@ import com.jogamp.opengl.util.gl2.GLUT;
 * @author Hunter Black
 * @version %I%, %G%
 ************************************************/
+
 public final class View implements GLEventListener
 {
   /************************************************
   * Public data
   ************************************************/
+
   public static final int DEFAULT_FPS = 60;
 
   public static final GLU		GLU = new GLU();
@@ -39,6 +42,7 @@ public final class View implements GLEventListener
   /************************************************
   * Private data
   ************************************************/
+
   private final GLCanvas canvas;
   private int w;
   private int h;
@@ -57,6 +61,7 @@ public final class View implements GLEventListener
   /************************************************
   * Constructor(s)
   ************************************************/
+
   public View(GLCanvas canvas)
   {
     this.canvas = canvas;
@@ -79,6 +84,7 @@ public final class View implements GLEventListener
   /************************************************
   * Getters and Setters
   ************************************************/
+
   public int	getWidth()
   {
     return w;
@@ -125,6 +131,7 @@ public final class View implements GLEventListener
   /************************************************
   * Public method(s)
   ************************************************/
+
   public Component	getComponent()
 	{
 		return (Component)canvas;
@@ -133,6 +140,7 @@ public final class View implements GLEventListener
   /************************************************
   * Override Method(s) (GLEventListener)
   ************************************************/
+
   public void		init(GLAutoDrawable drawable)
 	{
 		w = drawable.getWidth();
@@ -158,6 +166,7 @@ public final class View implements GLEventListener
   /************************************************
   * Private method(s) (Rendering)
   ************************************************/
+
   private void	update()
   {
     k++;									// Counters are useful, right?
@@ -194,6 +203,7 @@ public final class View implements GLEventListener
   /************************************************
   * Private method(s) (Coordinate System)
   ************************************************/
+
   private void	setLorenzProjection(GL2 gl)
 	{
 		GLU		glu = new GLU();
@@ -215,6 +225,7 @@ public final class View implements GLEventListener
   /************************************************
   * Private method(s) (Scene)
   ************************************************/
+
   // I faded the galaxy a bit to experiment with animation.
 	private void	drawLorenz(GL2 gl)
 	{
@@ -865,6 +876,7 @@ public final class View implements GLEventListener
   /************************************************
   * Private method(s) (Utility Functions)
   ************************************************/
+
   private void	setColor(GL2 gl, int r, int g, int b, int a)
 	{
 		gl.glColor4f(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
