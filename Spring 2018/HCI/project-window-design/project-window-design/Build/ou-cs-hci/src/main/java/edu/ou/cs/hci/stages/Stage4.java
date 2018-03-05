@@ -197,13 +197,25 @@ public final class Stage4
 		frame.setBounds(50, 50, 600, 600);
 		frame.getContentPane().setLayout(new BorderLayout());
 
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+		// Finish up the frame and show it
+		frame.setVisible(true);
+
+		// When closing the frame, ask the user where they want to save the information to
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e)
 			{
 				System.out.println("Window closing");
+
+				// Ask the user whether they want to save data
+				JOptionPane saveInfoPane = new JOptionPane(
+							"Would you like to save information\n"
+							+ "to a text file?", JOptionPane.QUESTION_MESSAGE,
+							JOptionPane.YES_NO_OPTION
+				);
+
+				// Make sure the program ends
+				System.exit(0);
 			}
 		});
 	}
