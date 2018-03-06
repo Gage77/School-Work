@@ -67,6 +67,9 @@ public final class View implements GLEventListener
   // Boolean value for whether the window shades are open or closed
   private boolean windowShadesOpen = true;
 
+  // Int to hold increase/decrease factor of fence height
+  private int fenceIncreaseFactor = 0;
+
   /************************************************
   * Constructor(s)
   ************************************************/
@@ -159,6 +162,12 @@ public final class View implements GLEventListener
       windowShadesOpen = true;
   }
 
+  // Set the increase factor for fences
+  public void setFenceIncreaseFactor(int factor)
+  {
+    fenceIncreaseFactor = fenceIncreaseFactor + factor;
+  }
+
   /************************************************
   * Public method(s)
   ************************************************/
@@ -231,7 +240,7 @@ public final class View implements GLEventListener
     drawSidewalk(gl);
     drawHopscotch(gl);
     drawHouses(gl);
-    drawFence(gl);
+    drawFence(gl, fenceIncreaseFactor);
     drawKite(gl);
   }
 
@@ -400,57 +409,58 @@ public final class View implements GLEventListener
 		gl.glVertex2i(dx + 30, dy +  0);
 	}
 
-	private void	drawFence(GL2 gl)
+	private void	drawFence(GL2 gl, int increaseBy)
 	{
-		drawFenceSlat(gl, false,    6, 132);
-		drawFenceSlat(gl, false,   30, 132);
-		drawFenceSlat(gl, false,   54, 132);
-		drawFenceSlat(gl, false,   78, 132);
+		drawFenceSlat(gl, false,    6, 132, increaseBy);
+		drawFenceSlat(gl, false,   30, 132, increaseBy);
+		drawFenceSlat(gl, false,   54, 132, increaseBy);
+		drawFenceSlat(gl, false,   78, 132, increaseBy);
 
-		drawFenceSlat(gl, false,  290, 132);
-		drawFenceSlat(gl, false,  314, 132);
-		drawFenceSlat(gl, false,  338, 132);
-		drawFenceSlat(gl, false,  362, 132);
+		drawFenceSlat(gl, false,  290, 132, increaseBy);
+		drawFenceSlat(gl, false,  314, 132, increaseBy);
+		drawFenceSlat(gl, false,  338, 132, increaseBy);
+		drawFenceSlat(gl, false,  362, 132, increaseBy);
 
-		drawFenceSlat(gl, false,  391, 132);
-		drawFenceSlat(gl, false,  415, 132);
-		drawFenceSlat(gl, false,  439, 132);
-		drawFenceSlat(gl, false,  463, 132);
+		drawFenceSlat(gl, false,  391, 132, increaseBy);
+		drawFenceSlat(gl, false,  415, 132, increaseBy);
+		drawFenceSlat(gl, false,  439, 132, increaseBy);
+		drawFenceSlat(gl, false,  463, 132, increaseBy);
 
-		drawFenceSlat(gl, false,  856, 132);
-		drawFenceSlat(gl, true,   880, 132);
-		drawFenceSlat(gl, false,  904, 132);
-		drawFenceSlat(gl, true,   928, 132);
-		drawFenceSlat(gl, false,  952, 132);
-		drawFenceSlat(gl, true,   976, 132);
-		drawFenceSlat(gl, false, 1000, 132);
-		drawFenceSlat(gl, true,  1024, 132);
+		drawFenceSlat(gl, false,  856, 132, increaseBy);
+		drawFenceSlat(gl, true,   880, 132, increaseBy);
+		drawFenceSlat(gl, false,  904, 132, increaseBy);
+		drawFenceSlat(gl, true,   928, 132, increaseBy);
+		drawFenceSlat(gl, false,  952, 132, increaseBy);
+		drawFenceSlat(gl, true,   976, 132, increaseBy);
+		drawFenceSlat(gl, false, 1000, 132, increaseBy);
+		drawFenceSlat(gl, true,  1024, 132, increaseBy);
 
-		drawFenceSlat(gl, false, 1224, 132);
-		drawFenceSlat(gl, true,  1248, 132);
+		drawFenceSlat(gl, false, 1224, 132, increaseBy);
+		drawFenceSlat(gl, true,  1248, 132, increaseBy);
 	}
 
 	// Draws a single fence slat with bottom left corner at dx, dy.
 	// If flip is true, the slat is higher on the left, else on the right.
-	private void	drawFenceSlat(GL2 gl, boolean flip, int dx, int dy)
+	private void	drawFenceSlat(GL2 gl, boolean flip, int dx, int dy,
+                              int increaseFactor)
 	{
 		gl.glBegin(GL2.GL_POLYGON);					// Fill the slat, in...
 
 		setColor(gl, 192, 192, 128);				// ...tan
-		gl.glVertex2i(dx +  0, dy +   0);
-		gl.glVertex2i(dx +  0, dy + (flip ? 112 : 102));
-		gl.glVertex2i(dx + 24, dy + (flip ? 102 : 112));
-		gl.glVertex2i(dx + 24, dy +   0);
+		gl.glVertex2i(dx +  0, dy +   0 + increaseFactor);
+		gl.glVertex2i(dx +  0, dy + (flip ? 112 : 102) + increaseFactor);
+		gl.glVertex2i(dx + 24, dy + (flip ? 102 : 112) + increaseFactor);
+		gl.glVertex2i(dx + 24, dy +   0 + increaseFactor);
 
 		gl.glEnd();
 
 		gl.glBegin(GL2.GL_LINE_LOOP);				// Edge the slat, in...
 
 		setColor(gl, 0, 0, 0);						// ...black
-		gl.glVertex2i(dx +  0, dy +   0);
-		gl.glVertex2i(dx +  0, dy + (flip ? 112 : 102));
-		gl.glVertex2i(dx + 24, dy + (flip ? 102 : 112));
-		gl.glVertex2i(dx + 24, dy +   0);
+		gl.glVertex2i(dx +  0, dy +   0 + increaseFactor);
+		gl.glVertex2i(dx +  0, dy + (flip ? 112 : 102) + increaseFactor);
+		gl.glVertex2i(dx + 24, dy + (flip ? 102 : 112) + increaseFactor);
+		gl.glVertex2i(dx + 24, dy +   0 + increaseFactor);
 
 		gl.glEnd();
 	}

@@ -55,10 +55,12 @@ public final class KeyHandler extends KeyAdapter
       // Increase height of fence
       case KeyEvent.VK_PAGE_UP:
         System.out.println("Page up pressed");
+        view.setFenceIncreaseFactor(1);
         break;
       // Decraese height of fence
       case KeyEvent.VK_PAGE_DOWN:
         System.out.println("Page down pressed");
+        view.setFenceIncreaseFactor(-1);
         break;
       /************************************************
       * Toggles whether window shades are open or closed
