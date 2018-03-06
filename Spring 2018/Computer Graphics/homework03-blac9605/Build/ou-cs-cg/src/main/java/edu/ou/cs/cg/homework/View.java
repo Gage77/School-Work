@@ -59,7 +59,10 @@ public final class View implements GLEventListener
   private int				k = 0;		// Just an animation counter
 
   // Collection of all stars and their locations in the sky
-  private ArrayList<Integer> stars = new ArrayList<Integer>();
+  //private ArrayList<Point2D> stars = new ArrayList<Point2D>();
+  // Currently selected star (index in stars array)
+  private int currentlySelectedStar = -1;
+  private int numStars = 4;
 
   /************************************************
   * Constructor(s)
@@ -133,6 +136,16 @@ public final class View implements GLEventListener
     canvas.repaint();
   }
 
+  // update the currently selected star
+  public void setSelectedStar()
+  {
+    if (currentlySelectedStar == -1)
+      currentlySelectedStar = 0;
+    else if (currentlySelectedStar == 4)
+      currentlySelectedStar = -1;
+    else
+      currentlySelectedStar++;
+  }
   /************************************************
   * Public method(s)
   ************************************************/
@@ -142,6 +155,10 @@ public final class View implements GLEventListener
 		return (Component)canvas;
 	}
 
+  public void drawSelectedStar()
+  {
+
+  }
   /************************************************
   * Override Method(s) (GLEventListener)
   ************************************************/
@@ -427,11 +444,62 @@ public final class View implements GLEventListener
 
 	private void	drawStars(GL2 gl)
 	{
-		drawStar(gl,  921, 720 -  29, 1.00f, false);
-		drawStar(gl, 1052, 720 -  61, 0.90f, false);
-		drawStar(gl, 1177, 720 -  49, 0.95f, false);
-		drawStar(gl, 1205, 720 - 153, 0.50f, false);
-		drawStar(gl, 1146, 720 - 254, 0.30f, false);
+    if (currentlySelectedStar == -1)
+    {
+      drawStar(gl,  921, 720 -  29, 1.00f, false);
+      drawStar(gl, 1052, 720 -  61, 0.90f, false);
+      drawStar(gl, 1177, 720 -  49, 0.95f, false);
+      drawStar(gl, 1205, 720 - 153, 0.50f, false);
+      drawStar(gl, 1146, 720 - 254, 0.30f, false);
+    }
+    else if (currentlySelectedStar == 0)
+    {
+      drawStar(gl,  921, 720 -  29, 1.00f, true);
+      drawStar(gl, 1052, 720 -  61, 0.90f, false);
+      drawStar(gl, 1177, 720 -  49, 0.95f, false);
+      drawStar(gl, 1205, 720 - 153, 0.50f, false);
+      drawStar(gl, 1146, 720 - 254, 0.30f, false);
+    }
+    else if (currentlySelectedStar == 1)
+    {
+      drawStar(gl,  921, 720 -  29, 1.00f, false);
+      drawStar(gl, 1052, 720 -  61, 0.90f, true);
+      drawStar(gl, 1177, 720 -  49, 0.95f, false);
+      drawStar(gl, 1205, 720 - 153, 0.50f, false);
+      drawStar(gl, 1146, 720 - 254, 0.30f, false);
+    }
+    else if (currentlySelectedStar == 2)
+    {
+      drawStar(gl,  921, 720 -  29, 1.00f, false);
+      drawStar(gl, 1052, 720 -  61, 0.90f, false);
+      drawStar(gl, 1177, 720 -  49, 0.95f, true);
+      drawStar(gl, 1205, 720 - 153, 0.50f, false);
+      drawStar(gl, 1146, 720 - 254, 0.30f, false);
+    }
+    else if (currentlySelectedStar == 3)
+    {
+      drawStar(gl,  921, 720 -  29, 1.00f, false);
+      drawStar(gl, 1052, 720 -  61, 0.90f, false);
+      drawStar(gl, 1177, 720 -  49, 0.95f, false);
+      drawStar(gl, 1205, 720 - 153, 0.50f, true);
+      drawStar(gl, 1146, 720 - 254, 0.30f, false);
+    }
+    else if (currentlySelectedStar == 4)
+    {
+      drawStar(gl,  921, 720 -  29, 1.00f, false);
+      drawStar(gl, 1052, 720 -  61, 0.90f, false);
+      drawStar(gl, 1177, 720 -  49, 0.95f, false);
+      drawStar(gl, 1205, 720 - 153, 0.50f, false);
+      drawStar(gl, 1146, 720 - 254, 0.30f, true);
+    }
+    else
+    {
+      drawStar(gl,  921, 720 -  29, 1.00f, false);
+      drawStar(gl, 1052, 720 -  61, 0.90f, false);
+      drawStar(gl, 1177, 720 -  49, 0.95f, false);
+      drawStar(gl, 1205, 720 - 153, 0.50f, false);
+      drawStar(gl, 1146, 720 - 254, 0.30f, false);
+    }
 	}
 
 	private void	drawStar(GL2 gl, int cx, int cy, float alpha, boolean redraw)
@@ -440,7 +508,9 @@ public final class View implements GLEventListener
 
     // Determine color on whether star is being colored through selecter
     if (redraw)
-      setColor(gl, 255, 165, 0, (int)(alpha * 255));  // Orange + alpha
+    {
+      setColor(gl, 255, 165, 0);  // Orange + alpha
+    }
     else
 		  setColor(gl, 255, 255, 0, (int)(alpha * 255));	// Yellow + alpha
 
@@ -449,8 +519,6 @@ public final class View implements GLEventListener
 		doStarVertices(gl, cx, cy, 8, 20.0, 8.0);
 		gl.glVertex2d(cx + 15 * Math.cos(theta), cy + 15 * Math.sin(theta));
 		gl.glEnd();
-
-    stars.add((Integer)stars.size() + 1);
 	}
 
 	private static final int		SIDES_MOON = 18;

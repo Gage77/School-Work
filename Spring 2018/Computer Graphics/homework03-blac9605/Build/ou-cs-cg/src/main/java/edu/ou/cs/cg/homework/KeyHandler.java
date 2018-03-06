@@ -142,6 +142,7 @@ public final class KeyHandler extends KeyAdapter
       ************************************************/
       case KeyEvent.VK_TAB:
         System.out.println("Tab key pressed");
+        view.setSelectedStar();
         break;
     }
   }
