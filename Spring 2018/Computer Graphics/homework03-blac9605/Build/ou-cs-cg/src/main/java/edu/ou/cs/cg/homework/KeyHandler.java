@@ -118,10 +118,12 @@ public final class KeyHandler extends KeyAdapter
       // Moves hopscotch towards the houses
       case KeyEvent.VK_UP:
         System.out.println("Up arrow pressed");
+        view.setHopscotchVerticalFactor(5);
         break;
       // Moves hopscotch away from the houses
       case KeyEvent.VK_DOWN:
         System.out.println("Down arrow pressed");
+        view.setHopscotchVerticalFactor(-5);
         break;
       /************************************************
       * Moves hopscotch squares left and right by 1.0
@@ -131,10 +133,18 @@ public final class KeyHandler extends KeyAdapter
       // Move hopscotch left
       case KeyEvent.VK_LEFT:
         System.out.println("Left arrow pressed");
+        if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
+          view.setHopscotchHorizontalFactor(-80);
+        else
+          view.setHopscotchHorizontalFactor(-8);
         break;
       // Move hopscotch right
       case KeyEvent.VK_RIGHT:
         System.out.println("right arrow pressed");
+        if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
+          view.setHopscotchHorizontalFactor(80);
+        else
+          view.setHopscotchHorizontalFactor(8);
         break;
       /************************************************
       * Selects one of the stars. Starting with no star

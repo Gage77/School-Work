@@ -70,6 +70,12 @@ public final class View implements GLEventListener
   // Int to hold increase/decrease factor of fence height
   private int fenceIncreaseFactor = 0;
 
+  // Int to hold increase/decrease factor of hopscotch up/down
+  private int verticalHopscotchFactor = 0;
+
+  // Int to hold increase/decrease factor for hopscotch left/right
+  private int horizontalHopscotchFactor = 0;
+
   /************************************************
   * Constructor(s)
   ************************************************/
@@ -168,6 +174,23 @@ public final class View implements GLEventListener
     fenceIncreaseFactor = fenceIncreaseFactor + factor;
   }
 
+  // Set the increase factor for sidewalk up/down
+  public void setHopscotchVerticalFactor(int factor)
+  {
+    if (verticalHopscotchFactor >= 15)
+      verticalHopscotchFactor = 10;
+    else if (verticalHopscotchFactor <= -70)
+      verticalHopscotchFactor = -65;
+    else
+      verticalHopscotchFactor = verticalHopscotchFactor + factor;
+    System.out.println(verticalHopscotchFactor);
+  }
+  // Set increase factor for sidewalk left/right
+  public void setHopscotchHorizontalFactor(int factor)
+  {
+    horizontalHopscotchFactor = horizontalHopscotchFactor + factor;
+  }
+
   /************************************************
   * Public method(s)
   ************************************************/
@@ -238,7 +261,7 @@ public final class View implements GLEventListener
     drawStars(gl);
     drawMoon(gl);
     drawSidewalk(gl);
-    drawHopscotch(gl);
+    drawHopscotch(gl, horizontalHopscotchFactor, verticalHopscotchFactor);
     drawHouses(gl);
     drawFence(gl, fenceIncreaseFactor);
     drawKite(gl);
@@ -367,28 +390,28 @@ public final class View implements GLEventListener
 		gl.glEnd();
 	}
 
-	private void	drawHopscotch(GL2 gl)
+	private void	drawHopscotch(GL2 gl, int vFactor, int hFactor)
 	{
-		drawHopscotchSquare(gl, 673, 720-622-25);
-		drawHopscotchSquare(gl, 704, 720-622-25);
-		drawHopscotchSquare(gl, 736, 720-622-25);
+		drawHopscotchSquare(gl, 673, 720-622-25, vFactor, hFactor);
+		drawHopscotchSquare(gl, 704, 720-622-25, vFactor, hFactor);
+		drawHopscotchSquare(gl, 736, 720-622-25, vFactor, hFactor);
 
-		drawHopscotchSquare(gl, 764, 720-634-25);
-		drawHopscotchSquare(gl, 770, 720-608-25);
+		drawHopscotchSquare(gl, 764, 720-634-25, vFactor, hFactor);
+		drawHopscotchSquare(gl, 770, 720-608-25, vFactor, hFactor);
 
-		drawHopscotchSquare(gl, 798, 720-620-25);
+		drawHopscotchSquare(gl, 798, 720-620-25, vFactor, hFactor);
 
-		drawHopscotchSquare(gl, 826, 720-631-25);
-		drawHopscotchSquare(gl, 832, 720-606-25);
+		drawHopscotchSquare(gl, 826, 720-631-25, vFactor, hFactor);
+		drawHopscotchSquare(gl, 832, 720-606-25, vFactor, hFactor);
 
-		drawHopscotchSquare(gl, 861, 720-620-25);
+		drawHopscotchSquare(gl, 861, 720-620-25, vFactor, hFactor);
 	}
 
-	private void	drawHopscotchSquare(GL2 gl, int dx, int dy)
+	private void	drawHopscotchSquare(GL2 gl, int dx, int dy, int vFactor, int hFactor)
 	{
 		setColor(gl, 255, 255, 192, 128);			// Taupe + alpha
 		gl.glBegin(GL2.GL_POLYGON);
-		doHopscotchLoop(gl, dx, dy);
+		doHopscotchLoop(gl, dx + vFactor, dy + hFactor);
 		gl.glEnd();
 
 		// This approach cuts off the corners
@@ -396,7 +419,7 @@ public final class View implements GLEventListener
 		setColor(gl, 229, 229, 229);				// Light gray
 		gl.glLineWidth(3);
 		gl.glBegin(GL2.GL_LINE_LOOP);
-		doHopscotchLoop(gl, dx, dy);
+		doHopscotchLoop(gl, dx + vFactor, dy + hFactor);
 		gl.glEnd();
 		gl.glLineWidth(1);
 	}
