@@ -64,6 +64,9 @@ public final class View implements GLEventListener
   private int currentlySelectedStar = -1;
   private int numStars = 4;
 
+  // Boolean value for whether the window shades are open or closed
+  private boolean windowShadesOpen = true;
+
   /************************************************
   * Constructor(s)
   ************************************************/
@@ -146,6 +149,16 @@ public final class View implements GLEventListener
     else
       currentlySelectedStar++;
   }
+
+  // Toggle window shades
+  public void setWindowShades()
+  {
+    if (windowShadesOpen)
+      windowShadesOpen = false;
+    else
+      windowShadesOpen = true;
+  }
+
   /************************************************
   * Public method(s)
   ************************************************/
@@ -868,39 +881,52 @@ public final class View implements GLEventListener
 		int		dx = 20;
 		int		dy = 20;
 
-		setColor(gl, 255, 255, 128);				// Light yellow
-		fillRect(gl, cx - dx, cy - dy, 2 * dx, 2 * dy);
+    // Toggle window shades open/closed
+    if (windowShadesOpen)
+    {
+      setColor(gl, 255, 255, 128);				// Light yellow
+      fillRect(gl, cx - dx, cy - dy, 2 * dx, 2 * dy);
+    }
 
 		if (shade)
 			setColor(gl, 224, 224, 224);			// Light gray
 		else
 			setColor(gl, 224, 192, 224);			// Light pink
 
-		gl.glBegin(GL2.GL_POLYGON);					// Left shade fill
-		gl.glVertex2i(cx - dx, cy - dy);
-		gl.glVertex2i(cx - dx, cy + dy);
-		gl.glVertex2i(cx     , cy + dy);
-		gl.glEnd();
+    // Draw open window
+    if (windowShadesOpen)
+    {
+      gl.glBegin(GL2.GL_POLYGON);					// Left shade fill
+      gl.glVertex2i(cx - dx, cy - dy);
+      gl.glVertex2i(cx - dx, cy + dy);
+      gl.glVertex2i(cx     , cy + dy);
+      gl.glEnd();
 
-		gl.glBegin(GL2.GL_POLYGON);					// Right shade fill
-		gl.glVertex2i(cx     , cy + dy);
-		gl.glVertex2i(cx + dx, cy + dy);
-		gl.glVertex2i(cx + dx, cy - dy);
-		gl.glEnd();
+      gl.glBegin(GL2.GL_POLYGON);					// Right shade fill
+      gl.glVertex2i(cx     , cy + dy);
+      gl.glVertex2i(cx + dx, cy + dy);
+      gl.glVertex2i(cx + dx, cy - dy);
+      gl.glEnd();
 
-		setColor(gl, 0, 0, 0);						// Black
+      setColor(gl, 0, 0, 0);						// Black
 
-		gl.glBegin(GL2.GL_LINE_LOOP);				// Left shade edge
-		gl.glVertex2i(cx - dx, cy - dy);
-		gl.glVertex2i(cx - dx, cy + dy);
-		gl.glVertex2i(cx     , cy + dy);
-		gl.glEnd();
+      gl.glBegin(GL2.GL_LINE_LOOP);				// Left shade edge
+      gl.glVertex2i(cx - dx, cy - dy);
+      gl.glVertex2i(cx - dx, cy + dy);
+      gl.glVertex2i(cx     , cy + dy);
+      gl.glEnd();
 
-		gl.glBegin(GL2.GL_LINE_LOOP);				// Right shade edge
-		gl.glVertex2i(cx     , cy + dy);
-		gl.glVertex2i(cx + dx, cy + dy);
-		gl.glVertex2i(cx + dx, cy - dy);
-		gl.glEnd();
+      gl.glBegin(GL2.GL_LINE_LOOP);				// Right shade edge
+      gl.glVertex2i(cx     , cy + dy);
+      gl.glVertex2i(cx + dx, cy + dy);
+      gl.glVertex2i(cx + dx, cy - dy);
+      gl.glEnd();
+    }
+    // Draw closed window
+    else
+    {
+      fillRect(gl, cx - dx, cy - dy, 2 * dx, 2 * dy);
+    }
 
 		setColor(gl, 0, 0, 0);						// Black
 
@@ -935,7 +961,7 @@ public final class View implements GLEventListener
 		gl.glEnd();
 	}
 
-	private void	drawDoorWindow(GL2 gl, int cx, int cy)
+  	private void	drawDoorWindow(GL2 gl, int cx, int cy)
 	{
 		double	theta = 0.5 * Math.PI;
 

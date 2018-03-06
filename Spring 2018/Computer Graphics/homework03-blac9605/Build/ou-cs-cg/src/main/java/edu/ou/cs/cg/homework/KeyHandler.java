@@ -65,6 +65,7 @@ public final class KeyHandler extends KeyAdapter
       ************************************************/
       case KeyEvent.VK_W:
         System.out.println("W key pressed");
+        view.setWindowShades();
         break;
       /************************************************
       * Changes number of panels on each side of kite,
