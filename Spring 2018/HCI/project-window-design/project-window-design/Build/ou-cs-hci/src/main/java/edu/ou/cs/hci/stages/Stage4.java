@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Hashtable;
+import javax.swing.border.EmptyBorder;
 
 import edu.ou.cs.hci.resources.Resources;
 
@@ -197,7 +198,199 @@ public final class Stage4
 		frame.setBounds(50, 50, 600, 600);
 		frame.getContentPane().setLayout(new BorderLayout());
 
+		/******************************
+		* Setup the top panel with filter buttons,
+		* and add the add buttons and logo
+		******************************/
+		// Create the top level panel
+		JPanel topPanel = new JPanel(new BorderLayout());
 
+		// Add the logo to the top left corner of the top panel
+		JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		Icon logoIcon = new ImageIcon(Stage4.class.getResource("logo.png"));
+		JLabel logo = new JLabel();
+		logo.setIcon(logoIcon);
+		logoPanel.add(logo);
+		JLabel logoText = new JLabel("<html>Fridg<br/>Trackr</html>");
+		logoText.setFont(new Font("Serif", Font.BOLD, 32));
+		logoPanel.add(logoText);
+		topPanel.add(logoPanel, BorderLayout.LINE_START);
+
+		// Create filter buttons (JCheckBoxes)
+		// Setup panel for filter buttons
+		JPanel			filterPanel = new JPanel();
+		filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.Y_AXIS));
+		// Create filter buttons
+		JCheckBox		favoritesBox = new JCheckBox("Favorites");
+		favoritesBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				if (favoritesBox.isSelected())
+					System.out.println("Favorites filter button [selected]");
+				else
+					System.out.println("Favorites filter button [un-selected]");
+			}
+		});
+
+		JCheckBox		expiredBox = new JCheckBox("Expired");
+		expiredBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				if (expiredBox.isSelected())
+					System.out.println("Expired filter button [selected]");
+				else
+					System.out.println("Expired filter button [un-selected]");
+			}
+		});
+
+		JCheckBox		lowBox = new JCheckBox("Low Stock");
+		lowBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				if (lowBox.isSelected())
+					System.out.println("Low stock filter button [selected]");
+				else
+					System.out.println("Low stock filter button [un-selected]");
+			}
+		});
+
+		JCheckBox		leftoversBox = new JCheckBox("Leftovers");
+		leftoversBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				if (leftoversBox.isSelected())
+					System.out.println("Leftovers filter button [selected]");
+				else
+					System.out.println("Leftovers filter button [un-selected]");
+			}
+		});
+
+
+		//adds the filters to the filter panel and filter label
+		filterPanel.add(new JLabel("Filter Options"));
+		filterPanel.add(favoritesBox);
+		filterPanel.add(expiredBox);
+		filterPanel.add(lowBox);
+		filterPanel.add(leftoversBox);
+		filterPanel.setBorder(new EmptyBorder(0, 80, 0, 20));
+
+		//adds the filter panel to the base frame to the topPanel
+		logoPanel.add(filterPanel);
+		// Add to logo panel. Note that logo and filter buttons are grouped
+		topPanel.add(logoPanel, BorderLayout.LINE_START);
+
+		// Create add button
+		JPanel addItemPanel = new JPanel();
+		JButton addItem = new JButton("+");
+		addItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println("Add item button pressed");
+			}
+		});
+		addItemPanel.add(addItem);
+		topPanel.add(addItemPanel, BorderLayout.LINE_END);
+
+		frame.getContentPane().add(topPanel, BorderLayout.NORTH);
+
+		/*************************************
+		*	Create the main info panel that will contain
+		* a list of all items, as well as buttons to delete
+		* items, all within a JList and JScrollPane
+		*************************************/
+		//creates the 3 category panels
+		JPanel			recipes = new JPanel(new BorderLayout());
+		JPanel			fridge = new JPanel(new BorderLayout());
+		JPanel			groceries = new JPanel(new BorderLayout());
+
+		//adds a title to each category panel
+		recipes.setBorder(BorderFactory.createTitledBorder("Recipes"));
+		fridge.setBorder(BorderFactory.createTitledBorder("Fridge"));
+		groceries.setBorder(BorderFactory.createTitledBorder("Groceries"));
+
+		//creates the pane that will store the category tabs
+		JTabbedPane tabs = new JTabbedPane();
+		tabs.addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent e)
+			{
+				System.out.println(tabs.getTitleAt(tabs.indexAtLocation(e.getX(), e.getY())) + " tab selected");
+			}
+		});
+		//sets icons for tabs
+		Icon fridgeIcon = new ImageIcon(Stage4.class.getResource("refrigerator.png"));
+		Icon recipesIcon = new ImageIcon(Stage4.class.getResource("contract.png"));
+		Icon groceriesIcon = new ImageIcon(Stage4.class.getResource("groceries.png"));
+		//adds tabs to JTabbedPane
+		tabs.addTab("Fridge", fridgeIcon, fridge);
+		tabs.addTab("Recipes", recipesIcon, recipes);
+		tabs.addTab("Groceries", groceriesIcon, groceries);
+		//adds the JTabbedPane to the base pane
+		frame.getContentPane().add(tabs, BorderLayout.CENTER);
+
+		//creates the content of the fridge category panel
+		String[] colName = new String[] {"Name" ,"Amount", "Delete"};
+		Object[][] products = new Object[][] {
+                { "Apples" ,"15", "[x]" },
+                { "Oranges" ,"20", "[x]"},
+                { "Peaches" ,"10", "[x]"},
+							};
+		//creates a table to hold the fridge panel data
+    JTable fridgeTable = new JTable( products, colName );
+		fridgeTable.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseClicked(java.awt.event.MouseEvent e)
+			{
+				int row = fridgeTable.rowAtPoint(e.getPoint());
+				int col = fridgeTable.columnAtPoint(e.getPoint());
+				System.out.println(fridgeTable.getValueAt(row, col));
+			}
+		});
+		//adds the data panel to the fridge category panel
+		fridge.add(new JScrollPane(fridgeTable));
+
+		//creates the content of the groceries category panel
+		String[] colName1 = new String[] {"Name" ,"Amount", "Delete"};
+		Object[][] products1 = new Object[][] {
+							 { "Apples" ,"15", "[x]" },
+							 { "Oranges" ,"20", "[x]"},
+							 { "Peaches" ,"10", "[x]"},
+						 };
+		//creates a table to hold the groceries panel data
+		JTable table1 = new JTable( products1, colName1 );
+		table1.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e)
+			{
+				int row = table1.rowAtPoint(e.getPoint());
+				int col = table1.columnAtPoint(e.getPoint());
+				System.out.println(table1.getValueAt(row, col));
+			}
+		});
+		//adds the data panel to the fridge category panel
+		groceries.add(new JScrollPane(table1) );
+
+		//creates the content of the recipes category panel
+		String[] colName2 = new String[] {"Name","Delete"};
+    	Object[][] products2 = new Object[][] {
+                { "Grilled Cheese", "[x]" },
+                { "Pizza", "[x]" },
+                { "Mac & Cheese", "[x]" },
+            };
+		//creates a table to hold the recipes panel data
+		JTable table2 = new JTable( products2, colName2);
+		table2.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e)
+			{
+				int row = table2.rowAtPoint(e.getPoint());
+				int col = table2.columnAtPoint(e.getPoint());
+				System.out.println(table2.getValueAt(row, col));
+			}
+		});
+		//adds the data panel to the recipes category panel
+    recipes.add( new JScrollPane(table2));
+
+		/******************************
+		* Do some finishing up, show the frame,
+		* and handle what happens when closing the frame
+		******************************/
 		// Finish up the frame and show it
 		frame.setVisible(true);
 
@@ -205,15 +398,135 @@ public final class Stage4
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e)
 			{
-				System.out.println("Window closing");
+				// Create a file chooser for the location of where to save info
+				JFileChooser fc = new JFileChooser();
+				fc.showSaveDialog(frame);
 
-				// Ask the user whether they want to save data
-				JOptionPane saveInfoPane = new JOptionPane(
-							"Would you like to save information\n"
-							+ "to a text file?", JOptionPane.QUESTION_MESSAGE,
-							JOptionPane.YES_NO_OPTION
-				);
+				// Try saving using bufferedwriter
+				BufferedWriter bw = null;
+				try {
+					File file = new File(fc.getSelectedFile()+".txt");
+					bw = new BufferedWriter(new FileWriter(file));
 
+					// Write necessary information
+					// favorites checkbox
+					if (favoritesBox.isSelected())
+					{
+						bw.write("Favorites checkbox [selected]\n");
+						bw.newLine();
+					}
+					else
+					{
+						bw.write("Favorites checkbox [not selected]\n");
+						bw.newLine();
+					}
+
+					if (expiredBox.isSelected())
+					{
+						bw.write("Expired checkbox [selected]\n");
+						bw.newLine();
+					}
+					else
+					{
+						bw.write("Expired checkbox [not selected]\n");
+						bw.newLine();
+					}
+
+					if (lowBox.isSelected())
+					{
+						bw.write("Low stock checkbox [selected]\n");
+						bw.newLine();
+					}
+					else
+					{
+						bw.write("Low stock checkbox [not selected]\n");
+						bw.newLine();
+					}
+
+					if (leftoversBox.isSelected())
+					{
+						bw.write("Leftovers checkbox [selected]\n");
+						bw.newLine();
+					}
+					else
+					{
+						bw.write("Leftovers checkbox [not selected]\n");
+						bw.newLine();
+					}
+					bw.newLine();
+
+					bw.write("Add button\n");
+					bw.newLine();
+
+					bw.write("Tabs: Fridge, Recipes, and Groceries\n");
+					// Fridge tab selected
+					if (tabs.getSelectedIndex() == 0)
+					{
+						bw.write("Fridge tab selected\n");
+						bw.newLine();
+					}
+					// Recipes tab selected
+					else if (tabs.getSelectedIndex() == 1)
+					{
+						bw.write("Recipes tab selected\n");
+						bw.newLine();
+					}
+					else
+					{
+						bw.write("Groceries tab selected\n");
+						bw.newLine();
+					}
+					bw.newLine();
+
+					// Print all table values
+					bw.write("Fridge Table Items:\n");
+					bw.newLine();
+					for (int row = 0; row < fridgeTable.getRowCount(); row++)
+					{
+						for (int col = 0; col < fridgeTable.getColumnCount(); col++)
+						{
+							bw.write(fridgeTable.getColumnName(col) + ": ");
+							bw.write(fridgeTable.getValueAt(row, col).toString());
+							bw.newLine();
+						}
+					}
+
+					bw.newLine();
+					bw.write("Recipes Table Items:\n");
+					bw.newLine();
+					for (int row = 0; row < table1.getRowCount(); row++)
+					{
+						for (int col = 0; col < table1.getColumnCount(); col++)
+						{
+							bw.write(table1.getColumnName(col) + ": ");
+							bw.write(table1.getValueAt(row, col).toString());
+							bw.newLine();
+						}
+					}
+
+					bw.write("Groceries Table Items:\n");
+					bw.newLine();
+					for (int row = 0; row < table2.getRowCount(); row++)
+					{
+						for (int col = 0; col < table2.getColumnCount(); col++)
+						{
+							bw.write(table2.getColumnName(col) + ": ");
+							bw.write(table2.getValueAt(row, col).toString());
+							bw.newLine();
+						}
+					}
+
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} finally {
+					if (bw != null) {
+						try {
+							bw.close();
+						} catch (IOException e2) {
+							e2.printStackTrace();
+						}
+					}
+				}
 				// Make sure the program ends
 				System.exit(0);
 			}

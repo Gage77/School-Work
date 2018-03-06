@@ -1,0 +1,46 @@
+Favorites checkbox [selected]
+
+Expired checkbox [not selected]
+
+Low stock checkbox [selected]
+
+Leftovers checkbox [selected]
+
+
+Add button
+
+Tabs: Fridge, Recipes, and Groceries
+Groceries tab selected
+
+
+Fridge Table Items:
+
+Name: Apples
+Amount: 15
+Delete: [x]
+Name: Oranges
+Amount: 20
+Delete: [x]
+Name: Peaches
+Amount: 10
+Delete: [x]
+
+Recipes Table Items:
+
+Name: Apples
+Amount: 15
+Delete: [x]
+Name: Oranges
+Amount: 20
+Delete: [x]
+Name: Peaches
+Amount: 10
+Delete: [x]
+Groceries Table Items:
+
+Name: Grilled Cheese
+Delete: [x]
+Name: Pizza
+Delete: [x]
+Name: Mac & Cheese
+Delete: [x]
