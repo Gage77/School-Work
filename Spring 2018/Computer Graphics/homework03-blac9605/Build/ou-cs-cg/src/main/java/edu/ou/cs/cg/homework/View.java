@@ -76,6 +76,9 @@ public final class View implements GLEventListener
   // Int to hold increase/decrease factor for hopscotch left/right
   private int horizontalHopscotchFactor = 0;
 
+  // Total number of kite panels for kite
+  private int numKites = 5;
+
   /************************************************
   * Constructor(s)
   ************************************************/
@@ -185,12 +188,18 @@ public final class View implements GLEventListener
       verticalHopscotchFactor = verticalHopscotchFactor + factor;
     System.out.println(verticalHopscotchFactor);
   }
+
   // Set increase factor for sidewalk left/right
   public void setHopscotchHorizontalFactor(int factor)
   {
     horizontalHopscotchFactor = horizontalHopscotchFactor + factor;
   }
 
+  // Set the number of kite panels for the kite
+  public void setNumKites(int num)
+  {
+    numKites = num;
+  }
   /************************************************
   * Public method(s)
   ************************************************/
@@ -264,7 +273,7 @@ public final class View implements GLEventListener
     drawHopscotch(gl, horizontalHopscotchFactor, verticalHopscotchFactor);
     drawHouses(gl);
     drawFence(gl, fenceIncreaseFactor);
-    drawKite(gl);
+    drawKite(gl, numKites);
   }
 
   /************************************************
@@ -627,16 +636,16 @@ public final class View implements GLEventListener
 		gl.glEnd();
 	}
 
-	private void	drawKite(GL2 gl)
+	private void	drawKite(GL2 gl, int numKitePanels)
 	{
-		drawKiteLine(gl);
-		drawKiteFans(gl);
+		drawKiteLine(gl, numKitePanels);
+		drawKiteFans(gl, numKitePanels);
 	}
 
 	private ArrayList<Point>	kiteline = null;
 
 	// Keep this simpler than the drawing, since HW#3 will define the
-	private void	drawKiteLine(GL2 gl)
+	private void	drawKiteLine(GL2 gl, int numKitePanels)
 	{
 		if (kiteline == null)
 		{
@@ -662,24 +671,30 @@ public final class View implements GLEventListener
 		gl.glLineWidth(1);
 	}
 
-	private void	drawKiteFans(GL2 gl)
+	private void	drawKiteFans(GL2 gl, int numKitePanels)
 	{
 		int		cx = 956;
 		int		cy = 490;
 		int		r = 80;
 
 		// Flap those wings!
-		int		ticks = 120;
-		double	phase = ((k % (2 * ticks)) - ticks) / (double)ticks;
-		double	variance = ANGLE_MOON * Math.cos(2 * Math.PI * phase);
+		//int		ticks = 120;
+		//double	phase = ((k % (2 * ticks)) - ticks) / (double)ticks;
+		//double	variance = ANGLE_MOON * Math.cos(2 * Math.PI * phase);
 
 		// The min and max angles of each wing, with variance over time
-		double	amin =  4.0 * ANGLE_MOON - variance;
-		double	amax =  9.0 * ANGLE_MOON + variance;
-		double	bmin = 13.0 * ANGLE_MOON - variance;
-		double	bmax = 18.0 * ANGLE_MOON + variance;
+		// double	amin =  4.0 * ANGLE_MOON - variance;
+		// double	amax =  9.0 * ANGLE_MOON + variance;
+		// double	bmin = 13.0 * ANGLE_MOON - variance;
+		// double	bmax = 18.0 * ANGLE_MOON + variance;
 
-		int		fans = 5;
+    // The min and max angles of each wings
+    double amin = 4.0 * ANGLE_MOON;
+    double amax = 9.0 * ANGLE_MOON;
+    double bmin = 13.0 * ANGLE_MOON;
+    double bmax = 18.0 * ANGLE_MOON;
+
+		int		fans = numKitePanels;
 		double	astep = (amax - amin) / fans;
 		double	bstep = (bmax - bmin) / fans;
 

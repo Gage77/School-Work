@@ -77,38 +77,47 @@ public final class KeyHandler extends KeyAdapter
       // One panel
       case KeyEvent.VK_1:
         System.out.println("1 pressed");
+        view.setNumKites(1);
         break;
       // Two panels
       case KeyEvent.VK_2:
         System.out.println("2 pressed");
+        view.setNumKites(2);
         break;
       // Three panels
       case KeyEvent.VK_3:
         System.out.println("3 pressed");
+        view.setNumKites(3);
         break;
       // Four panels
       case KeyEvent.VK_4:
         System.out.println("4 pressed");
+        view.setNumKites(4);
         break;
       // Five panels
       case KeyEvent.VK_5:
         System.out.println("5 pressed");
+        view.setNumKites(5);
         break;
       // Six panels
       case KeyEvent.VK_6:
         System.out.println("6 pressed");
+        view.setNumKites(6);
         break;
       // Seven panels
       case KeyEvent.VK_7:
         System.out.println("7 pressed");
+        view.setNumKites(7);
         break;
       // Eight panels
       case KeyEvent.VK_8:
         System.out.println("8 pressed");
+        view.setNumKites(8);
         break;
       // Nine panels
       case KeyEvent.VK_9:
         System.out.println("9 pressed");
+        view.setNumKites(9);
         break;
       /************************************************
       * Moves hopscotch squares towards and away from the
