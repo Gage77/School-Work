@@ -58,6 +58,9 @@ public final class View implements GLEventListener
 
   private int				k = 0;		// Just an animation counter
 
+  // Collection of all stars and their locations in the sky
+  private ArrayList<Integer> stars = new ArrayList<Integer>();
+
   /************************************************
   * Constructor(s)
   ************************************************/
@@ -65,6 +68,8 @@ public final class View implements GLEventListener
   public View(GLCanvas canvas)
   {
     this.canvas = canvas;
+
+    canvas.setFocusTraversalKeysEnabled(false);
 
     //initialize model info
     origin = new Point2D.Double(0.0, 0.0);
@@ -422,23 +427,30 @@ public final class View implements GLEventListener
 
 	private void	drawStars(GL2 gl)
 	{
-		drawStar(gl,  921, 720 -  29, 1.00f);
-		drawStar(gl, 1052, 720 -  61, 0.90f);
-		drawStar(gl, 1177, 720 -  49, 0.95f);
-		drawStar(gl, 1205, 720 - 153, 0.50f);
-		drawStar(gl, 1146, 720 - 254, 0.30f);
+		drawStar(gl,  921, 720 -  29, 1.00f, false);
+		drawStar(gl, 1052, 720 -  61, 0.90f, false);
+		drawStar(gl, 1177, 720 -  49, 0.95f, false);
+		drawStar(gl, 1205, 720 - 153, 0.50f, false);
+		drawStar(gl, 1146, 720 - 254, 0.30f, false);
 	}
 
-	private void	drawStar(GL2 gl, int cx, int cy, float alpha)
+	private void	drawStar(GL2 gl, int cx, int cy, float alpha, boolean redraw)
 	{
 		double	theta = 0.5 * Math.PI;
 
-		setColor(gl, 255, 255, 0, (int)(alpha * 255));	// Yellow + alpha
+    // Determine color on whether star is being colored through selecter
+    if (redraw)
+      setColor(gl, 255, 165, 0, (int)(alpha * 255));  // Orange + alpha
+    else
+		  setColor(gl, 255, 255, 0, (int)(alpha * 255));	// Yellow + alpha
+
 		gl.glBegin(GL.GL_TRIANGLE_FAN);
 		gl.glVertex2d(cx, cy);
 		doStarVertices(gl, cx, cy, 8, 20.0, 8.0);
 		gl.glVertex2d(cx + 15 * Math.cos(theta), cy + 15 * Math.sin(theta));
 		gl.glEnd();
+
+    stars.add((Integer)stars.size() + 1);
 	}
 
 	private static final int		SIDES_MOON = 18;
