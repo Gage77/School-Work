@@ -1,0 +1,9 @@
+To achieve the screenshot in this directory, I:
+
+- Moved the hopscotch to the left by a few sidewalk panels and down a little bit using the <shift><left-arrow> keys, and the <down-arrow> key
+
+- Selected a star using the <tab> key, and highlighted it in orance
+
+- Closed the window frames shades by pressing the <w> key
+
+- Changed the number of panels on the kite by pressing the <3> key

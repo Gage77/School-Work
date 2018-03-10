@@ -54,13 +54,18 @@ public final class MouseHandler extends MouseAdapter
   // horizon
   public void mouseClicked(MouseEvent e)
   {
-    //Point2D.Double v = calcCoordinatesInView(e.getX(), e.getY());
+    Point2D.Double v = calcCoordinatesInView(e.getX(), e.getY());
     System.out.println("Mouse clicked");
+    view.setSelectedStarLocation(v);
   }
 
   public void mouseEntered(MouseEvent e)
   {
     System.out.println("Mouse entered");
+
+    Point2D.Double v = calcCoordinatesInView(e.getX(), e.getY());
+
+    view.setCursor(v);
   }
 
   // Set mouse cursor position to null
@@ -100,23 +105,40 @@ public final class MouseHandler extends MouseAdapter
   ************************************************/
   public void mouseDragged(MouseEvent e)
   {
+    Point2D.Double	v = calcCoordinatesInView(e.getX(), e.getY());
 
+    view.add(v);
+    view.setCursor(v);
   }
 
   // Find and set the new cursor position after it has moved
   public void mouseMoved(MouseEvent e)
   {
-    //Point2D.Double v = calcCoordinatesInView(e.getX(), e.getY());
+    Point2D.Double	v = calcCoordinatesInView(e.getX(), e.getY());
 
-    //view.setCursor(v);
+		view.setCursor(v);
   }
 
   /************************************************
   * Override Method(s) (MouseWheelListener)
   ************************************************/
 
+  public void mouseWheelMoved(MouseWheelEvent e)
+  {
+
+  }
+
   /************************************************
   * Private Methods
   ************************************************/
+  private Point2D.Double	calcCoordinatesInView(int sx, int sy)
+  {
+    int				w = view.getWidth();
+    int				h = view.getHeight();
+    Point2D.Double	p = view.getOrigin();
+    double			vx = p.x + (sx * 2.0) / w - 1.0;
+    double			vy = p.y - (sy * 2.0) / h + 1.0;
 
+    return new Point2D.Double(vx, vy);
+  }
 }

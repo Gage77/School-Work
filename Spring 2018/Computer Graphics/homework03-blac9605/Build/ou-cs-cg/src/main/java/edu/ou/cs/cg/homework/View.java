@@ -63,6 +63,7 @@ public final class View implements GLEventListener
   // Currently selected star (index in stars array)
   private int currentlySelectedStar = -1;
   private int numStars = 4;
+  private Point2D.Double selectedStarLocation = null;
 
   // Boolean value for whether the window shades are open or closed
   private boolean windowShadesOpen = true;
@@ -79,6 +80,9 @@ public final class View implements GLEventListener
   // Total number of kite panels for kite
   private int numKites = 5;
 
+  // Arraylist of points for drawing kite line
+  private ArrayList<Point2D.Double> points;
+
   /************************************************
   * Constructor(s)
   ************************************************/
@@ -92,6 +96,7 @@ public final class View implements GLEventListener
     //initialize model info
     origin = new Point2D.Double(0.0, 0.0);
     cursor = null;
+    points = new ArrayList<Point2D.Double>();
 
     // Initialize Rendering
     canvas.addGLEventListener(this);
@@ -143,11 +148,13 @@ public final class View implements GLEventListener
 
   public void		clear()
   {
+    points.clear();
     canvas.repaint();
   }
 
   public void		add(Point2D.Double p)
   {
+    points.add(p);
     canvas.repaint();
   }
 
@@ -162,6 +169,13 @@ public final class View implements GLEventListener
       currentlySelectedStar++;
   }
 
+  public void setSelectedStarLocation(Point2D.Double v)
+  {
+    if (currentlySelectedStar != -1)
+      selectedStarLocation = v;
+    else
+      selectedStarLocation = null;
+  }
   // Toggle window shades
   public void setWindowShades()
   {
@@ -274,6 +288,8 @@ public final class View implements GLEventListener
     drawHouses(gl);
     drawFence(gl, fenceIncreaseFactor);
     drawKite(gl, numKites);
+
+    drawPolyLine(gl);
   }
 
   /************************************************
@@ -497,8 +513,33 @@ public final class View implements GLEventListener
 		gl.glEnd();
 	}
 
+  private ArrayList<Point> starPoints = new ArrayList<Point>(4);
+
 	private void	drawStars(GL2 gl)
 	{
+    if (starPoints == null)
+    {
+      starPoints.add(new Point(921, 720 - 29));
+      starPoints.add(new Point(1052, 720 - 61));
+      starPoints.add(new Point(1177, 720 - 49));
+      starPoints.add(new Point(1205, 720 - 153));
+      starPoints.add(new Point(1146, 720 - 254));
+    }
+
+    // Draw all stars, and highlight selected star in orange
+    // for (int i = 0; i < starPoints.size(); i++)
+    // {
+    //   if (currentlySelectedStar == -1)
+    //     drawStar(gl, starPoints.get(i).x, starPoints.get(i).y, 1.00f, false);
+    //   else
+    //   {
+    //     if (i == currentlySelectedStar)
+    //       drawStar(gl, starPoints.get(i).x, starPoints.get(i).y, 1.00f, true);
+    //     else
+    //       drawStar(gl, starPoints.get(i).x, starPoints.get(i).y, 1.00f, false);
+    //   }
+    // }
+
     if (currentlySelectedStar == -1)
     {
       drawStar(gl,  921, 720 -  29, 1.00f, false);
@@ -1124,4 +1165,34 @@ public final class View implements GLEventListener
 			theta += delta;
 		}
 	}
+
+  private void drawPolyLine(GL2 gl)
+  {
+		gl.glColor3f(1.0f, 1.0f, 1.0f);
+		gl.glBegin(GL.GL_LINE_STRIP);
+
+		for (Point2D.Double p : points)
+			gl.glVertex2d(p.x, p.y);
+
+		gl.glEnd();
+  }
+
+  private void drawCursor(GL2 gl)
+  {
+    if (cursor == null)
+			return;
+
+		gl.glBegin(GL.GL_LINE_LOOP);
+		gl.glColor3f(0.5f, 0.5f, 0.5f);
+
+		for (int i=0; i<32; i++)
+		{
+			double	theta = (2.0 * Math.PI) * (i / 32.0);
+
+			gl.glVertex2d(cursor.x + 0.05 * Math.cos(theta),
+						  cursor.y + 0.05 * Math.sin(theta));
+		}
+
+		gl.glEnd();
+  }
 }
