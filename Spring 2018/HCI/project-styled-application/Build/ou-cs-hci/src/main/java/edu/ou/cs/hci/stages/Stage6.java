@@ -564,6 +564,7 @@ public final class Stage6
 		});
 		searchTool.setIcon(Resources.getImage("icons/magnifying-glass.png"));
 		searchTool.setFont(new Font("Arial", Font.PLAIN, 15));
+		searchTool.setBackground(Color.decode("#ffcc00"));
 		searchTool.setVerticalTextPosition(SwingConstants.TOP);
 		searchTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		toolBar.add(searchTool);
@@ -576,10 +577,25 @@ public final class Stage6
 		});
 		filterTool.setIcon(Resources.getImage("icons/filter.png"));
 		filterTool.setFont(new Font("Arial", Font.PLAIN, 15));
+		filterTool.setBackground(Color.decode("#ffcc00"));
 		filterTool.setVerticalTextPosition(SwingConstants.TOP);
 		filterTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		toolBar.add(filterTool);
 		toolBar.addSeparator();
+		JButton restoreTool = new JButton(new AbstractAction("Restore")
+		{
+				public void actionPerformed(ActionEvent a)
+				{
+						System.out.println("ToolBar --> Restore (CTRL + Z). Restores the most recently deleted item.");
+				}
+		});
+		restoreTool.setIcon(Resources.getImage("icons/reload.png"));
+		restoreTool.setFont(new Font("Arial", Font.PLAIN, 15));
+		restoreTool.setBackground(Color.decode("#e60000"));
+		restoreTool.setForeground(Color.WHITE);
+		restoreTool.setVerticalTextPosition(SwingConstants.TOP);
+		restoreTool.setHorizontalTextPosition(SwingConstants.CENTER);
+		toolBar.add(restoreTool);
 		JButton settingsTool = new JButton(new AbstractAction("Settings")
 		{
 		    public void actionPerformed(ActionEvent a)
@@ -589,21 +605,11 @@ public final class Stage6
 		});
 		settingsTool.setIcon(Resources.getImage("icons/settings.png"));
 		settingsTool.setFont(new Font("Arial", Font.PLAIN, 15));
+		settingsTool.setBackground(Color.decode("#e60000"));
+		settingsTool.setForeground(Color.WHITE);
 		settingsTool.setVerticalTextPosition(SwingConstants.TOP);
 		settingsTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		toolBar.add(settingsTool);
-		JButton restoreTool = new JButton(new AbstractAction("Restore")
-		{
-		    public void actionPerformed(ActionEvent a)
-		    {
-		        System.out.println("ToolBar --> Restore (CTRL + Z). Restores the most recently deleted item.");
-		    }
-		});
-		restoreTool.setIcon(Resources.getImage("icons/reload.png"));
-		restoreTool.setFont(new Font("Arial", Font.PLAIN, 15));
-		restoreTool.setVerticalTextPosition(SwingConstants.TOP);
-		restoreTool.setHorizontalTextPosition(SwingConstants.CENTER);
-		toolBar.add(restoreTool);
 		JButton boldTool = new JButton(new AbstractAction("Bold")
 		{
 		    public void actionPerformed(ActionEvent a)
@@ -617,6 +623,7 @@ public final class Stage6
 		boldTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		toolBar.add(boldTool);
 		toolBar.setBorder(new EmptyBorder(0, 100, 10, 100));
+
 		frame.getContentPane().add(toolBar, BorderLayout.PAGE_END);
 
 		//**********************************************************************
