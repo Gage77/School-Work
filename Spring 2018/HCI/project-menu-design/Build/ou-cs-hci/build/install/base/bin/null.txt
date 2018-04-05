@@ -1,0 +1,12 @@
+Edit menu -> Search pressed
+ ::: Edit menu -> Restore pressed
+ ::: Window menu -> Theme menu -> Font pressed
+ ::: Edit menu -> Theme menu -> Font Color pressed
+ ::: Edit menu -> Settings menu -> Set Units menu -> Customary pressed
+ ::: Edit menu -> Settings menu -> Set Units menu -> Metric pressed
+ ::: Edit menu -> Settings menu -> Set Units menu -> Imperial pressed
+ ::: Help menu -> Accessability menu -> Font size pressed
+ ::: Help menu -> Accessability menu -> Invert pressed
+ ::: Help menu -> Accessability menu -> Bold pressed
+ ::: Help menu -> Feedback pressed
+ ::: Help menu -> Donate pressed
