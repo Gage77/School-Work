@@ -64,7 +64,7 @@ public final class Stage6
 		top.add(welcome, BorderLayout.CENTER);
 
 		JButton back = new JButton("<-");
-		back.setBackground(Color.decode("#e60000"));
+		back.setBackground(Color.decode("#e60000"));	// Set the color of back button to red
 		back.setForeground(Color.WHITE);
 		back.setOpaque(true);
 		back.setToolTipText("Go back");
@@ -73,7 +73,7 @@ public final class Stage6
 		top.add(back, BorderLayout.WEST);
 
 		JButton add = new JButton("+");
-		add.setBackground(Color.decode("#ffcc00"));
+		add.setBackground(Color.decode("#ffcc00"));	// Set the color of the add button to gold
 		add.setForeground(Color.WHITE);
 		add.setToolTipText("Add a new item");
 		add.setFont(new Font("Arial", Font.PLAIN, 25));
@@ -380,6 +380,8 @@ public final class Stage6
 		// Window Menu
 		//**********************************************************************
 
+		// Got rid of color changing section so as not to interfere with our current color scheme
+
 		JMenu theme = new JMenu("Theme");
 		JMenuItem fontStyle = new JMenuItem(new AbstractAction("Font Style")
 		{
@@ -395,34 +397,6 @@ public final class Stage6
 		        System.out.println("Window -> Theme -> Font Colour. Allows the user to select a font colour.");
 		    }
 		});
-		JMenu background = new JMenu("Background");
-		JMenuItem primary = new JMenuItem(new AbstractAction("Primary Colour")
-		{
-		    public void actionPerformed(ActionEvent a)
-		    {
-		        System.out.println("Window -> Theme -> Background -> Primary Colour. "
-		        		+ "Allows the user to select the primary background colour.");
-		    }
-		});
-		JMenuItem secondary = new JMenuItem(new AbstractAction("Secondary Colour")
-		{
-		    public void actionPerformed(ActionEvent a)
-		    {
-		        System.out.println("Window -> Theme -> Background -> Secondary Colour. "
-		        		+ "Allows the user to select the secondary background colour.");
-		    }
-		});
-		JMenuItem swap = new JMenuItem(new AbstractAction("Swap")
-		{
-		    public void actionPerformed(ActionEvent a)
-		    {
-		        System.out.println("Window -> Theme -> Background -> Swap. "
-		        		+ "Allows the user to swap the primary and secondary background colours.");
-		    }
-		});
-		background.add(primary);
-		background.add(secondary);
-		background.add(swap);
 		JMenuItem importTheme = new JMenuItem(new AbstractAction("Import")
 		{
 		    public void actionPerformed(ActionEvent a)
@@ -439,7 +413,6 @@ public final class Stage6
 		});
 		theme.add(fontStyle);
 		theme.add(fontColour);
-		theme.add(background);
 		theme.addSeparator();
 		theme.add(importTheme);
 		theme.add(saveTheme);
@@ -565,7 +538,7 @@ public final class Stage6
 		});
 		searchTool.setIcon(Resources.getImage("icons/magnifying-glass.png"));
 		searchTool.setFont(new Font("Arial", Font.PLAIN, 15));
-		searchTool.setBackground(Color.decode("#ffcc00"));
+		searchTool.setBackground(Color.decode("#ffcc00"));	// Set button color of search tool to yellow
 		searchTool.setVerticalTextPosition(SwingConstants.TOP);
 		searchTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		toolBar.add(searchTool);
@@ -578,7 +551,7 @@ public final class Stage6
 		});
 		filterTool.setIcon(Resources.getImage("icons/filter.png"));
 		filterTool.setFont(new Font("Arial", Font.PLAIN, 15));
-		filterTool.setBackground(Color.decode("#ffcc00"));
+		filterTool.setBackground(Color.decode("#ffcc00"));	// Set button color of filter tool to yellow
 		filterTool.setVerticalTextPosition(SwingConstants.TOP);
 		filterTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		toolBar.add(filterTool);
@@ -592,7 +565,7 @@ public final class Stage6
 		});
 		restoreTool.setIcon(Resources.getImage("icons/reload.png"));
 		restoreTool.setFont(new Font("Arial", Font.PLAIN, 15));
-		restoreTool.setBackground(Color.decode("#e60000"));
+		restoreTool.setBackground(Color.decode("#e60000"));	// Set button color of the restore tool to red
 		restoreTool.setForeground(Color.WHITE);
 		restoreTool.setVerticalTextPosition(SwingConstants.TOP);
 		restoreTool.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -606,7 +579,7 @@ public final class Stage6
 		});
 		settingsTool.setIcon(Resources.getImage("icons/settings.png"));
 		settingsTool.setFont(new Font("Arial", Font.PLAIN, 15));
-		settingsTool.setBackground(Color.decode("#e60000"));
+		settingsTool.setBackground(Color.decode("#e60000"));	// Set the button color of the settings tool to red
 		settingsTool.setForeground(Color.WHITE);
 		settingsTool.setVerticalTextPosition(SwingConstants.TOP);
 		settingsTool.setHorizontalTextPosition(SwingConstants.CENTER);
