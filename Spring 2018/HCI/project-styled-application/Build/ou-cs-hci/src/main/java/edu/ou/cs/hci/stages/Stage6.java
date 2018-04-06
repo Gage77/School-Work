@@ -28,6 +28,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 import edu.ou.cs.hci.resources.*;
 
@@ -127,23 +129,27 @@ public final class Stage6
 		frame.getContentPane().add(tabs, BorderLayout.CENTER);
 
 		//creates the content of the fridge category panel
+		int quantityRow = 2;
+		int expireCol = 3;
 		String[] colName = new String[] {"☆", "Name" ,"Amount", "Days Left", "Leftovers?"};
 		Object[][] products = new Object[][] {
-                { new Boolean(false), "Apples", "15 (Apples)", "3" , ""},
-                { "★", "Eggs", "6 (Eggs)", "12" , ""},
+                { new Boolean(false), "Apples", "15", "3" , ""},
+                { "★", "Eggs", "6", "12" , ""},
                 { "☆", "Chili", "--", "3", "Yes"},
-                { "★", "Oranges" ,"20 (Oranges)", "4", ""},
-                { "☆", "Peaches" ,"10 (Peaches)", "1", ""},
+                { "★", "Oranges" ,"20", "4", ""},
+                { "☆", "Peaches" ,"10", "1", ""},
                 { "☆", "Tacos", "--", "2", "Yes"},
-                { "★", "Bread", "2 (Slices)", "7", ""},
-                { "☆", "Potato Chips", "1 (Bags)", "3" , ""}
+                { "★", "Bread (slices)", "2", "7", ""},
+                { "☆", "Potato Chips (bags)", "1", "3" , ""}
 							};
+		DefaultTableModel fridgeModel = new DefaultTableModel(products, colName);
 		//creates a table to hold the fridge panel data
-		JTable fridgeTable = new JTable( products, colName );
+		JTable fridgeTable = new JTable(fridgeModel);
 		fridgeTable.getColumnModel().getColumn(0).setMaxWidth(25);
 		fridgeTable.setFont(new Font("Lucida Console", Font.PLAIN, 13));
 		fridgeTable.getTableHeader().setFont(new Font("Lucida Console", Font.PLAIN, 13));
 		fridgeTable.setRowHeight(20);
+		fridgeTable.setSelectionBackground(Color.decode("#ffcc00"));	// Change the color of selected rows to yellow
 		//adds the data panel to the fridge category panel
 		fridge.add(new JScrollPane(fridgeTable));
 
@@ -156,6 +162,7 @@ public final class Stage6
 						 };
 		//creates a table to hold the groceries panel data
 		JTable table1 = new JTable( products1, colName1 );
+		table1.setSelectionBackground(Color.decode("#ffcc00"));	// Change the color of selected rows to yellow
 		//adds the data panel to the fridge category panel
 		groceries.add(new JScrollPane(table1) );
 
@@ -168,6 +175,7 @@ public final class Stage6
             };
 		//creates a table to hold the recipes panel data
 		JTable table2 = new JTable( products2, colName2);
+		table2.setSelectionBackground(Color.decode("#ffcc00"));	// Change the color of selected rows to yellow
 		//adds the data panel to the recipes category panel
 		recipes.add(new JScrollPane(table2), BorderLayout.CENTER);
 
