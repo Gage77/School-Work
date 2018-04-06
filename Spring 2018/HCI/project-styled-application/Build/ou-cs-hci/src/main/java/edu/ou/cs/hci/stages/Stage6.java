@@ -129,7 +129,7 @@ public final class Stage6
 		//creates the content of the fridge category panel
 		String[] colName = new String[] {"☆", "Name" ,"Amount", "Days Left", "Leftovers?"};
 		Object[][] products = new Object[][] {
-                { "☆", "Apples", "15 (Apples)", "3" , ""},
+                { new Boolean(false), "Apples", "15 (Apples)", "3" , ""},
                 { "★", "Eggs", "6 (Eggs)", "12" , ""},
                 { "☆", "Chili", "--", "3", "Yes"},
                 { "★", "Oranges" ,"20 (Oranges)", "4", ""},
@@ -177,7 +177,8 @@ public final class Stage6
 
 		JPanel			mid = new JPanel(new BorderLayout());
 
-		JPanel			filterPanel = new JPanel(new GridLayout(2, 4));
+		// Re-arranged the filter buttons to follow Gestalt principles
+		JPanel			filterPanel = new JPanel(new FlowLayout());
 		filterPanel.setBorder(new EmptyBorder(0, 50, 0, 50));
 		JCheckBox		favoritesBox = new JCheckBox();
 		favoritesBox.setHorizontalAlignment(JCheckBox.RIGHT);
@@ -194,10 +195,10 @@ public final class Stage6
 
 		filterPanel.add(favoritesBox);
 		filterPanel.add(favoritesLabel);
-		filterPanel.add(expiredBox);
-		filterPanel.add(expiredLabel);
 		filterPanel.add(lowBox);
 		filterPanel.add(lowLabel);
+		filterPanel.add(expiredBox);
+		filterPanel.add(expiredLabel);
 		filterPanel.add(leftoversBox);
 		filterPanel.add(leftoversLabel);
 		mid.add(filterPanel, BorderLayout.CENTER);
