@@ -113,7 +113,7 @@ createScript(project, 'edu.ou.cs.cg.interaction.Application', 'interaction', alt
 // and the desired program name in the third argument.
 createScript(project, 'edu.ou.cs.cg.homework.Homework02', 'hw02', altJvmArgs)
 //createScript(project, 'edu.ou.cs.cg.homework.Homework03', 'hw03', altJvmArgs)
-//createScript(project, 'edu.ou.cs.cg.homework.Homework04', 'hw04', altJvmArgs)
+createScript(project, 'edu.ou.cs.cg.homework.Homework04', 'hw04', altJvmArgs)
 //createScript(project, 'edu.ou.cs.cg.homework.Homework05', 'hw05', altJvmArgs)
 
 //******************************************************************************

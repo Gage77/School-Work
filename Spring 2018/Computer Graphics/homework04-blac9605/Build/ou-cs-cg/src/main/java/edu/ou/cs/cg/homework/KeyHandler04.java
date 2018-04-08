@@ -22,25 +22,25 @@ import java.awt.geom.*;
 //******************************************************************************
 
 /**
- * The <CODE>KeyHandler</CODE> class.<P>
+ * The <CODE>KeyHandler04</CODE> class.<P>
  *
  * @author  Chris Weaver
  * @version %I%, %G%
  */
-public final class KeyHandler extends KeyAdapter
+public final class KeyHandler04 extends KeyAdapter
 {
 	//**********************************************************************
 	// Private Members
 	//**********************************************************************
 
 	// State (internal) variables
-	private final View	view;
+	private final View04	view;
 
 	//**********************************************************************
 	// Constructors and Finalizer
 	//**********************************************************************
 
-	public KeyHandler(View view)
+	public KeyHandler04(View04 view)
 	{
 		this.view = view;
 
@@ -60,53 +60,40 @@ public final class KeyHandler extends KeyAdapter
 
 		switch (e.getKeyCode())
 		{
+			case KeyEvent.VK_NUMPAD5:
+				p.x = 0.0;	p.y = 0.0;	break;
+
+			case KeyEvent.VK_NUMPAD4:
+			case KeyEvent.VK_LEFT:
+				p.x -= a;	p.y += 0.0;	break;
+
+			case KeyEvent.VK_NUMPAD6:
+			case KeyEvent.VK_RIGHT:
+				p.x += a;	p.y += 0.0;	break;
+
+			case KeyEvent.VK_NUMPAD2:
+			case KeyEvent.VK_DOWN:
+				p.x += 0.0;	p.y -= a;	break;
+
+			case KeyEvent.VK_NUMPAD8:
+			case KeyEvent.VK_UP:
+				p.x += 0.0;	p.y += a;	break;
+
+			case KeyEvent.VK_NUMPAD1:
+				p.x -= a;	p.y -= a;	break;
+
+			case KeyEvent.VK_NUMPAD7:
+				p.x -= a;	p.y += a;	break;
+
+			case KeyEvent.VK_NUMPAD3:
+				p.x += a;	p.y -= a;	break;
+
+			case KeyEvent.VK_NUMPAD9:
+				p.x += a;	p.y += a;	break;
+
 			case KeyEvent.VK_DELETE:
 				view.clear();
 				return;
-
-			case KeyEvent.VK_NUMPAD1:
-			case KeyEvent.VK_1:
-				view.setBoundType(1); break;
-
-			case KeyEvent.VK_NUMPAD2:
-			case KeyEvent.VK_2:
-				view.setBoundType(2); break;
-
-			case KeyEvent.VK_NUMPAD3:
-			case KeyEvent.VK_3:
-				view.setBoundType(3); break;
-
-			case KeyEvent.VK_NUMPAD4:
-			case KeyEvent.VK_4:
-				view.setBoundType(4); break;
-
-			case KeyEvent.VK_NUMPAD6:
-			case KeyEvent.VK_6:
-				view.setMovingObject(1); break;
-
-			case KeyEvent.VK_NUMPAD7:
-			case KeyEvent.VK_7:
-				view.setMovingObject(2); break;
-
-			case KeyEvent.VK_NUMPAD8:
-			case KeyEvent.VK_8:
-				view.setMovingObject(3); break;
-
-			case KeyEvent.VK_NUMPAD9:
-			case KeyEvent.VK_9:
-				view.setMovingObject(4); break;
-
-			case KeyEvent.VK_RIGHT:
-				view.adjustObjectSpeed(1.1); break;
-
-			case KeyEvent.VK_LEFT:
-				view.adjustObjectSpeed(0.9); break;
-
-			case KeyEvent.VK_UP:
-				view.adjustObjectSize(1.1); break;
-
-			case KeyEvent.VK_DOWN:
-				view.adjustObjectSize(0.9); break;
 		}
 
 		view.setOrigin(p);
