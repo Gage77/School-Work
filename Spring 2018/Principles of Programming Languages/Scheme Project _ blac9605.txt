@@ -22,3 +22,14 @@
           (cons (* (car pa) (car pb))
                 (poly_mul (cdr pa) (cdr pb))))))
 
+(define (poly_der_full pa incr lng)
+  (if (= lng incr)
+      pa
+      (cons (* (car pa) incr)
+            (poly_der_full (cdr pa) (+ incr 1) lng)))) 
+
+(define (poly_der pa)
+  (if (null? pa)
+      pa
+      (poly_der_full pa 0 (length pa))))
+
