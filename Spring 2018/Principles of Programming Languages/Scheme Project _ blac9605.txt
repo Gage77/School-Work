@@ -1,0 +1,24 @@
+(define (poly_add pa pb)
+  (if (null? pa)
+      pb
+      (if (null? pb)
+          pa
+          (cons (+ (car pa) (car pb))
+               (poly_add (cdr pa) (cdr pb))))))
+
+(define (poly_sub pa pb)
+  (if (null? pa)
+      pb
+      (if (null? pb)
+          pa
+          (cons (- (car pa) (car pb))
+               (poly_sub (cdr pa) (cdr pb))))))
+
+(define (poly_mul pa pb)
+  (if (null? pa)
+      pb
+      (if (null? pb)
+          pa
+          (cons (* (car pa) (car pb))
+                (poly_mul (cdr pa) (cdr pb))))))
+
