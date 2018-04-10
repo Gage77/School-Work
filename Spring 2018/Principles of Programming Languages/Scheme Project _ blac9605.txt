@@ -39,24 +39,10 @@
       pa
       (poly_der_full pa 0 (length pa))))
 
-;; Divide two polynomials (pa / pb)
-(define (poly_div_full pa pb la lb)
-  (if (< la lb)
-      pa
-      (cons (
-
-;; Check for nulls, then run real div function
-(define (poly_div pa pb)
-  (if (null? pa)
-      pb
-      (if (null? pb)
-          pb
-          (poly_div_full pa pb (length pa) (length pb)))))
-
 ;; Find the remainder of the long division of pa by pb by
 ;; substracting pa by the result of the long division of pa by pb
 (define (poly_mod_full pa pb la lb)
-  (cons (poly_sub pa (poly_div pa pb))))
+  (+ 1 1))
 
 ;; Check for nulls, then call real mod function
 (define (poly_mod pa pb)
