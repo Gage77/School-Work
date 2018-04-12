@@ -74,7 +74,7 @@ public final class Stage7
 	private static JPanel fridge;
 	private static Icon fridgeIcon;
 	private static String[] colName = new String[] {
-		whiteStarUnicode,
+		"\u2605",
 		"Name",
 		"Amount",
 		"Days Left",
@@ -86,11 +86,20 @@ public final class Stage7
 	// Recipe tab items
 	private static JPanel recipes;
 	private static Icon recipesIcon;
-	private static MyTable table1;
+	private static String[] recipesTableHeaders = new String[] {
+		"Name",
+		"Delete"
+	};
+	private static MyTable recipesTable;
 
 	// Grocery tab items
 	private static JPanel groceries;
 	private static Icon groceriesIcon;
+	private static String[] groceriesTableHeaders = new String[] {
+		"Name",
+		"Amount",
+		"Delete"
+	};
 
 	// Tab stuff
 	private static JTabbedPane tabs;
@@ -147,7 +156,6 @@ public final class Stage7
 	// Main
 	//**********************************************************************
 
-	//main
 	public static void main(String[] args)
 	{
 		//MAIN WINDOW creates the base JFrame on which everything will be displayed
@@ -166,7 +174,7 @@ public final class Stage7
 		groceries.setBorder(BorderFactory.createTitledBorder("Groceries"));
 
 		//sets the defualt size of the main window
-		frame.setBounds(50, 50, 800, 800);
+		frame.setBounds(30, 30, 700, 700);
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(top, BorderLayout.PAGE_START);
 
@@ -183,59 +191,22 @@ public final class Stage7
 		//adds the JTabbedPane to the base pane
 		frame.getContentPane().add(tabs, BorderLayout.CENTER);
 
-		//creates the content of the fridge category panel
-		Object[][] products = new Object[][] {
-	      { whiteStarUnicode, "Apples", "15 (Apples)", "3" , ""},
-	      { blackStarUnicode, "Eggs", "6 (Eggs)", "12" , ""},
-	      { whiteStarUnicode, "Chili", "--", "3", "Yes"},
-	      { blackStarUnicode, "Oranges" ,"20 (Oranges)", "4", ""},
-	      { whiteStarUnicode, "Peaches" ,"10 (Peaches)", "1", ""},
-	      { whiteStarUnicode, "Tacos", "--", "2", "Yes"},
-	      { blackStarUnicode, "Bread", "2 (Slices)", "7", ""},
-	      { whiteStarUnicode, "Potato Chips", "1 (Bags)", "3" , ""}
-		};
+		// Generate the fridge table
+		createFridgeTable(frame);
 
-		fridgeTable = new MyTable(products, colName);
-		renderer = new MyRenderer();
-		fridgeTable.setDefaultRenderer(Object.class, renderer);
-		fridgeTable.getColumnModel().getColumn(0).setMaxWidth(25);
-		fridgeTable.setFont(new Font("Lucida Console", Font.PLAIN, 13));
-		fridgeTable.getTableHeader().setFont(new Font("Lucida Console", Font.PLAIN, 13));
-		fridgeTable.setRowHeight(20);
+		// Generate the groceries table
+		createGroceriesTable(frame);
 
-		//adds the data panel to the fridge category panel
-		fridge.add(new JScrollPane(fridgeTable));
+		// Generate the recipes table
+		createRecipesTable(frame);
 
-		//creates the content of the groceries category panel
-		String[] colName1 = new String[] {"Name" ,"Amount", "Delete"};
-		Object[][] products1 = new Object[][] {
-							 { "Apples" ,"15", "[x]" },
-							 { "Oranges" ,"20", "[x]"},
-							 { "Peaches" ,"10", "[x]"},
-						 };
-		//creates a table to hold the groceries panel data
-		MyTable table1 = new MyTable( products1, colName1 );
-		//adds the data panel to the fridge category panel
-		groceries.add(new JScrollPane(table1) );
-
-		//creates the content of the recipes category panel
-		String[] colName2 = new String[] {"Name","Delete"};
-    		Object[][] products2 = new Object[][] {
-                { "Grilled Cheese", "[x]" },
-                { "Pizza", "[x]" },
-                { "Mac & Cheese", "[x]" },
-            };
-		//creates a table to hold the recipes panel data
-		MyTable table2 = new MyTable( products2, colName2);
-		//adds the data panel to the recipes category panel
-		recipes.add(new JScrollPane(table2), BorderLayout.CENTER);
 		// ----- FRIDGE TAB FILTER CHECKBOX PANEL -----
 		JPanel			mid = new JPanel(new BorderLayout());
 		JPanel			filterPanel = new JPanel(new GridLayout(1, 8));
 		filterPanel.setBorder(new EmptyBorder(0, 50, 0, 50));
 		JCheckBox		favoritesBox = new JCheckBox();
 		favoritesBox.setText(blackStarUnicode);
-		//favoritesBox.setHorizontalAlignment(JCheckBox.RIGHT);
+		favoritesBox.setHorizontalAlignment(JCheckBox.LEFT);
 		//JLabel			favoritesLabel = new JLabel("Favorites");
 		JCheckBox		expiredBox = new JCheckBox();
 		expiredBox.setHorizontalAlignment(JCheckBox.RIGHT);
@@ -365,6 +336,60 @@ public final class Stage7
 				System.out.println("add item button pressed. value: N/A");
 			}
 		};     add.addActionListener(addListener);
+	}
+
+	// Create fridge table
+	private static void createFridgeTable(JFrame frame) {
+		//creates the content of the fridge category panel
+		Object[][] products = new Object[][] {
+	      { whiteStarUnicode, "Apples", "15 (Apples)", "3" , ""},
+	      { blackStarUnicode, "Eggs", "6 (Eggs)", "12" , ""},
+	      { whiteStarUnicode, "Chili", "--", "3", "Yes"},
+	      { blackStarUnicode, "Oranges" ,"20 (Oranges)", "4", ""},
+	      { whiteStarUnicode, "Peaches" ,"10 (Peaches)", "1", ""},
+	      { whiteStarUnicode, "Tacos", "--", "2", "Yes"},
+	      { blackStarUnicode, "Bread", "2 (Slices)", "7", ""},
+	      { whiteStarUnicode, "Potato Chips", "1 (Bags)", "3" , ""}
+		};
+
+		fridgeTable = new MyTable(products, colName);
+		renderer = new MyRenderer();
+		fridgeTable.setDefaultRenderer(Object.class, renderer);
+		fridgeTable.getColumnModel().getColumn(0).setMaxWidth(25);
+		fridgeTable.setFont(new Font("Lucida Console", Font.PLAIN, 13));
+		fridgeTable.getTableHeader().setFont(new Font("Lucida Console", Font.PLAIN, 13));
+		fridgeTable.setRowHeight(20);
+
+		//adds the data panel to the fridge category panel
+		fridge.add(new JScrollPane(fridgeTable));
+	}
+
+	// Create groceries table
+	private static void createGroceriesTable(JFrame frame) {
+		//creates the content of the groceries category panel
+		Object[][] products1 = new Object[][] {
+							 { "Apples" ,"15", "[x]" },
+							 { "Oranges" ,"20", "[x]"},
+							 { "Peaches" ,"10", "[x]"},
+						 };
+		//creates a table to hold the groceries panel data
+		MyTable groceriesTable = new MyTable( products1, groceriesTableHeaders );
+		//adds the data panel to the fridge category panel
+		groceries.add(new JScrollPane(groceriesTable) );
+	}
+
+	// Create recipes table
+	private static void createRecipesTable(JFrame frame) {
+		//creates the content of the recipes category panel
+		Object[][] products2 = new Object[][] {
+            { "Grilled Cheese", "[x]" },
+            { "Pizza", "[x]" },
+            { "Mac & Cheese", "[x]" },
+    };
+		//creates a table to hold the recipes panel data
+		recipesTable = new MyTable( products2, recipesTableHeaders);
+		//adds the data panel to the recipes category panel
+		recipes.add(new JScrollPane(recipesTable), BorderLayout.CENTER);
 	}
 
 	// Create the menu bar for the application
