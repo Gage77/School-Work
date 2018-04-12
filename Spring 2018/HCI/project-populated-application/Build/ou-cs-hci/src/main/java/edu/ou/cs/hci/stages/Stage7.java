@@ -7,7 +7,6 @@
 //
 // 20160209 [weaver]:	Original file (for CS 4053/5053 homeworks).
 // 20180123 [weaver]:	Modified for use in CS 3053 team projects.
-// 20180406 [weaver]:	Added CSV reading.
 //
 //******************************************************************************
 // Notes:
@@ -19,20 +18,31 @@ package edu.ou.cs.hci.stages;
 //import java.lang.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.net.URL;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Hashtable;
+
 import javax.swing.*;
-import javax.swing.table.*;
-import org.apache.commons.csv.*;	// New library for working with CSVs
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import edu.ou.cs.hci.resources.*;
 
 //******************************************************************************
 
 /**
- * The <CODE>Stage6</CODE> class.<P>
+ * The <CODE>Stage4</CODE> class.<P>
  *
- * @author  Chris Weaver
+ * @author  Chris Weaver & Group 6
  * @version %I%, %G%
  */
 public final class Stage7
@@ -41,172 +51,744 @@ public final class Stage7
 	// Public Class Members
 	//**********************************************************************
 
-	private static final Font	FONT =
-		new Font(Font.SERIF, Font.ITALIC, 36);
-	private static final Color	FILL_COLOR = Color.YELLOW;
-	private static final Color	EDGE_COLOR = Color.RED;
-
 	//**********************************************************************
-	// Private Members
+	// Private Class Members
 	//**********************************************************************
 
-	// State (internal) variables
-	private static String		message;
+	// Unicode character representation for stars and back arrow
+	private static final String blackStarUnicode = "\u2605";
+	private static final String whiteStarUnicode = "\u2606";
+	private static final String backArrow = "\u2190";
+
+	// Top panel items
+	private static JPanel top;
+	private static JLabel welcome;
+	private static Icon backIcon;
+	private static JButton back;
+	private static Icon addIcon;
+	private static JButton add;
+	private static ActionListener backListener;
+	private static ActionListener addListener;
+
+	// Fridge tab items
+	private static JPanel fridge;
+	private static Icon fridgeIcon;
+	private static String[] colName = new String[] {
+		whiteStarUnicode,
+		"Name",
+		"Amount",
+		"Days Left",
+		"Leftover"
+	};
+	private static MyTable fridgeTable;
+	private static MyRenderer renderer;
+
+	// Recipe tab items
+	private static JPanel recipes;
+	private static Icon recipesIcon;
+	private static MyTable table1;
+
+	// Grocery tab items
+	private static JPanel groceries;
+	private static Icon groceriesIcon;
+
+	// Tab stuff
+	private static JTabbedPane tabs;
+
+	// Menubar items
+	private static JMenuBar menuBar;
+	private static JMenuItem openItem;
+	private static JMenuItem saveItem;
+	private static JMenuItem printItem;
+	private static JMenuItem printAllItem;
+	private static JMenuItem printFridgeItem;
+	private static JMenuItem printRecipesItem;
+	private static JMenuItem printGroceriesItem;
+	private static JMenu printSubmenu;
+	private static JMenuItem quitItem;
+	private static JMenu fileMenu;
+	private static JMenuItem copy;
+	private static JMenuItem cut;
+	private static JMenuItem paste;
+	private static JMenuItem search;
+	private static JMenuItem restore;
+	private static JMenuItem favorites;
+	private static JMenuItem expiration;
+	private static JMenuItem lowStock;
+	private static JMenuItem leftovers;
+	private static JMenu filterBySubmenu;
+	private static JMenu editMenu;
+	private static JMenuItem resolution;
+	private static JMenu settings;
+	private static JMenuItem restorePt;
+	private static JMenu units;
+	private static JMenuItem metric;
+	private static JMenuItem imperial;
+	private static JMenuItem customary;
+	private static JMenu windowMenu;
+	private static JMenu help;
+	private static JMenuItem link;
+	private static JMenu accessibility;
+	private static JMenuItem fontSize;
+	private static JMenuItem invert;
+	private static JMenuItem bold;
+	private static JMenuItem donate;
+	private static JMenuItem feedback;
+
+	// Toolbar items
+	private static JToolBar toolBar;
+	private static JButton searchTool;
+	private static JButton filterTool;
+	private static JButton restoreTool;
+	private static JButton settingsTool;
+	private static JButton boldTool;
 
 	//**********************************************************************
 	// Main
 	//**********************************************************************
 
+	//main
 	public static void main(String[] args)
 	{
-		message = "Same UI, now with Data!";	// Could use an arg for this
+		//MAIN WINDOW creates the base JFrame on which everything will be displayed
+		JFrame			frame = new JFrame("FridgTrackr");
 
-		JFrame			frame = new JFrame("Stage 7 - Populated Application");
-		JPanel			panel = new HelloPanel(message);
+		createTopPanel(frame);
 
-		frame.setBounds(50, 50, 600, 600);
+		//creates the 3 category panels
+		recipes = new JPanel(new BorderLayout());
+		fridge = new JPanel(new BorderLayout());
+		groceries = new JPanel(new BorderLayout());
+
+		//adds a title to each category panel
+		recipes.setBorder(BorderFactory.createTitledBorder("Recipes"));
+		fridge.setBorder(BorderFactory.createTitledBorder("Fridge"));
+		groceries.setBorder(BorderFactory.createTitledBorder("Groceries"));
+
+		//sets the defualt size of the main window
+		frame.setBounds(50, 50, 800, 800);
 		frame.getContentPane().setLayout(new BorderLayout());
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
+		frame.getContentPane().add(top, BorderLayout.PAGE_START);
+
+		//creates the pane that will store the category tabs
+		tabs = new JTabbedPane();
+		// Could use Weaver's getImage() for this now but this code works
+		fridgeIcon = Resources.getImage("icons/refrigerator.png");
+		recipesIcon = Resources.getImage("icons/contract.png");
+		groceriesIcon = Resources.getImage("icons/groceries.png");
+		//adds tabs to JTabbedPane
+		tabs.addTab("Fridge", fridgeIcon, fridge);
+		tabs.addTab("Recipes", recipesIcon, recipes);
+		tabs.addTab("Groceries", groceriesIcon, groceries);
+		//adds the JTabbedPane to the base pane
+		frame.getContentPane().add(tabs, BorderLayout.CENTER);
+
+		//creates the content of the fridge category panel
+		Object[][] products = new Object[][] {
+	      { whiteStarUnicode, "Apples", "15 (Apples)", "3" , ""},
+	      { blackStarUnicode, "Eggs", "6 (Eggs)", "12" , ""},
+	      { whiteStarUnicode, "Chili", "--", "3", "Yes"},
+	      { blackStarUnicode, "Oranges" ,"20 (Oranges)", "4", ""},
+	      { whiteStarUnicode, "Peaches" ,"10 (Peaches)", "1", ""},
+	      { whiteStarUnicode, "Tacos", "--", "2", "Yes"},
+	      { blackStarUnicode, "Bread", "2 (Slices)", "7", ""},
+	      { whiteStarUnicode, "Potato Chips", "1 (Bags)", "3" , ""}
+		};
+
+		fridgeTable = new MyTable(products, colName);
+		renderer = new MyRenderer();
+		fridgeTable.setDefaultRenderer(Object.class, renderer);
+		fridgeTable.getColumnModel().getColumn(0).setMaxWidth(25);
+		fridgeTable.setFont(new Font("Lucida Console", Font.PLAIN, 13));
+		fridgeTable.getTableHeader().setFont(new Font("Lucida Console", Font.PLAIN, 13));
+		fridgeTable.setRowHeight(20);
+
+		//adds the data panel to the fridge category panel
+		fridge.add(new JScrollPane(fridgeTable));
+
+		//creates the content of the groceries category panel
+		String[] colName1 = new String[] {"Name" ,"Amount", "Delete"};
+		Object[][] products1 = new Object[][] {
+							 { "Apples" ,"15", "[x]" },
+							 { "Oranges" ,"20", "[x]"},
+							 { "Peaches" ,"10", "[x]"},
+						 };
+		//creates a table to hold the groceries panel data
+		MyTable table1 = new MyTable( products1, colName1 );
+		//adds the data panel to the fridge category panel
+		groceries.add(new JScrollPane(table1) );
+
+		//creates the content of the recipes category panel
+		String[] colName2 = new String[] {"Name","Delete"};
+    		Object[][] products2 = new Object[][] {
+                { "Grilled Cheese", "[x]" },
+                { "Pizza", "[x]" },
+                { "Mac & Cheese", "[x]" },
+            };
+		//creates a table to hold the recipes panel data
+		MyTable table2 = new MyTable( products2, colName2);
+		//adds the data panel to the recipes category panel
+		recipes.add(new JScrollPane(table2), BorderLayout.CENTER);
+		// ----- FRIDGE TAB FILTER CHECKBOX PANEL -----
+		JPanel			mid = new JPanel(new BorderLayout());
+		JPanel			filterPanel = new JPanel(new GridLayout(1, 8));
+		filterPanel.setBorder(new EmptyBorder(0, 50, 0, 50));
+		JCheckBox		favoritesBox = new JCheckBox();
+		favoritesBox.setText(blackStarUnicode);
+		//favoritesBox.setHorizontalAlignment(JCheckBox.RIGHT);
+		//JLabel			favoritesLabel = new JLabel("Favorites");
+		JCheckBox		expiredBox = new JCheckBox();
+		expiredBox.setHorizontalAlignment(JCheckBox.RIGHT);
+		JLabel			expiredLabel = new JLabel("Expired");
+		JCheckBox		lowBox = new JCheckBox();
+		lowBox.setHorizontalAlignment(JCheckBox.RIGHT);
+		JLabel			lowLabel = new JLabel("Low Stock");
+		JCheckBox		leftoversBox = new JCheckBox();
+		leftoversBox.setHorizontalAlignment(JCheckBox.RIGHT);
+		JLabel			leftoversLabel = new JLabel("Leftovers");
+		filterPanel.add(favoritesBox);
+		//filterPanel.add(favoritesLabel);
+		filterPanel.add(lowBox);
+		filterPanel.add(lowLabel);
+		filterPanel.add(expiredBox);
+		filterPanel.add(expiredLabel);
+		filterPanel.add(leftoversBox);
+		filterPanel.add(leftoversLabel);
+		mid.add(filterPanel, BorderLayout.CENTER);
+		fridge.add(mid, BorderLayout.NORTH);
+		// ----- RECIPES TAB FILTER CHECKBOX PANEL -----
+		JPanel			mid2 = new JPanel(new BorderLayout());
+		JButton back2 = new JButton(backArrow);
+		back2.setPreferredSize(new Dimension(100, 50));
+		back2.setFont(new Font("Arial", Font.PLAIN, 25));
+		JButton add2 = new JButton("+");
+		add2.setFont(new Font("Arial", Font.PLAIN, 25));
+		add2.setPreferredSize(new Dimension(100, 50));
+		mid2.add(back2, BorderLayout.WEST);
+		mid2.add(add2, BorderLayout.EAST);
+		JPanel			filterPanel2 = new JPanel(new GridLayout(1, 4));
+		filterPanel2.setBorder(new EmptyBorder(5, 50, 5, 50));
+		JCheckBox		favoritesBox2 = new JCheckBox(); // Items marked as favorite by user
+		favoritesBox2.setHorizontalAlignment(JCheckBox.RIGHT);
+		JLabel			favoritesLabel2 = new JLabel("Favorites");
+		JCheckBox		inStockBox = new JCheckBox(); // Recipes for which ingredients are in stock
+		inStockBox.setHorizontalAlignment(JCheckBox.RIGHT);
+		JLabel			inStockLabel = new JLabel("In Stock");
+		filterPanel2.add(favoritesBox2);
+		filterPanel2.add(favoritesLabel2);
+		filterPanel2.add(inStockBox);
+		filterPanel2.add(inStockLabel);
+		mid2.add(filterPanel2, BorderLayout.CENTER);
+		//recipes.add(mid2, BorderLayout.NORTH);
+
+		// Generate the menubar
+		createMenuBar(frame);
+
+		// Generate the toolbar
+		createToolbar(frame);
+
+		// Quit action listener to ask for saving
+		quitItem.addActionListener(new AbstractAction()
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+			    System.out.println("quit");
+		    }
+		});
+
+		//sets the base frame to visible & to end on exit
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		frame.addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent e) {
+		frame.addWindowListener(new WindowAdapter()
+		{
+				public void windowClosing(WindowEvent e)
+				{
+					quitItem.doClick();
 					System.exit(0);
 				}
 			});
+	}
 
-		//ArrayList<String>	personaTitles =
-		//	Resources.getLines("personas/titles.txt");
+	//**********************************************************************
+	// Public Class Methods
+	//**********************************************************************
 
-		// This class is a renamed version of the BuildTest class. You can
-		// use it as the starter/main class that hooks into whatever code
-		// you've created in past stages. See the uncommented 'createScript'
-		// line in build.gradle to see how to make an executable that starts
-		// with a class like this one.
+	//**********************************************************************
+	// Private Class Methods
+	//**********************************************************************
+
+	// Create the top panel
+	private static void createTopPanel(JFrame frame) {
+		top = new JPanel(new BorderLayout());
+
+		// Setup the welcome label with text and logo
+		welcome = new JLabel("Welcome to FridgTrackr!");
+		welcome.setIcon(Resources.getImage("icons/FridgTrackr_Logo.png"));
+		welcome.setFont(new Font("Lucida Console", Font.PLAIN, 14));
+		welcome.setBorder(new EmptyBorder(5, 95, 5, 80));
+
+		// Create the back button
+		backIcon = Resources.getImage("icons/back.png");
+		back = new JButton();
+		back.setIcon(backIcon);
+		back.setPreferredSize(new Dimension(100, 50));
+		back.setFont(new Font("Arial", Font.PLAIN, 25));
+
+		// Create the add button
+		addIcon = Resources.getImage("icons/add.png");
+		add = new JButton();
+		add.setIcon(addIcon);
+		add.setFont(new Font("Arial", Font.PLAIN, 25));
+		add.setPreferredSize(new Dimension(100, 50));
+
+		// Add everything to the top panel
+		top.add(back, BorderLayout.LINE_START);
+		top.add(welcome, BorderLayout.CENTER);
+		top.add(add, BorderLayout.LINE_END);
+
+		// Add listener to the back button
+		backListener = new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				System.out.println("back button pressed. value: N/A");
+			}
+		};     back.addActionListener(backListener);
+
+		// Add listener to the add button
+		addListener = new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				System.out.println("add item button pressed. value: N/A");
+			}
+		};     add.addActionListener(addListener);
+	}
+
+	// Create the menu bar for the application
+	private static void createMenuBar(JFrame frame) {
+		menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+
+		//******************************************
+		// File menu
+		//******************************************
+
+		openItem = new JMenuItem(new AbstractAction("Open (CTRL + O)")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("File -> Open (CTRL + O). Opens a FridgTrackr file.");
+		    }
+		});
+
+		saveItem = new JMenuItem(new AbstractAction("Save (CTRL + S)")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("File -> Save (CTRL + S). Saves the current FridgTrackr file.");
+		    }
+		});
+
+		printAllItem = new JMenuItem(new AbstractAction("All (CTRL + P)")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("File -> Print -> All (CTRL + P). Prints the full FridgTrackr file.");
+		    }
+		});
+
+		printFridgeItem = new JMenuItem(new AbstractAction("Fridge Stock")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("File -> Print -> Fridge Stock. Prints the current fridge stock.");
+		    }
+		});
+
+		printRecipesItem = new JMenuItem(new AbstractAction("Recipes")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("File -> Print -> Recipes. Prints the currently stored recipes.");
+		    }
+		});
+
+		printGroceriesItem = new JMenuItem(new AbstractAction("Groceries")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("File -> Print -> Groceries. Prints the current grocery list.");
+		    }
+		});
+
+		printSubmenu = new JMenu("Print");
+		quitItem = new JMenuItem("Quit	(CTRL + Q)"); // ActionListener added later
+		printSubmenu.add(printAllItem);
+		printSubmenu.add(printFridgeItem);
+		printSubmenu.add(printRecipesItem);
+		printSubmenu.add(printGroceriesItem);
+		fileMenu = new JMenu("File");
+		fileMenu.add(openItem);
+		fileMenu.add(saveItem);
+		fileMenu.add(printSubmenu);
+		fileMenu.add(quitItem);
+		menuBar.add(fileMenu);
+
+		//******************************************
+		// Edit menu
+		//******************************************
+
+		copy = new JMenuItem(new AbstractAction("Copy (CTRL + C)")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Edit -> Copy (CTRL + C). Copies the selection.");
+		    }
+		});
+
+		cut = new JMenuItem(new AbstractAction("Cut (CTRL + X)")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Edit -> Cut (CTRL + X). Cuts the selection.");
+		    }
+		});
+
+		paste = new JMenuItem(new AbstractAction("Paste (CTRL + V)")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Edit -> Paste (CTRL + V). Pastes the selection.");
+		    }
+		});
+
+		search = new JMenuItem(new AbstractAction("Search (CTRL + F)")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Edit -> Search (CTRL + F). Allows the user to search for a string.");
+		    }
+		});
+
+		restore = new JMenuItem(new AbstractAction("Restore (CTRL + Z)")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Edit -> Restore (CTRL + Z). Restores the last deleted item to a limit.");
+		    }
+		});
+
+		favorites = new JMenuItem(new AbstractAction("Favorites")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Edit -> Filter By: --> Favorites. Filters by favorited items.");
+		    }
+		});
+
+		expiration = new JMenuItem(new AbstractAction("Expired")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Edit -> Filter By: --> Expired. Filters by expired items.");
+		    }
+		});
+
+		lowStock = new JMenuItem(new AbstractAction("Low Stock")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Edit -> Filter By: --> Low Stock. Filters by low stock.");
+		    }
+		});
+
+		leftovers = new JMenuItem(new AbstractAction("Leftovers")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Edit -> Filter By: --> Leftovers. Filters by items marked as leftovers.");
+		    }
+		});
+
+		filterBySubmenu = new JMenu("Filter By:");
+		filterBySubmenu.add(favorites);
+		filterBySubmenu.add(expiration);
+		filterBySubmenu.add(lowStock);
+		filterBySubmenu.add(leftovers);
+		editMenu = new JMenu("Edit");
+		editMenu.add(copy);
+		editMenu.add(cut);
+		editMenu.add(paste);
+		editMenu.addSeparator();
+		editMenu.add(search);
+		editMenu.add(restore);
+		editMenu.add(filterBySubmenu);
+		menuBar.add(editMenu);
+
+		//******************************************
+		// Window menu
+		//******************************************
+
+		resolution = new JMenuItem(new AbstractAction("Resolution")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Help -> Accessibility -> Resolution. Allows the user to adjust the resolution.");
+		    }
+		});
+
+		settings = new JMenu("Settings");
+		restorePt = new JMenuItem(new AbstractAction("Set Restore Point")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Window -> Settings -> Set Restore Point. "
+		        		+ "Allows the user to set the amount of restores to keep.");
+		    }
+		});
+
+		units = new JMenu("Set units");
+		metric = new JMenuItem(new AbstractAction("Metric")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Window -> Settings -> Set Units -> Metric. "
+		        		+ "Allows the user to set the units of measurement to the metric system.");
+		    }
+		});
+
+		imperial = new JMenuItem(new AbstractAction("Imperial")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Window -> Settings -> Set Units -> Imperial. "
+		        		+ "Allows the user to set the units of measurement to the imperial system.");
+		    }
+		});
+
+		customary = new JMenuItem(new AbstractAction("Customary")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Window -> Settings -> Set Units -> Customary. "
+		        		+ "Allows the user to set the units of measurement to the customary system.");
+		    }
+		});
+
+		units.add(metric);
+		units.add(imperial);
+		units.add(customary);
+		settings.add(units);
+		settings.add(restorePt);
+		windowMenu = new JMenu("Window");
+		windowMenu.add(resolution);
+		windowMenu.add(settings);
+		menuBar.add(windowMenu);
+
+		//******************************************
+		// Help menu
+		//******************************************
+
+		help = new JMenu("Help");
+		link = new JMenuItem(new AbstractAction("Link (CTRL + ?)")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Help -> Link. Opens a related webpage: http://www.myfridgefood.com/");
+		    }
+		});
+
+		accessibility = new JMenu("Accessibility");
+		fontSize = new JMenuItem(new AbstractAction("Font Size")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Help -> Accessibility -> Font Size. Allows the user to edit the font size.");
+		    }
+		});
+
+		invert = new JMenuItem(new AbstractAction("Invert")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Help -> Accessibility -> Invert. Inverts the colours being displayed.");
+		    }
+		});
+
+		bold = new JMenuItem(new AbstractAction("Bold")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("Help -> Accessibility -> Bold. Bolds all text.");
+		    }
+		});
+
+		feedback = new JMenuItem(new AbstractAction("Feedback (CTRL + H)")
+		{
+				public void actionPerformed(ActionEvent a)
+				{
+						System.out.println("Help -> Feedback (CTRL + H). Opens a window to allow the user provide feedback.");
+				}
+		});
+
+		donate = new JMenuItem(new AbstractAction("Donate (CTRL + $)")
+		{
+				public void actionPerformed(ActionEvent a)
+				{
+						System.out.println("Help -> Donate (CTRL + $). Allows the user to donate.");
+				}
+		});
+
+		accessibility.add(fontSize);
+		accessibility.add(invert);
+		accessibility.add(bold);
+		help.add(accessibility);
+		help.add(feedback);
+		help.add(donate);
+		menuBar.add(help);
+	}
+
+	// Create the toolbar for the application
+	private static void createToolbar(JFrame frame) {
+		toolBar = new JToolBar("Tool Bar");
+
+		// Search button
+		searchTool = new JButton(new AbstractAction("Search")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("ToolBar --> Search (CTRL + F). Allows the user to search for an item in the database.");
+		    }
+		});
+		searchTool.setIcon(Resources.getImage("icons/search.png"));
+		searchTool.setFont(new Font("Arial", Font.PLAIN, 15));
+		searchTool.setVerticalTextPosition(SwingConstants.TOP);
+		searchTool.setHorizontalTextPosition(SwingConstants.CENTER);
+		toolBar.add(searchTool);
+
+		// Filter button
+		filterTool = new JButton(new AbstractAction("Filter")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("ToolBar --> Filter. Allows the user to choose criteria to filter by.");
+		    }
+		});
+		filterTool.setIcon(Resources.getImage("icons/filter.png"));
+		filterTool.setFont(new Font("Arial", Font.PLAIN, 15));
+		filterTool.setVerticalTextPosition(SwingConstants.TOP);
+		filterTool.setHorizontalTextPosition(SwingConstants.CENTER);
+		toolBar.add(filterTool);
+		toolBar.addSeparator();
+
+		// Restore button
+		restoreTool = new JButton(new AbstractAction("Restore")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("ToolBar --> Restore (CTRL + Z). Restores the most recently deleted item.");
+		    }
+		});
+		restoreTool.setIcon(Resources.getImage("icons/restore.png"));
+		restoreTool.setFont(new Font("Arial", Font.PLAIN, 15));
+		restoreTool.setVerticalTextPosition(SwingConstants.TOP);
+		restoreTool.setHorizontalTextPosition(SwingConstants.CENTER);
+		toolBar.add(restoreTool);
+
+		// Settings button
+		settingsTool = new JButton(new AbstractAction("Settings")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("ToolBar --> Settings. Opens the settings window for the application.");
+		    }
+		});
+		settingsTool.setIcon(Resources.getImage("icons/settings.png"));
+		settingsTool.setFont(new Font("Arial", Font.PLAIN, 15));
+		settingsTool.setVerticalTextPosition(SwingConstants.TOP);
+		settingsTool.setHorizontalTextPosition(SwingConstants.CENTER);
+		toolBar.add(settingsTool);
+
+		// Bold button
+		boldTool = new JButton(new AbstractAction("Bold")
+		{
+		    public void actionPerformed(ActionEvent a)
+		    {
+		        System.out.println("ToolBar --> Bold. Bolds all text.");
+		    }
+		});
+		boldTool.setIcon(Resources.getImage("icons/bold.png"));
+		boldTool.setFont(new Font("Arial", Font.PLAIN, 15));
+		boldTool.setVerticalTextPosition(SwingConstants.TOP);
+		boldTool.setHorizontalTextPosition(SwingConstants.CENTER);
+		toolBar.add(boldTool);
+		toolBar.setBorder(new EmptyBorder(0, 100, 10, 100));
+
+		// Add everything to the frame
+		frame.getContentPane().add(toolBar, BorderLayout.PAGE_END);
 	}
 
 	//**********************************************************************
 	// Private Inner Classes
 	//**********************************************************************
 
-	private static final class HelloPanel extends JPanel
-		implements ActionListener
+	/*
+	 * Changes JTable so that the default highlighting is yellow
+	 */
+	private static class MyTable extends JTable
 	{
-		// Names of the columns in the CSV of baseball stadiums
-		public static String[]	COLUMNS =
-		{
-			"ID",
-			"Name",
-			"City",
-			"State",
-			"Latitude",
-			"Longitude",
-			"Capacity",
-		};
-
-		private final String	message;
-		public final JTable	table;		// Component for displaying the CSV
-
-		public HelloPanel(String message)
-		{
-			this.message = ((message != null) ? message : "");
-
-			ImageIcon	 icon =
-				Resources.getImage("icons/hmmm.png");
-
-			JButton	button = new JButton("Click me to see a CSV...", icon);
-
-			button.addActionListener(this);
-			add(button, BorderLayout.NORTH);
-
-			table = new JTable();
-			add(new JScrollPane(table), BorderLayout.CENTER);
+		MyTable(Object[][] obj, String[] cols) {
+			super(obj,cols);
 		}
 
-		public HelloPanel()
-		{
-			this("");
-		}
-
-		public void	paintComponent(Graphics g)
-		{
-			FontMetrics	fm = g.getFontMetrics(FONT);
-			int			fw = fm.stringWidth(message);
-			int			fh = fm.getMaxAscent() + fm.getMaxDescent();
-			int			x = (getWidth() - fw) / 2;
-			int			y = getHeight() - fh - 10;
-			Rectangle		r = new Rectangle(x, y, fw + 4, fh + 1);
-
-			if (FILL_COLOR != null)
-			{
-				g.setColor(FILL_COLOR);
-				g.fillRect(r.x, r.y, r.width - 1, r.height - 1);
-			}
-
-			if (EDGE_COLOR != null)
-			{
-				g.setColor(EDGE_COLOR);
-				g.drawRect(r.x, r.y, r.width - 1, r.height - 1);
-
-				g.setFont(FONT);
-				g.drawString(message, r.x + 2, r.y + fm.getMaxAscent());
-			}
-		}
-
-		// ActionListener for the button
-		public void	actionPerformed(ActionEvent e)
-		{
-			// Access the CSV as a resource (you won't access them this way!!!)
-			URL	url = Resources.getResource("data/stadiums.csv");
-
-			try
-			{
-				// Create a reader for the CSV
-				InputStream		is = url.openStream();
-				InputStreamReader	isr = new InputStreamReader(is);
-				BufferedReader		r = new BufferedReader(isr);
-
-				// Use the Apache Commons CSV library to read records from it
-				CSVFormat			format = CSVFormat.DEFAULT;
-				CSVParser			parser = CSVParser.parse(r, format);
-				java.util.List<CSVRecord>	records = parser.getRecords();
-
-				// Allocate a 2-D array to keep the rows and columns in memory
-				String[][]	values = new String[records.size()][COLUMNS.length];
-
-				for (CSVRecord record : records)	// Loop over the rows...
-				{
-					Iterator<String>	k = record.iterator();
-					int				i = (int)record.getRecordNumber() - 1;
-					int				j = 0;		// Column number
-
-					// Print each record to the console
-					System.out.println("***** #" + i + " *****");
-
-					while (k.hasNext())			// Loop over the columns...
-					{
-						values[i][j] = k.next();	// Grab each cell's value
-
-						// Print each value to the console...
-						System.out.println(COLUMNS[j] + " = " + values[i][j]);
-						j++;
-					}
-
-					System.out.println();
-
-					// ...and have the table show the entire value array.
-					table.setModel(new DefaultTableModel(values, COLUMNS));
-				}
-
-				is.close();
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			this.setSelectionBackground(Color.decode("#ffcc00"));
 		}
 	}
-}
 
-//******************************************************************************
+	/*
+	 * Changes the renderer so that the default highlighting is yellow
+	 * the soon to be "expired" item which is less than 3 days left are red
+	 * and when a red is highlighted it is orange instead of yellow
+	 * I did a lot of googling and reading to figure this one out
+	 */
+	private static class MyRenderer extends DefaultTableCellRenderer
+	{
+			public MyRenderer()
+			{
+					super();
+					setOpaque(true);
+			}
+			public Component getTableCellRendererComponent(JTable table, Object value,
+							boolean isSelected, boolean hasFocus, int row, int column)
+			{
+					if(Integer.parseInt((String)table.getValueAt(row, 3)) < 3)
+					{
+							setForeground(Color.black);
+							if (isSelected)
+							{
+								setBackground(Color.decode("#ff6600"));
+							}
+							else {
+									setBackground(Color.decode("#e60000"));
+							}
+					}
+					else
+					{
+							if (isSelected)
+							{
+								setBackground(Color.decode("#ffcc00"));
+							}
+							else {
+								setBackground(Color.white);
+							}
+					}
+					setText(value.toString());
+					return this;
+			}
+	}
+}
