@@ -104,6 +104,17 @@ public final class Stage7
 	// Tab stuff
 	private static JTabbedPane tabs;
 
+	// Filtering stuff
+	private static JPanel mid;
+	private static JPanel filterPanel;
+	private static JCheckBox favoritesBox;
+	private static JCheckBox expiredBox;
+	private static JLabel expiredLabel;
+	private static JCheckBox lowBox;
+	private static JLabel lowLabel;
+	private static JCheckBox leftoversBox;
+	private static JLabel leftoversLabel;
+
 	// Menubar items
 	private static JMenuBar menuBar;
 	private static JMenuItem openItem;
@@ -200,57 +211,8 @@ public final class Stage7
 		// Generate the recipes table
 		createRecipesTable(frame);
 
-		// ----- FRIDGE TAB FILTER CHECKBOX PANEL -----
-		JPanel			mid = new JPanel(new BorderLayout());
-		JPanel			filterPanel = new JPanel(new GridLayout(1, 8));
-		filterPanel.setBorder(new EmptyBorder(0, 50, 0, 50));
-		JCheckBox		favoritesBox = new JCheckBox();
-		favoritesBox.setText(blackStarUnicode);
-		favoritesBox.setHorizontalAlignment(JCheckBox.LEFT);
-		//JLabel			favoritesLabel = new JLabel("Favorites");
-		JCheckBox		expiredBox = new JCheckBox();
-		expiredBox.setHorizontalAlignment(JCheckBox.RIGHT);
-		JLabel			expiredLabel = new JLabel("Expired");
-		JCheckBox		lowBox = new JCheckBox();
-		lowBox.setHorizontalAlignment(JCheckBox.RIGHT);
-		JLabel			lowLabel = new JLabel("Low Stock");
-		JCheckBox		leftoversBox = new JCheckBox();
-		leftoversBox.setHorizontalAlignment(JCheckBox.RIGHT);
-		JLabel			leftoversLabel = new JLabel("Leftovers");
-		filterPanel.add(favoritesBox);
-		//filterPanel.add(favoritesLabel);
-		filterPanel.add(lowBox);
-		filterPanel.add(lowLabel);
-		filterPanel.add(expiredBox);
-		filterPanel.add(expiredLabel);
-		filterPanel.add(leftoversBox);
-		filterPanel.add(leftoversLabel);
-		mid.add(filterPanel, BorderLayout.CENTER);
-		fridge.add(mid, BorderLayout.NORTH);
-		// ----- RECIPES TAB FILTER CHECKBOX PANEL -----
-		JPanel			mid2 = new JPanel(new BorderLayout());
-		JButton back2 = new JButton(backArrow);
-		back2.setPreferredSize(new Dimension(100, 50));
-		back2.setFont(new Font("Arial", Font.PLAIN, 25));
-		JButton add2 = new JButton("+");
-		add2.setFont(new Font("Arial", Font.PLAIN, 25));
-		add2.setPreferredSize(new Dimension(100, 50));
-		mid2.add(back2, BorderLayout.WEST);
-		mid2.add(add2, BorderLayout.EAST);
-		JPanel			filterPanel2 = new JPanel(new GridLayout(1, 4));
-		filterPanel2.setBorder(new EmptyBorder(5, 50, 5, 50));
-		JCheckBox		favoritesBox2 = new JCheckBox(); // Items marked as favorite by user
-		favoritesBox2.setHorizontalAlignment(JCheckBox.RIGHT);
-		JLabel			favoritesLabel2 = new JLabel("Favorites");
-		JCheckBox		inStockBox = new JCheckBox(); // Recipes for which ingredients are in stock
-		inStockBox.setHorizontalAlignment(JCheckBox.RIGHT);
-		JLabel			inStockLabel = new JLabel("In Stock");
-		filterPanel2.add(favoritesBox2);
-		filterPanel2.add(favoritesLabel2);
-		filterPanel2.add(inStockBox);
-		filterPanel2.add(inStockLabel);
-		mid2.add(filterPanel2, BorderLayout.CENTER);
-		//recipes.add(mid2, BorderLayout.NORTH);
+		// Generate fridge tab filter checkbox panel
+		createFridgeFilterPanel(frame);
 
 		// Generate the menubar
 		createMenuBar(frame);
@@ -287,6 +249,41 @@ public final class Stage7
 	//**********************************************************************
 	// Private Class Methods
 	//**********************************************************************
+
+	// Create fridge tab filter checkbox panel
+	private static void createFridgeFilterPanel(JFrame frame) {
+		mid = new JPanel(new BorderLayout());
+
+		filterPanel = new JPanel(new GridLayout(1, 8));
+		filterPanel.setBorder(new EmptyBorder(0, 50, 0, 50));
+
+		favoritesBox = new JCheckBox();
+		favoritesBox.setText(blackStarUnicode);
+		favoritesBox.setHorizontalAlignment(JCheckBox.LEFT);
+
+		expiredBox = new JCheckBox();
+		expiredBox.setHorizontalAlignment(JCheckBox.RIGHT);
+		expiredLabel = new JLabel("Expired");
+
+		lowBox = new JCheckBox();
+		lowBox.setHorizontalAlignment(JCheckBox.RIGHT);
+		lowLabel = new JLabel("Low Stock");
+
+		leftoversBox = new JCheckBox();
+		leftoversBox.setHorizontalAlignment(JCheckBox.RIGHT);
+		leftoversLabel = new JLabel("Leftovers");
+
+		filterPanel.add(favoritesBox);
+		filterPanel.add(lowBox);
+		filterPanel.add(lowLabel);
+		filterPanel.add(expiredBox);
+		filterPanel.add(expiredLabel);
+		filterPanel.add(leftoversBox);
+		filterPanel.add(leftoversLabel);
+		
+		mid.add(filterPanel, BorderLayout.CENTER);
+		fridge.add(mid, BorderLayout.NORTH);
+	}
 
 	// Create the top panel
 	private static void createTopPanel(JFrame frame) {
