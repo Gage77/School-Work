@@ -55,6 +55,11 @@ public final class Stage7
 	// Private Class Members
 	//**********************************************************************
 
+	// Collection of Food, GroceryItem, and Recipe objects
+	private static ArrayList<Food> foodCollection;
+	private static ArrayList<GroceryItem> groceryCollection;
+	private static ArrayList<Recipe> recipeCollection;
+
 	// Unicode character representation for stars and back arrow
 	private static final String blackStarUnicode = "\u2605";
 	private static final String whiteStarUnicode = "\u2606";
@@ -100,6 +105,7 @@ public final class Stage7
 		"Amount",
 		"Delete"
 	};
+	private static MyTable groceriesTable;
 
 	// Tab stuff
 	private static JTabbedPane tabs;
@@ -169,6 +175,11 @@ public final class Stage7
 
 	public static void main(String[] args)
 	{
+		// Instantiate item collections
+		foodCollection = new ArrayList<Food>();
+		groceryCollection = new ArrayList<GroceryItem>();
+		recipeCollection = new ArrayList<Recipe>();
+
 		//MAIN WINDOW creates the base JFrame on which everything will be displayed
 		JFrame			frame = new JFrame("FridgTrackr");
 
@@ -280,7 +291,7 @@ public final class Stage7
 		filterPanel.add(expiredLabel);
 		filterPanel.add(leftoversBox);
 		filterPanel.add(leftoversLabel);
-		
+
 		mid.add(filterPanel, BorderLayout.CENTER);
 		fridge.add(mid, BorderLayout.NORTH);
 	}
@@ -356,6 +367,7 @@ public final class Stage7
 		fridgeTable.setFont(new Font("Lucida Console", Font.PLAIN, 13));
 		fridgeTable.getTableHeader().setFont(new Font("Lucida Console", Font.PLAIN, 13));
 		fridgeTable.setRowHeight(20);
+		fridgeTable.getTableHeader().setReorderingAllowed(false);
 
 		//adds the data panel to the fridge category panel
 		fridge.add(new JScrollPane(fridgeTable));
@@ -370,7 +382,8 @@ public final class Stage7
 							 { "Peaches" ,"10", "[x]"},
 						 };
 		//creates a table to hold the groceries panel data
-		MyTable groceriesTable = new MyTable( products1, groceriesTableHeaders );
+		groceriesTable = new MyTable( products1, groceriesTableHeaders );
+		groceriesTable.getTableHeader().setReorderingAllowed(false);
 		//adds the data panel to the fridge category panel
 		groceries.add(new JScrollPane(groceriesTable) );
 	}
@@ -385,6 +398,7 @@ public final class Stage7
     };
 		//creates a table to hold the recipes panel data
 		recipesTable = new MyTable( products2, recipesTableHeaders);
+		recipesTable.getTableHeader().setReorderingAllowed(false);
 		//adds the data panel to the recipes category panel
 		recipes.add(new JScrollPane(recipesTable), BorderLayout.CENTER);
 	}
@@ -403,6 +417,7 @@ public final class Stage7
 		    public void actionPerformed(ActionEvent a)
 		    {
 		        System.out.println("File -> Open (CTRL + O). Opens a FridgTrackr file.");
+						openCSV();
 		    }
 		});
 
@@ -753,6 +768,12 @@ public final class Stage7
 		frame.getContentPane().add(toolBar, BorderLayout.PAGE_END);
 	}
 
+	private static void openCSV() {
+		JFileChooser fc = new JFileChooser();
+		fc.setDialogTitle("Select FridgTrackr Collection File (CSV)");
+		fc.showOpenDialog(null);
+		System.out.println("File chosen ---> " + fc.getSelectedFile().getAbsolutePath());
+	}
 	//**********************************************************************
 	// Private Inner Classes
 	//**********************************************************************
