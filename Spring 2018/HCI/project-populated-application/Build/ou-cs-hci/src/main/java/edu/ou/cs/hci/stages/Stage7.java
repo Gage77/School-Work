@@ -29,12 +29,14 @@ import java.io.PrintWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Iterator;
+import javax.swing.table.DefaultTableModel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -445,7 +447,8 @@ public final class Stage7
 		    public void actionPerformed(ActionEvent a)
 		    {
 		        System.out.println("File -> Save (CTRL + S). Saves the current FridgTrackr file.");
-		    }
+						saveToCSV();
+				}
 		});
 
 		printAllItem = new JMenuItem(new AbstractAction("All (CTRL + P)")
@@ -827,7 +830,11 @@ public final class Stage7
 						System.out.println(COLUMNS[j] + " = " + values[i][j]);
 						j++;
 					}
+					System.out.println();
+				}
 
+				// Populate the collections
+				for (int i = 0; i < records.size(); i++) {
 					// Grab first value of each row to determine what kind of item is
 					// currently being read
 					int firstValue = 0;
@@ -837,7 +844,7 @@ public final class Stage7
 						ex.printStackTrace();
 					}
 
-					// Switch statement to create currently read in object
+					//Switch statement to create currently read in object
 					switch (firstValue) {
 						case 0:	// Food item
 							System.out.println("Food item");
@@ -848,18 +855,15 @@ public final class Stage7
 							createGroceryItem(values, i);
 							break;
 						case 2:	// Recipe item
-							System.out.println("Recipe");
-							createRecipe(values, i);
+						System.out.println("Recipe");
+						createRecipe(values, i);
 							break;
 						default:	// Default to food item to fix first item in CSV ID error
 							System.out.println("Probably a food item");
 							createFoodItem(values, i);
 							break;
 					}
-					System.out.println();
 				}
-
-				System.out.println(foodCollection.size());
 				is.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -869,6 +873,92 @@ public final class Stage7
 			populateFridgeTable();
 			populateGroceryTable();
 			populateRecipeTable();
+		}
+	}
+
+	// Save to CSV
+	private static void saveToCSV() {
+		JFileChooser fc = new JFileChooser();
+		fc.setSelectedFile(new File(".csv"));
+		int status = fc.showSaveDialog(fc);
+
+		if (status == JFileChooser.APPROVE_OPTION) {
+			try {
+				PrintWriter pw = new PrintWriter(fc.getSelectedFile()+".csv");
+
+				// Write food items
+				for (int i = 0; i < foodCollection.size(); i++) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("0");
+					sb.append(',');
+					if (foodCollection.get(i).isFavorite()) {
+						sb.append("1");
+					}
+					else {
+						sb.append("0");
+					}
+					sb.append(',');
+					sb.append(foodCollection.get(i).getName());
+					sb.append(',');
+					sb.append(foodCollection.get(i).getAmount());
+					sb.append(',');
+					sb.append(foodCollection.get(i).getExpDate());
+					sb.append(',');
+					if (foodCollection.get(i).isLeftover()) {
+						sb.append("1");
+					}
+					else {
+						sb.append("0");
+					}
+					sb.append('\n');
+
+					pw.write(sb.toString());
+				}
+
+				// Write grocery items
+				for (int j = 0; j < groceryCollection.size(); j++) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("1");
+					sb.append(',');
+					sb.append(groceryCollection.get(j).getName());
+					sb.append(',');
+					sb.append(groceryCollection.get(j).getAmount());
+					sb.append(',');
+					sb.append("");
+					sb.append(',');
+					sb.append("");
+					sb.append(',');
+					sb.append("");
+					sb.append('\n');
+
+					pw.write(sb.toString());
+				}
+
+				// Write recipes
+				for (int k = 0; k < recipeCollection.size(); k++) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("2");
+					sb.append(',');
+					sb.append(recipeCollection.get(k).getName());
+					sb.append(',');
+					sb.append(recipeCollection.get(k).getDescriptionPath());
+					sb.append(',');
+					for (int p = 0; p < recipeCollection.get(k).getIngredients().length; p++) {
+						sb.append(recipeCollection.get(k).getIngredients()[p]);
+						sb.append("./");
+					}
+					sb.append(',');
+					sb.append("");
+					sb.append(',');
+					sb.append("");
+					sb.append("\n");
+
+					pw.write(sb.toString());
+				}
+				pw.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
@@ -919,12 +1009,30 @@ public final class Stage7
 
 	// Populate the fridge table with read in fridge collection values
 	private static void populateFridgeTable() {
+		Object[][] fridgeOptions = new Object[foodCollection.size()][5];
 
+		for (int i = 0; i < foodCollection.size(); i++) {
+			if (foodCollection.get(i).isFavorite()) {
+				fridgeOptions[i][0] = blackStarUnicode;
+			}
+			else {
+				fridgeOptions[i][0] = whiteStarUnicode;
+			}
+			fridgeOptions[i][1] = foodCollection.get(i).getName();
+			fridgeOptions[i][2] = foodCollection.get(i).getAmount();
+			fridgeOptions[i][3] = foodCollection.get(i).getExpDate();
+			if (foodCollection.get(i).isLeftover()) {
+				fridgeOptions[i][4] = "Yes";
+			}
+			else {
+				fridgeOptions[i][4] = "";
+			}
+		}
 	}
 
 	// Populate the grocery table with read in grocery collection values
 	private static void populateGroceryTable() {
-		
+
 	}
 
 	// Populate the recipes table with read in recipe collection values
