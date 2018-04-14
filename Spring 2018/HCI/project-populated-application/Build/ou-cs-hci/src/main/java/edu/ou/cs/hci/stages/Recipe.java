@@ -1,6 +1,7 @@
 package edu.ou.cs.hci.stages;
 
-import java.util.Collection;
+import java.util.ArrayList;
+
 
 public class Recipe
 {
@@ -14,7 +15,7 @@ public class Recipe
 
   private static String name;
   private static String descriptionPath;
-  private static Food[] ingredients;
+  private static String[] ingredients;
 
   //**********************************************************************
   // Constructor(s)
@@ -23,10 +24,10 @@ public class Recipe
   public Recipe () {
     name = "";
     descriptionPath = "";
-    ingredients = new Food[1];
+    ingredients = new String[1];
   }
 
-  public Recipe (String name, String descriptionPath, Food[] ingredients) {
+  public Recipe (String name, String descriptionPath, String[] ingredients) {
     this.name = name;
     this.descriptionPath = descriptionPath;
     this.ingredients = ingredients;
@@ -44,7 +45,7 @@ public class Recipe
     return this.descriptionPath;
   }
 
-  public Food[] getIngredients() {
+  public String[] getIngredients() {
     return this.ingredients;
   }
 
@@ -56,7 +57,7 @@ public class Recipe
     this.descriptionPath = descriptionPath;
   }
 
-  public void setIngredients(Food[] ingredients) {
+  public void setIngredients(String[] ingredients) {
     this.ingredients = ingredients;
   }
 

@@ -26,14 +26,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Iterator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+
+import org.apache.commons.csv.*;	// for reading in CSVs
 
 import edu.ou.cs.hci.resources.*;
 
@@ -168,6 +177,16 @@ public final class Stage7
 	private static JButton restoreTool;
 	private static JButton settingsTool;
 	private static JButton boldTool;
+
+	// CSV stuff and thangs
+	private static String[] COLUMNS = {
+		"ID",
+		"Favorite",
+		"Name",
+		"Amount",
+		"ExpDate",
+		"Leftover"
+	};
 
 	//**********************************************************************
 	// Main
@@ -768,12 +787,131 @@ public final class Stage7
 		frame.getContentPane().add(toolBar, BorderLayout.PAGE_END);
 	}
 
+	// Read in a CSV data file
 	private static void openCSV() {
 		JFileChooser fc = new JFileChooser();
 		fc.setDialogTitle("Select FridgTrackr Collection File (CSV)");
-		fc.showOpenDialog(null);
-		System.out.println("File chosen ---> " + fc.getSelectedFile().getAbsolutePath());
+		int fcReturn = fc.showOpenDialog(null);
+
+		if (fcReturn == JFileChooser.APPROVE_OPTION) {
+			try {
+				System.out.println("File chosen ---> " + fc.getSelectedFile().getAbsolutePath());
+				File file = fc.getSelectedFile();
+				URL fileURL = file.toURI().toURL();
+				InputStream is = fileURL.openStream();
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+
+				// Apache Commons CSV library for reading CSV
+				CSVFormat format = CSVFormat.DEFAULT;
+				CSVParser parser = CSVParser.parse(br, format);
+				java.util.List<CSVRecord> records = parser.getRecords();
+
+				// 2D array to keep rows and columns of csv
+				String[][] values = new String[records.size()][COLUMNS.length];
+
+				// Loop over all rows
+				for (CSVRecord record : records) {
+					Iterator<String> k = record.iterator();
+					int i = (int)record.getRecordNumber() - 1;
+					int j = 0;	// column number
+
+					// Print each record to the console
+					System.out.println("------- #" + i + " -------");
+
+					// Loop over columns and populate the values matrix
+					while (k.hasNext()) {
+						values[i][j] = k.next(); // Grab each cell's values
+
+						// Print each value to the console
+						System.out.println(COLUMNS[j] + " = " + values[i][j]);
+						j++;
+					}
+
+					// Grab first value of each row to determine what kind of item is
+					// currently being read
+					int firstValue = 0;
+					try {
+						firstValue = Integer.parseInt(values[i][0]);
+					} catch (NumberFormatException ex) {
+						ex.printStackTrace();
+					}
+
+					// Switch statement to create currently read in object
+					switch (firstValue) {
+						case 0:	// Food item
+							System.out.println("Food item");
+							createFoodItem(values, i);
+							break;
+						case 1:	// Grocery item
+							System.out.println("Grocery item");
+							createGroceryItem(values, i);
+							break;
+						case 2:	// Recipe item
+							System.out.println("Recipe");
+							createRecipe(values, i);
+							break;
+						default:	// Default to food item to fix first item in CSV ID error
+							System.out.println("Probably a food item");
+							createFoodItem(values, i);
+							break;
+					}
+					System.out.println();
+				}
+
+				System.out.println(foodCollection.size());
+				is.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
+
+	// ID 0 or default was read, create food item
+	private static void createFoodItem(String[][] values, int rowIndex) {
+		// Get all necessary constructor values
+		boolean isFavorite = false;
+		if (Integer.parseInt(values[rowIndex][1]) == 1) {
+			isFavorite = true;
+		}
+		String name = values[rowIndex][2];
+		String amount = values[rowIndex][3];
+		String expDate = values[rowIndex][4];
+		boolean isLeftover = false;
+		if (Integer.parseInt(values[rowIndex][5]) == 1) {
+			isLeftover = true;
+		}
+
+		// Create new food item, then add the food item to the food collection
+		Food food = new Food(name, amount, expDate, isFavorite, isLeftover);
+		foodCollection.add(food);
+	}
+
+	// ID 1 was read, create grocery item
+	private static void createGroceryItem(String[][] values, int rowIndex) {
+		// Get all necessary constructor values
+		String name = values[rowIndex][1];
+		String amount = values[rowIndex][2];
+
+		// Create grocery item, then add grocery item to grocery collection
+		GroceryItem groceryItem = new GroceryItem(name, amount);
+		groceryCollection.add(groceryItem);
+	}
+
+	// ID 2 was read, create recipe item
+	private static void createRecipe(String[][] values, int rowIndex) {
+		// Get all necessary constructor values
+		String name = values[rowIndex][1];
+		String descriptionPath = values[rowIndex][2];
+		String ingredientsListUnsplit = values[rowIndex][3];
+
+		// Parse ingredients string into ingredients array
+		String[] ingredients = ingredientsListUnsplit.split("./");
+
+		Recipe recipe = new Recipe(name, descriptionPath, ingredients);
+		recipeCollection.add(recipe);
+	}
+
 	//**********************************************************************
 	// Private Inner Classes
 	//**********************************************************************
