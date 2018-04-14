@@ -864,6 +864,11 @@ public final class Stage7
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
+
+			// populate all 3 jtables
+			populateFridgeTable();
+			populateGroceryTable();
+			populateRecipeTable();
 		}
 	}
 
@@ -910,6 +915,21 @@ public final class Stage7
 
 		Recipe recipe = new Recipe(name, descriptionPath, ingredients);
 		recipeCollection.add(recipe);
+	}
+
+	// Populate the fridge table with read in fridge collection values
+	private static void populateFridgeTable() {
+
+	}
+
+	// Populate the grocery table with read in grocery collection values
+	private static void populateGroceryTable() {
+		
+	}
+
+	// Populate the recipes table with read in recipe collection values
+	private static void populateRecipeTable() {
+
 	}
 
 	//**********************************************************************
