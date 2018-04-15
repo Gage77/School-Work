@@ -1,0 +1,7 @@
+I was unfortunately not able to fully implement the reading in of a CSV file and subsequent populating of a JTable in our application.
+I was able to read in the CSV file successfully, but upon attempting to store the information in that CSV file into an ArrayList of custom objects, for some reason unknown to me the ArrayList contained identical copies of the last item read in from the ArrayList.
+Because of this, when reading in a CSV file in this project, the JTable in the main window will not update.
+
+That being said, I have all of the structures in place for all of the other interactions required of this project.
+When editing a cell in the JTable presented at the beginning, the application registers a change has been made and will ask the user if they want to save the changed information before quitting if the quit button is pressed.
+When saving to a CSV, the program runs through the collection of custom objects and writes them to a CSV. This can be seen by first reading in the test CSV file found in the "resources/data" directory named "save.csv", and then saving that CSV to a new CSV. All items in this new CSV will all be froot rollups for some reason that I cannot figure out.

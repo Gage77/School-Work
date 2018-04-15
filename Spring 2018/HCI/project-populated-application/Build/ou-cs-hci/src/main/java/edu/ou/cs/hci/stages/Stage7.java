@@ -234,23 +234,30 @@ public final class Stage7
 		frame.getContentPane().add(tabs, BorderLayout.CENTER);
 
 		// Create empty table for fridge items
-		fridgeTable = new JTable();
+		Object[][] options = {
+			{whiteStarUnicode, "bread", "7 (slices)", "4", ""}
+		};
+		fridgeTable = new JTable(options, fridgeHeaders);
 		renderer = new MyRenderer();
 		fridgeTable.setDefaultRenderer(Object.class, renderer);
 		fridgeTable.getTableHeader().setReorderingAllowed(false);
 		fridgeTable.setSelectionBackground(Color.decode("#ffcc00"));
 		fridgeTable.setFont(new Font("Lucida Console", Font.PLAIN, 13));
 		fridgeTable.getTableHeader().setFont(new Font("Lucida Console", Font.PLAIN, 13));
+		fridgeTable.getSelectionModel().addListSelectionListener(new FTListSelectionListener());
 		fridge.add(new JScrollPane(fridgeTable), BorderLayout.CENTER);
+
 
 		// Create empty table to grocery items
 		groceriesTable = new JTable();
 		groceriesTable.getTableHeader().setReorderingAllowed(false);
+		groceriesTable.getSelectionModel().addListSelectionListener(new FTListSelectionListener());
 		groceries.add(new JScrollPane(groceriesTable), BorderLayout.CENTER);
 
 		// Create empty table for recipe items
 		recipesTable = new JTable();
 		recipesTable.getTableHeader().setReorderingAllowed(false);
+		recipesTable.getSelectionModel().addListSelectionListener(new FTListSelectionListener());
 		recipes.add(new JScrollPane(recipesTable), BorderLayout.CENTER);
 
 		// Generate fridge tab filter checkbox panel
@@ -873,97 +880,96 @@ public final class Stage7
 
 	// Save to CSV
 	private static void saveToCSV() {
-		JFileChooser fc = new JFileChooser() {
-			@Override
-			public void approveSelection()
-			{
-				File f = getSelectedFile();
-				if (f.exists() && getDialogType() == SAVE_DIALOG) {
-					JOptionPane.showMessageDialog(new JFrame(), "That file already exists!", "File already exists", JOptionPane.WARNING_MESSAGE);
-				}
-			}
-		};
+		JFileChooser fc = new JFileChooser();
+		//fc.setSelectedFile(new File(".csv"));
 		// fc.setSelectedFile(new File(".csv"));
 		int status = fc.showSaveDialog(fc);
 
 		if (status == JFileChooser.APPROVE_OPTION) {
-			try {
-				PrintWriter pw = new PrintWriter(fc.getSelectedFile()+".csv");
+			try
+			{
+				if (fc.getSelectedFile().exists()) {
+					JOptionPane.showMessageDialog(new JFrame(), "That file already exists!", "File already exists", JOptionPane.WARNING_MESSAGE);
+				}
+				else {
+					PrintWriter pw = new PrintWriter(fc.getSelectedFile()+".csv");
 
-				// Write food items
-				for (int i = 0; i < foodCollection.size(); i++) {
-					StringBuilder sb = new StringBuilder();
-					sb.append("0");
-					sb.append(',');
-					if (foodCollection.get(i).isFavorite()) {
-						sb.append("1");
-					}
-					else {
+					// Write food items
+					for (int i = 0; i < foodCollection.size(); i++) {
+						StringBuilder sb = new StringBuilder();
 						sb.append("0");
+						sb.append(',');
+						if (foodCollection.get(i).isFavorite()) {
+							sb.append("1");
+						}
+						else {
+							sb.append("0");
+						}
+						sb.append(',');
+						sb.append(foodCollection.get(i).getName());
+						sb.append(',');
+						sb.append(foodCollection.get(i).getAmount());
+						sb.append(',');
+						sb.append(foodCollection.get(i).getExpDate());
+						sb.append(',');
+						if (foodCollection.get(i).isLeftover()) {
+							sb.append("1");
+						}
+						else {
+							sb.append("0");
+						}
+						sb.append('\n');
+
+						pw.write(sb.toString());
 					}
-					sb.append(',');
-					sb.append(foodCollection.get(i).getName());
-					sb.append(',');
-					sb.append(foodCollection.get(i).getAmount());
-					sb.append(',');
-					sb.append(foodCollection.get(i).getExpDate());
-					sb.append(',');
-					if (foodCollection.get(i).isLeftover()) {
+
+					// Write grocery items
+					for (int j = 0; j < groceryCollection.size(); j++) {
+						StringBuilder sb = new StringBuilder();
 						sb.append("1");
+						sb.append(',');
+						sb.append(groceryCollection.get(j).getName());
+						sb.append(',');
+						sb.append(groceryCollection.get(j).getAmount());
+						sb.append(',');
+						sb.append("");
+						sb.append(',');
+						sb.append("");
+						sb.append(',');
+						sb.append("");
+						sb.append('\n');
+
+						pw.write(sb.toString());
 					}
-					else {
-						sb.append("0");
+
+					// Write recipes
+					for (int k = 0; k < recipeCollection.size(); k++) {
+						StringBuilder sb = new StringBuilder();
+						sb.append("2");
+						sb.append(',');
+						sb.append(recipeCollection.get(k).getName());
+						sb.append(',');
+						sb.append(recipeCollection.get(k).getDescriptionPath());
+						sb.append(',');
+						for (int p = 0; p < recipeCollection.get(k).getIngredients().length; p++) {
+							sb.append(recipeCollection.get(k).getIngredients()[p]);
+							sb.append("./");
+						}
+						sb.append(',');
+						sb.append("");
+						sb.append(',');
+						sb.append("");
+						sb.append("\n");
+
+						pw.write(sb.toString());
 					}
-					sb.append('\n');
-
-					pw.write(sb.toString());
+					pw.close();
 				}
-
-				// Write grocery items
-				for (int j = 0; j < groceryCollection.size(); j++) {
-					StringBuilder sb = new StringBuilder();
-					sb.append("1");
-					sb.append(',');
-					sb.append(groceryCollection.get(j).getName());
-					sb.append(',');
-					sb.append(groceryCollection.get(j).getAmount());
-					sb.append(',');
-					sb.append("");
-					sb.append(',');
-					sb.append("");
-					sb.append(',');
-					sb.append("");
-					sb.append('\n');
-
-					pw.write(sb.toString());
-				}
-
-				// Write recipes
-				for (int k = 0; k < recipeCollection.size(); k++) {
-					StringBuilder sb = new StringBuilder();
-					sb.append("2");
-					sb.append(',');
-					sb.append(recipeCollection.get(k).getName());
-					sb.append(',');
-					sb.append(recipeCollection.get(k).getDescriptionPath());
-					sb.append(',');
-					for (int p = 0; p < recipeCollection.get(k).getIngredients().length; p++) {
-						sb.append(recipeCollection.get(k).getIngredients()[p]);
-						sb.append("./");
-					}
-					sb.append(',');
-					sb.append("");
-					sb.append(',');
-					sb.append("");
-					sb.append("\n");
-
-					pw.write(sb.toString());
-				}
-				pw.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
+		shouldSaveOnExit = false;	// reset save flag
 	}
 
 	// ID 0 or default was read, create food item
@@ -1108,5 +1114,13 @@ public final class Stage7
 					setText(value.toString());
 					return this;
 			}
+	}
+
+	// Custom listselectionlistener for tables
+	private static class FTListSelectionListener implements ListSelectionListener {
+		public void valueChanged(ListSelectionEvent e) {
+			shouldSaveOnExit = true;
+			System.out.println("Change to table");
+		}
 	}
 }
