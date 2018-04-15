@@ -43,6 +43,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.csv.*;	// for reading in CSVs
 
@@ -62,14 +63,17 @@ public final class Stage7
 	// Public Class Members
 	//**********************************************************************
 
+	// Save changes flag
+	public static boolean shouldSaveOnExit = false;
+
 	//**********************************************************************
 	// Private Class Members
 	//**********************************************************************
 
 	// Collection of Food, GroceryItem, and Recipe objects
-	private static ArrayList<Food> foodCollection;
-	private static ArrayList<GroceryItem> groceryCollection;
-	private static ArrayList<Recipe> recipeCollection;
+	private static ArrayList<Food> foodCollection = new ArrayList<Food>();
+	private static ArrayList<GroceryItem> groceryCollection = new ArrayList<GroceryItem>();
+	private static ArrayList<Recipe> recipeCollection = new ArrayList<Recipe>();
 
 	// Unicode character representation for stars and back arrow
 	private static final String blackStarUnicode = "\u2605";
@@ -89,14 +93,14 @@ public final class Stage7
 	// Fridge tab items
 	private static JPanel fridge;
 	private static Icon fridgeIcon;
-	private static String[] colName = new String[] {
-		"\u2605",
+	private static String[] fridgeHeaders = new String[] {
+		"*",
 		"Name",
 		"Amount",
 		"Days Left",
 		"Leftover"
 	};
-	private static MyTable fridgeTable;
+	private static JTable fridgeTable;
 	private static MyRenderer renderer;
 
 	// Recipe tab items
@@ -106,7 +110,7 @@ public final class Stage7
 		"Name",
 		"Delete"
 	};
-	private static MyTable recipesTable;
+	private static JTable recipesTable;
 
 	// Grocery tab items
 	private static JPanel groceries;
@@ -116,7 +120,7 @@ public final class Stage7
 		"Amount",
 		"Delete"
 	};
-	private static MyTable groceriesTable;
+	private static JTable groceriesTable;
 
 	// Tab stuff
 	private static JTabbedPane tabs;
@@ -196,11 +200,6 @@ public final class Stage7
 
 	public static void main(String[] args)
 	{
-		// Instantiate item collections
-		foodCollection = new ArrayList<Food>();
-		groceryCollection = new ArrayList<GroceryItem>();
-		recipeCollection = new ArrayList<Recipe>();
-
 		//MAIN WINDOW creates the base JFrame on which everything will be displayed
 		JFrame			frame = new JFrame("FridgTrackr");
 
@@ -234,14 +233,25 @@ public final class Stage7
 		//adds the JTabbedPane to the base pane
 		frame.getContentPane().add(tabs, BorderLayout.CENTER);
 
-		// Generate the fridge table
-		createFridgeTable(frame);
+		// Create empty table for fridge items
+		fridgeTable = new JTable();
+		renderer = new MyRenderer();
+		fridgeTable.setDefaultRenderer(Object.class, renderer);
+		fridgeTable.getTableHeader().setReorderingAllowed(false);
+		fridgeTable.setSelectionBackground(Color.decode("#ffcc00"));
+		fridgeTable.setFont(new Font("Lucida Console", Font.PLAIN, 13));
+		fridgeTable.getTableHeader().setFont(new Font("Lucida Console", Font.PLAIN, 13));
+		fridge.add(new JScrollPane(fridgeTable), BorderLayout.CENTER);
 
-		// Generate the groceries table
-		createGroceriesTable(frame);
+		// Create empty table to grocery items
+		groceriesTable = new JTable();
+		groceriesTable.getTableHeader().setReorderingAllowed(false);
+		groceries.add(new JScrollPane(groceriesTable), BorderLayout.CENTER);
 
-		// Generate the recipes table
-		createRecipesTable(frame);
+		// Create empty table for recipe items
+		recipesTable = new JTable();
+		recipesTable.getTableHeader().setReorderingAllowed(false);
+		recipes.add(new JScrollPane(recipesTable), BorderLayout.CENTER);
 
 		// Generate fridge tab filter checkbox panel
 		createFridgeFilterPanel(frame);
@@ -268,7 +278,6 @@ public final class Stage7
 		{
 				public void windowClosing(WindowEvent e)
 				{
-					quitItem.doClick();
 					System.exit(0);
 				}
 			});
@@ -367,63 +376,6 @@ public final class Stage7
 		};     add.addActionListener(addListener);
 	}
 
-	// Create fridge table
-	private static void createFridgeTable(JFrame frame) {
-		//creates the content of the fridge category panel
-		Object[][] products = new Object[][] {
-	      { whiteStarUnicode, "Apples", "15 (Apples)", "3" , ""},
-	      { blackStarUnicode, "Eggs", "6 (Eggs)", "12" , ""},
-	      { whiteStarUnicode, "Chili", "--", "3", "Yes"},
-	      { blackStarUnicode, "Oranges" ,"20 (Oranges)", "4", ""},
-	      { whiteStarUnicode, "Peaches" ,"10 (Peaches)", "1", ""},
-	      { whiteStarUnicode, "Tacos", "--", "2", "Yes"},
-	      { blackStarUnicode, "Bread", "2 (Slices)", "7", ""},
-	      { whiteStarUnicode, "Potato Chips", "1 (Bags)", "3" , ""}
-		};
-
-		fridgeTable = new MyTable(products, colName);
-		renderer = new MyRenderer();
-		fridgeTable.setDefaultRenderer(Object.class, renderer);
-		fridgeTable.getColumnModel().getColumn(0).setMaxWidth(25);
-		fridgeTable.setFont(new Font("Lucida Console", Font.PLAIN, 13));
-		fridgeTable.getTableHeader().setFont(new Font("Lucida Console", Font.PLAIN, 13));
-		fridgeTable.setRowHeight(20);
-		fridgeTable.getTableHeader().setReorderingAllowed(false);
-
-		//adds the data panel to the fridge category panel
-		fridge.add(new JScrollPane(fridgeTable));
-	}
-
-	// Create groceries table
-	private static void createGroceriesTable(JFrame frame) {
-		//creates the content of the groceries category panel
-		Object[][] products1 = new Object[][] {
-							 { "Apples" ,"15", "[x]" },
-							 { "Oranges" ,"20", "[x]"},
-							 { "Peaches" ,"10", "[x]"},
-						 };
-		//creates a table to hold the groceries panel data
-		groceriesTable = new MyTable( products1, groceriesTableHeaders );
-		groceriesTable.getTableHeader().setReorderingAllowed(false);
-		//adds the data panel to the fridge category panel
-		groceries.add(new JScrollPane(groceriesTable) );
-	}
-
-	// Create recipes table
-	private static void createRecipesTable(JFrame frame) {
-		//creates the content of the recipes category panel
-		Object[][] products2 = new Object[][] {
-            { "Grilled Cheese", "[x]" },
-            { "Pizza", "[x]" },
-            { "Mac & Cheese", "[x]" },
-    };
-		//creates a table to hold the recipes panel data
-		recipesTable = new MyTable( products2, recipesTableHeaders);
-		recipesTable.getTableHeader().setReorderingAllowed(false);
-		//adds the data panel to the recipes category panel
-		recipes.add(new JScrollPane(recipesTable), BorderLayout.CENTER);
-	}
-
 	// Create the menu bar for the application
 	private static void createMenuBar(JFrame frame) {
 		menuBar = new JMenuBar();
@@ -439,6 +391,9 @@ public final class Stage7
 		    {
 		        System.out.println("File -> Open (CTRL + O). Opens a FridgTrackr file.");
 						openCSV();
+						for (Food item: foodCollection) {
+							System.out.println(item.getName());
+						}
 		    }
 		});
 
@@ -484,7 +439,42 @@ public final class Stage7
 		});
 
 		printSubmenu = new JMenu("Print");
-		quitItem = new JMenuItem("Quit	(CTRL + Q)"); // ActionListener added later
+		quitItem = new JMenuItem(new AbstractAction("Quit	(CTRL + Q)")
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println("Quit pressed");
+				if (shouldSaveOnExit) {
+					Object[] options = {
+						"Quit without saving",
+						"Cancel",
+						"Save before quitting"
+					};
+
+					int response = JOptionPane.showOptionDialog(
+						frame,
+						"Changes have been made since the last save.",
+						"Save changes?",
+						JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null,
+						options,
+						options[2]
+					);
+
+					if (response == JOptionPane.YES_OPTION) {	// Quit
+						System.exit(0);
+					}
+					else if (response == JOptionPane.CANCEL_OPTION) {	// save to csv
+						saveToCSV();
+						System.exit(0);
+					}
+				}
+				else {
+					System.exit(0);
+				}
+			}
+		});
 		printSubmenu.add(printAllItem);
 		printSubmenu.add(printFridgeItem);
 		printSubmenu.add(printRecipesItem);
@@ -833,6 +823,11 @@ public final class Stage7
 					System.out.println();
 				}
 
+				// Clear whatever is currently in the collection arraylists
+				foodCollection.clear();
+				groceryCollection.clear();
+				recipeCollection.clear();
+
 				// Populate the collections
 				for (int i = 0; i < records.size(); i++) {
 					// Grab first value of each row to determine what kind of item is
@@ -878,8 +873,17 @@ public final class Stage7
 
 	// Save to CSV
 	private static void saveToCSV() {
-		JFileChooser fc = new JFileChooser();
-		fc.setSelectedFile(new File(".csv"));
+		JFileChooser fc = new JFileChooser() {
+			@Override
+			public void approveSelection()
+			{
+				File f = getSelectedFile();
+				if (f.exists() && getDialogType() == SAVE_DIALOG) {
+					JOptionPane.showMessageDialog(new JFrame(), "That file already exists!", "File already exists", JOptionPane.WARNING_MESSAGE);
+				}
+			}
+		};
+		// fc.setSelectedFile(new File(".csv"));
 		int status = fc.showSaveDialog(fc);
 
 		if (status == JFileChooser.APPROVE_OPTION) {
@@ -979,7 +983,9 @@ public final class Stage7
 
 		// Create new food item, then add the food item to the food collection
 		Food food = new Food(name, amount, expDate, isFavorite, isLeftover);
+		System.out.println("Before adding to list === " + food.getName());
 		foodCollection.add(food);
+		System.out.println("After adding to list === " + foodCollection.get(foodCollection.size() - 1).getName());
 	}
 
 	// ID 1 was read, create grocery item
@@ -1009,6 +1015,7 @@ public final class Stage7
 
 	// Populate the fridge table with read in fridge collection values
 	private static void populateFridgeTable() {
+		System.out.println("pop fridge entered");
 		Object[][] fridgeOptions = new Object[foodCollection.size()][5];
 
 		for (int i = 0; i < foodCollection.size(); i++) {
@@ -1028,6 +1035,8 @@ public final class Stage7
 				fridgeOptions[i][4] = "";
 			}
 		}
+
+		fridgeTable.setModel(new DefaultTableModel(fridgeOptions, fridgeHeaders));
 	}
 
 	// Populate the grocery table with read in grocery collection values
