@@ -35,9 +35,9 @@ public final class MouseHandler extends MouseAdapter
 
 	// State (internal) variables
 	private final View	view;
-	private Point2D.Double currentOrigin;
-	private Point2D.Double currentMouse;
+	private Point2D.Double oldOrigin;
 	private Point2D.Double oldMouse;
+	private Point2D.Double currentMouse;
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -84,13 +84,12 @@ public final class MouseHandler extends MouseAdapter
 	public void		mousePressed(MouseEvent e)
 	{
 		oldMouse = calcCoordinatesInView(e.getX(), e.getY());
-		currentOrigin = view.getOrigin();
+		oldOrigin = view.getOrigin();
 	}
 
 	// Stop moving the origin
 	public void		mouseReleased(MouseEvent e)
 	{
-		view.setOrigin(currentMouse);
 	}
 
 	//**********************************************************************
@@ -100,14 +99,8 @@ public final class MouseHandler extends MouseAdapter
 	// Update the view origin
 	public void		mouseDragged(MouseEvent e)
 	{
-		//Point2D.Double	v = calcCoordinatesInView(e.getX(), e.getY());
-		//
-		// view.add(v);
-		// view.setCursor(v);
-
 		currentMouse = calcCoordinatesInView(e.getX(), e.getY());
-		Point2D.Double moveMousePoint = new Point2D.Double
-		//view.moveCamera(currentMouse);
+		view.setOrigin(new Point2D.Double(-(oldOrigin.x + oldMouse.x),-(oldOrigin.y + oldMouse.y)));
 	}
 
 	public void		mouseMoved(MouseEvent e)
