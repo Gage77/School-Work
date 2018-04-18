@@ -57,6 +57,7 @@ public final class KeyHandler extends KeyAdapter
 	{
 		Point2D.Double	p = view.getOrigin();
 		double			a = (Utilities.isShiftDown(e) ? 0.01 : 0.1);
+		boolean shift = Utilities.isShiftDown(e);
 
 		switch (e.getKeyCode())
 		{
@@ -94,6 +95,34 @@ public final class KeyHandler extends KeyAdapter
 			case KeyEvent.VK_DELETE:
 				view.clear();
 				return;
+
+			// Display next non-noded name
+			case KeyEvent.VK_PERIOD:
+				if (shift) {
+					System.out.println("> pressed");
+					view.updateNetworkNameIndex(1);
+				}
+				else {
+					System.out.println(". pressed");
+				}
+				break;
+
+			// Display previous non-noded name
+			case KeyEvent.VK_COMMA:
+				if (shift) {
+					System.out.println("< pressed");
+					view.updateNetworkNameIndex(-1);
+				}
+				else {
+					System.out.println(", pressed");
+				}
+				break;
+
+			// Add the currently displayed name as a node
+			case KeyEvent.VK_ENTER:
+				System.out.println("Enter pressed");
+				view.pushNameToNode();
+				break;
 		}
 
 		view.setOrigin(p);

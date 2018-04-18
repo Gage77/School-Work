@@ -99,13 +99,23 @@ public final class MouseHandler extends MouseAdapter
 	// Update the view origin
 	public void		mouseDragged(MouseEvent e)
 	{
+		Point2D.Double v = calcCoordinatesInView(e.getX(), e.getY());
+
 		currentMouse = calcCoordinatesInView(e.getX(), e.getY());
-		view.setOrigin(new Point2D.Double(-(oldOrigin.x + oldMouse.x),-(oldOrigin.y + oldMouse.y)));
+		Double xdif = currentMouse.x - oldMouse.x;
+		Double ydif = currentMouse.y - oldMouse.y;
+		// update origin based on the negated difference between the current
+		// mouse position and the old mouse position
+		view.setOrigin(new Point2D.Double(-(xdif),-(ydif)));
+
+		view.setCursor(v);
 	}
 
 	public void		mouseMoved(MouseEvent e)
 	{
 		Point2D.Double	v = calcCoordinatesInView(e.getX(), e.getY());
+
+		view.setCursor(v);
 	}
 
 	//**********************************************************************

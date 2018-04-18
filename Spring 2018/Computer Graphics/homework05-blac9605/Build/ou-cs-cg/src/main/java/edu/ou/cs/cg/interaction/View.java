@@ -66,6 +66,10 @@ public final class View
 	private Point2D.Double				cursor;		// Current cursor coordinates
 	private ArrayList<Point2D.Double>	points;		// User's polyline points
 
+	private String[] networkNames = Network.getAllNames();	// Fetch all network names
+	private ArrayList<String> nodeNames = new ArrayList<String>();	// All network names currently displayed as nodes
+	private int networkNameIndex = 0;	// Index of the currently displayed network name
+
 	//**********************************************************************
 	// Constructors and Finalizer
 	//**********************************************************************
@@ -136,6 +140,39 @@ public final class View
 	{
 		points.add(p);
 		canvas.repaint();
+	}
+
+	// Change the index of the currently displayed name in the network
+	public void updateNetworkNameIndex(int dif)
+	{
+		int indexUp = networkNameIndex + 1;
+		int indexDown = networkNameIndex -1;
+
+		// Moving forward in the array of names
+		if (dif > 0) {
+			// Check to see if going to the next index would go out of bounds
+			if (indexUp != networkNames.length) {
+				networkNameIndex++;
+			}
+			else {
+				networkNameIndex = 0;
+			}
+		}
+		// Moving backwards in the array of names
+		else {
+			// Check to see if going to the next index would go out of bounds
+			if (indexDown != -1) {
+				networkNameIndex--;
+			}
+			else {
+				networkNameIndex = networkNames.length - 1;
+			}
+		}
+	}
+
+	public void pushNameToNode()
+	{
+		nodeNames.add(networkNames[networkNameIndex]);
 	}
 
 	//**********************************************************************
@@ -216,6 +253,8 @@ public final class View
 		drawAxes(gl);							// X and Y axes
 		drawCursor(gl);							// Crosshairs at mouse location
 		drawCursorCoordinates(drawable);		// Draw some text
+		drawCurrentNetworkName(drawable);	// Draw the current network name that is not displayed as a node
+		drawNodes(gl);	// Draw all current nodes
 		drawPolyline(gl);						// Draw the user's sketch
 	}
 
@@ -280,8 +319,26 @@ public final class View
 
 		renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
 		renderer.setColor(1.0f, 1.0f, 0, 1.0f);
-		renderer.draw(s, 2, 2);
+		renderer.draw(s, 5, drawable.getHeight() - 15);
 		renderer.endRendering();
+	}
+
+	private void drawCurrentNetworkName(GLAutoDrawable drawable)
+	{
+		String currentName = networkNames[networkNameIndex];
+
+		renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
+		renderer.setColor(1.0f, 1.0f, 0.0f, 1.0f);
+		renderer.draw(currentName, 5, 5);
+		renderer.endRendering();
+	}
+
+	private void drawNodes(GL2 gl)
+	{
+		for (int i = 0; i < nodeNames.size(); i++) {
+			Color nodeColor = Network.getColor(nodeNames.get(i));
+			int numSides = Network.getSides(nodeNames.get(i));
+		}
 	}
 
 	private void	drawPolyline(GL2 gl)
