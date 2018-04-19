@@ -698,12 +698,27 @@ public final class Stage8
 				}
 		});
 
+		JMenuItem about = new JMenuItem(new AbstractAction("About")
+		{
+			public void actionPerformed(ActionEvent a)
+			{
+				System.out.println("Help -> About pressed");
+				JFrame aboutFrame = new JFrame("About FridgTrackr");
+				aboutFrame.setBounds(50, 50, 600, 600);
+				aboutFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				AboutPanel aboutPanel = new AboutPanel();
+				aboutFrame.getContentPane().add(aboutPanel, BorderLayout.CENTER);
+				aboutFrame.setVisible(true);
+			}
+		});
+
 		accessibility.add(fontSize);
 		accessibility.add(invert);
 		accessibility.add(bold);
 		help.add(accessibility);
 		help.add(feedback);
 		help.add(donate);
+		help.add(about);
 		menuBar.add(help);
 	}
 

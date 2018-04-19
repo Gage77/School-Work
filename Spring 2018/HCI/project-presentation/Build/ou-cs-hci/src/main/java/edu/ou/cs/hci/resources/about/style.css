@@ -1,0 +1,20 @@
+body {
+    background-color: #fffff0;
+}
+
+h1 {
+    color: #808080;
+    text-align: center;
+}
+
+p {
+    font-family: monospace;
+    font-size: 14px;
+    text-align: center;
+}
+
+.custom {
+    color: #ff0000;
+	font-style: italic;
+	font-weight: bold;
+}

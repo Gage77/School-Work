@@ -8,10 +8,32 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-import org.apache.commons.csv.*;	// New library for working with CSVs
 import edu.ou.cs.hci.resources.*;
 
-public static final class AboutPanel extends JPanel implements ActionListener, HyperlinkListener
+public class AboutPanel extends JPanel implements  HyperlinkListener
 {
-  
+  public AboutPanel()
+  {
+    JEditorPane info;
+    URL url = Resources.getResource("about/about.html");
+
+    try {
+      info = new JEditorPane(url);
+    } catch (IOException ex) {
+      info = new JEditorPane("text/plain", "[loading info failed.]");
+    }
+
+    info.setEditable(false);
+    info.setPreferredSize(new Dimension(550, 550));
+    info.addHyperlinkListener(this);
+    add(new JScrollPane(info), BorderLayout.CENTER);
+  }
+
+  public void hyperlinkUpdate(HyperlinkEvent e)
+  {
+    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
+    {
+      Resources.openURLInSystemBrowser(e.getURL());
+    }
+  }
 }
