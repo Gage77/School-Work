@@ -698,6 +698,7 @@ public final class Stage8
 				}
 		});
 
+		// Adds funtionality of opening about page in JEditorPane
 		JMenuItem about = new JMenuItem(new AbstractAction("About")
 		{
 			public void actionPerformed(ActionEvent a)
