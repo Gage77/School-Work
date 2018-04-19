@@ -14,7 +14,7 @@
 
 package edu.ou.cs.cg.interaction;
 
-//import java.lang.*;
+import java.lang.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -69,6 +69,12 @@ public final class View
 	private String[] networkNames = Network.getAllNames();	// Fetch all network names
 	private ArrayList<String> nodeNames = new ArrayList<String>();	// All network names currently displayed as nodes
 	private int networkNameIndex = 0;	// Index of the currently displayed network name
+	private int numNames;
+	private String noNewNamesMessage = "---- No new names ----";	// Message to display when all names have been created as nodes
+
+	private ArrayList<Node> allNodes = new ArrayList<Node>();	// Arraylist of all Nodes
+	private int nodeIndex = 0;	// Index of the currently selected node
+	private int numNodes = 0;	// Total number of nodes active in the network
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -91,6 +97,9 @@ public final class View
 		// Initialize interaction
 		keyHandler = new KeyHandler(this);
 		mouseHandler = new MouseHandler(this);
+
+		numNames = networkNames.length;
+		System.out.println("Total number of people potentially in the network: " + numNames);
 	}
 
 	//**********************************************************************
@@ -145,34 +154,99 @@ public final class View
 	// Change the index of the currently displayed name in the network
 	public void updateNetworkNameIndex(int dif)
 	{
-		int indexUp = networkNameIndex + 1;
-		int indexDown = networkNameIndex -1;
+		if (numNames > 0) {
+			int indexUp = networkNameIndex + 1;
+			int indexDown = networkNameIndex -1;
 
-		// Moving forward in the array of names
-		if (dif > 0) {
-			// Check to see if going to the next index would go out of bounds
-			if (indexUp != networkNames.length) {
-				networkNameIndex++;
+			// Moving forward in the array of names
+			if (dif > 0) {
+				// Check to see if going to the next index would go out of bounds
+				if (indexUp != networkNames.length) {
+					if (!networkNames[indexUp].equals("----")) {
+						networkNameIndex++;
+					}
+				}
+				else {
+					networkNameIndex = 0;
+				}
 			}
+			// Moving backwards in the array of names
 			else {
-				networkNameIndex = 0;
-			}
-		}
-		// Moving backwards in the array of names
-		else {
-			// Check to see if going to the next index would go out of bounds
-			if (indexDown != -1) {
-				networkNameIndex--;
-			}
-			else {
-				networkNameIndex = networkNames.length - 1;
+				// Check to see if going to the next index would go out of bounds
+				if (indexDown != -1) {
+					networkNameIndex--;
+				}
+				else {
+					networkNameIndex = networkNames.length - 1;
+				}
 			}
 		}
 	}
 
-	public void pushNameToNode()
+	public void createNode()
 	{
-		nodeNames.add(networkNames[networkNameIndex]);
+		if (numNames > 0) {
+			nodeNames.add(networkNames[networkNameIndex]);
+
+			Color c = Network.getColor(networkNames[networkNameIndex]);
+			int s = Network.getSides(networkNames[networkNameIndex]);
+
+			Node node = new Node(networkNames[networkNameIndex], s, 0.1, c);
+
+			if (numNodes == 0) {
+				node.setSelected(true);
+			}
+
+			// Change current network name index to display next name that is not a node
+			networkNames[networkNameIndex] = "----";
+			updateNetworkNameIndex(1);
+
+			// Add new node to global array list of nodes
+			allNodes.add(node);
+
+			// Change number of names and number of nodes
+			numNames--;
+			numNodes++;
+		}
+		else {
+			System.out.println("No new names to add");
+		}
+	}
+
+	public void setSelectedNode(int dif)
+	{
+		System.out.println("change selected node");
+		if (numNodes > 0) {
+			if (dif > 0) {
+				int difup = nodeIndex + 1;
+				if (difup <= numNodes) {
+					allNodes.get(nodeIndex).setSelected(false);
+					nodeIndex = difup;
+					allNodes.get(nodeIndex).setSelected(true);
+				}
+				else {
+					allNodes.get(nodeIndex).setSelected(false);
+					nodeIndex = 0;
+					allNodes.get(nodeIndex).setSelected(true);
+				}
+			}
+			else {
+				int difdown = nodeIndex -1;
+				if (difdown > 0) {
+					allNodes.get(nodeIndex).setSelected(false);
+					nodeIndex = difdown;
+					allNodes.get(nodeIndex).setSelected(true);
+				}
+				else {
+					allNodes.get(nodeIndex).setSelected(false);
+					nodeIndex = numNodes;
+					allNodes.get(nodeIndex).setSelected(true);
+				}
+			}
+		}
+		else {
+			System.out.println("No nodes in the network");
+		}
 	}
 
 	//**********************************************************************
@@ -329,15 +403,21 @@ public final class View
 
 		renderer.beginRendering(drawable.getWidth(), drawable.getHeight());
 		renderer.setColor(1.0f, 1.0f, 0.0f, 1.0f);
-		renderer.draw(currentName, 5, 5);
+		if (numNames > 0) {
+			renderer.draw(currentName, 5, 5);
+		}
+		else {
+			renderer.draw(noNewNamesMessage, 5, 5);
+		}
 		renderer.endRendering();
 	}
 
 	private void drawNodes(GL2 gl)
 	{
-		for (int i = 0; i < nodeNames.size(); i++) {
-			Color nodeColor = Network.getColor(nodeNames.get(i));
-			int numSides = Network.getSides(nodeNames.get(i));
+		if (numNodes > 0) {
+			for (int i = 0; i < numNodes; i++) {
+				drawNode(gl, allNodes.get(i));
+			}
 		}
 	}
 
@@ -363,6 +443,43 @@ public final class View
 		for (Point2D.Double p : points)
 			gl.glVertex2d(p.x, p.y);
 
+		gl.glEnd();
+	}
+
+	private void drawNode(GL2 gl, Node node)
+	{
+		// Grab necessary variables from node
+		double sides = (double)node.getSides();
+		double r = (double)node.getRadius();
+		double xoffset = node.getPosX();
+		double yoffset = node.getPosY();
+		Color c = node.getColor();
+
+		// Get float values of RGB from Java color
+		float cr = (float)c.getRed() / 255;
+		float cg = (float)c.getGreen() / 255;
+		float cb = (float)c.getBlue() / 255;
+
+		// Draw the polygon
+		gl.glBegin(GL2.GL_POLYGON);
+		gl.glColor3f(cr, cg, cb);
+		for (double i = 1.0; i < sides + 1; i++) {
+			gl.glVertex2d(((r * Math.cos(2*Math.PI*(i/sides))) + xoffset), ((r * Math.sin(2*Math.PI*(i/sides))) + yoffset));
+		}
+		gl.glEnd();
+
+		if (node.isSelected()) {
+			drawNodeOutline(gl, sides, r, xoffset, yoffset);
+		}
+	}
+
+	private void drawNodeOutline(GL2 gl, double sides, double r, double xoffset, double yoffset)
+	{
+		gl.glBegin(GL2.GL_LINE_LOOP);
+		gl.glColor3f(1.0f, 1.0f, 1.0f);
+		for (double i = 1.0; i < sides + 1; i++) {
+			gl.glVertex2d(((r * Math.cos(2*Math.PI*(i/sides))) + xoffset), ((r * Math.sin(2*Math.PI*(i/sides))) + yoffset));
+		}
 		gl.glEnd();
 	}
 }

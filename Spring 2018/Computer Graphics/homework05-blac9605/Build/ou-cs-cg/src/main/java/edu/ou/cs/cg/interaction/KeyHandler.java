@@ -98,30 +98,36 @@ public final class KeyHandler extends KeyAdapter
 
 			// Display next non-noded name
 			case KeyEvent.VK_PERIOD:
+				// Change what name is shown in corner
 				if (shift) {
 					System.out.println("> pressed");
 					view.updateNetworkNameIndex(1);
 				}
+				// Change which node is selected
 				else {
 					System.out.println(". pressed");
+					view.setSelectedNode(1);
 				}
 				break;
 
 			// Display previous non-noded name
 			case KeyEvent.VK_COMMA:
+				// Change what name is shown in corner
 				if (shift) {
 					System.out.println("< pressed");
 					view.updateNetworkNameIndex(-1);
 				}
+				// Change which node is selected
 				else {
 					System.out.println(", pressed");
+					view.setSelectedNode(-1);
 				}
 				break;
 
 			// Add the currently displayed name as a node
 			case KeyEvent.VK_ENTER:
 				System.out.println("Enter pressed");
-				view.pushNameToNode();
+				view.createNode();
 				break;
 		}
 
