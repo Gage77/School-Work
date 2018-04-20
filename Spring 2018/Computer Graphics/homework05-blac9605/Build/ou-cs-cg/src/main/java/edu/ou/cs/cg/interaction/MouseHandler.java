@@ -87,6 +87,8 @@ public final class MouseHandler extends MouseAdapter
 	{
 		oldMouse = calcCoordinatesInView(e.getX(), e.getY());
 		oldOrigin = view.getOrigin();
+
+		//view.checkNodeIntersect();
 	}
 
 	// Stop moving the origin
@@ -126,6 +128,18 @@ public final class MouseHandler extends MouseAdapter
 
 	public void		mouseWheelMoved(MouseWheelEvent e)
 	{
+		int notches = e.getWheelRotation();
+
+		if (notches < 0)
+		{
+			System.out.println("Zoom in");
+			view.setZoom(1);
+		}
+		else
+		{
+			System.out.println("Zoom out");
+			view.setZoom(2);
+		}
 	}
 
 	//**********************************************************************

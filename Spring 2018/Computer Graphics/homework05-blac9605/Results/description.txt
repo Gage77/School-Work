@@ -1,0 +1,15 @@
+Notes on Grading:
+- Selecting nodes when clicking on them is a little wonky
+- Deleting nodes does not currently re-add that name to the names list
+- Tasks 5-6 not completed. Task 5 was attempted
+
+Parts Completed:
+1. Panning the screen was completed though the mouse handler and the update projection method. There is some stuttering when panning the screen that I was unable to figure out how to get rid of.
+2. Cycling through names was completed, and the names appear in the bottom left of the screen. If a name is already a node, a message that states that appears where that name would be. Hitting return will add the currently shown name as a node, and draw that node. If no node has been added, the newly added node will be set as selected and drawn with a white outline. Cycling through selected nodes was implemented. Pressing the delete key gets rid of a node, however I did not implement the ability of putting deleted nodes back on the list of names to re-add.
+3. Translating and scaling of nodes was implemented. Scaling occurs by pushing the up/right key to scale up, and the down/left key to scale down. Clicking on a node selects the node that is clicked on, though there is an error currently of not highlighting nodes that are selected this way accurately.
+4. I was unable to accurately show the convex hull. I attempted to write an algorithm to calculate the convex hull of all current nodes, however for some reason the algorithm would crash my computer.
+5. I was unable to implement this task in time
+
+Bonuses:
+1. Zooming was pseudo-implemented by scrolling the mouse wheel. Doing so increases/decreases all node's radii to give the illusion of zooming.
+2. Aligning nodes in line was impelemented by pressing the 'l' key.

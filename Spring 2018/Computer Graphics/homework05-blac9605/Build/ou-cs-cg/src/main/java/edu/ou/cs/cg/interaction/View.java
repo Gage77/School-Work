@@ -77,6 +77,8 @@ public final class View
 	private int numNodes = 0;	// Total number of nodes active in the network
 	private Node node;
 
+	private ArrayList<Point2D.Double> hullPoints = new ArrayList<Point2D.Double>();
+
 	//**********************************************************************
 	// Constructors and Finalizer
 	//**********************************************************************
@@ -211,9 +213,7 @@ public final class View
 			numNames--;
 			numNodes++;
 
-			for (int i = 0; i < allNodes.size(); i++) {
-				System.out.println(allNodes.get(i).getName() + " SELECTED: " + allNodes.get(i).isSelected());
-			}
+			//calculateHullPoints();
 		}
 		else {
 			System.out.println("No new names to add / cannot add name already in network");
@@ -360,14 +360,137 @@ public final class View
 				curR = testerNode.getRadius();
 
 				res1 = Math.sqrt(Math.pow((v.x - curX), 2) + Math.pow((v.y - curY), 2));
-				res2 = Math.sqrt(Math.pow((curR - curX), 2) + Math.pow((curR - curY), 2));
+				res2 = Math.sqrt(Math.pow((curR - curX), 2) + Math.pow((curR - curY), 2)) - curR;
 
 				if (res1 <= res2)
 				{
-					System.out.println("mouse clicked inside node");
+					System.out.println("mouse clicked inside node : " + testerNode.getName());
+					nodeIndex = i;
+					for (int j = 0; j < allNodes.size(); j++)
+					{
+						allNodes.get(i).setSelected(false);
+					}
+					allNodes.get(i).setSelected(true);
 				}
 			}
 		}
+	}
+
+	public void setZoom(int z)
+	{
+		if (z == 1)
+		{
+			for (int i = 0; i < allNodes.size(); i++)
+			{
+				allNodes.get(i).setRadius(allNodes.get(i).getRadius()*1.1);
+			}
+		}
+		else if (z == 2)
+		{
+			for (int i = 0; i < allNodes.size(); i++)
+			{
+				allNodes.get(i).setRadius(allNodes.get(i).getRadius()*0.9);
+			}
+		}
+		canvas.repaint();
+	}
+
+	public void layoutLine()
+	{
+		for (int i = 0; i < allNodes.size(); i++)
+		{
+			double newX =	(double)i/numNodes - 0.5;
+
+			allNodes.get(i).setPosX(newX);
+			allNodes.get(i).setPosY(0.0);
+		}
+	}
+
+
+	//**********************************************************************
+	// Convex Hull algorithm
+	//**********************************************************************
+
+	public void calculateHullPoints()
+	{
+		Point2D.Double start = new Point2D.Double(allNodes.get(0).getPosX(), allNodes.get(0).getPosY());
+		for (int i = 0; i < allNodes.size(); i++)
+		{
+			if (allNodes.get(i).getPosX() < start.x)
+			{
+				start = new Point2D.Double(allNodes.get(i).getPosX(), allNodes.get(i).getPosY());
+			}
+		}
+
+		Point2D.Double current = start;
+		Set<Point2D.Double> result = new HashSet<>();
+		result.add(start);
+		ArrayList<Point2D.Double> collinearPoints = new ArrayList<>();
+
+		while (true)
+		{
+			Point2D.Double nextTarget = new Point2D.Double(allNodes.get(0).getPosX(), allNodes.get(0).getPosY());
+			for (int i = 1; i < allNodes.size(); i++)
+			{
+				Point2D.Double pt = new Point2D.Double(allNodes.get(i).getPosX(), allNodes.get(i).getPosY());
+				if (pt == current)
+				{
+					continue;
+				}
+				double val = crossProduct(current, nextTarget, pt);
+
+				// pt is on left of current -> nextTarget. pt becomes next target
+				if (val > 0)
+				{
+					nextTarget = pt;
+					collinearPoints = new ArrayList<>();
+				}
+				else if (val == 0)
+				{
+					if (distance(current, nextTarget, pt) < 0)
+					{
+						collinearPoints.add(nextTarget);
+						nextTarget = pt;
+					}
+					else
+					{
+						collinearPoints.add(pt);
+					}
+				}
+			}
+
+			for (Point2D.Double p : collinearPoints)
+			{
+				result.add(p);
+			}
+
+			if (nextTarget == start)
+			{
+				break;
+			}
+			result.add(nextTarget);
+			current = nextTarget;
+		}
+
+		hullPoints = new ArrayList<>(result);
+	}
+
+	public double distance(Point2D.Double a, Point2D.Double b, Point2D.Double c)
+	{
+		double y1 = a.y - b.y;
+		double y2 = a.y - c.y;
+		double x1 = a.x - b.x;
+		double x2 = a.x - c.x;
+		return Double.compare(y1*y1 + x1*x1, y2*y2 + x2*x2);
+	}
+
+	public double crossProduct(Point2D.Double a, Point2D.Double b, Point2D.Double c)
+	{
+		double y1 = a.y - b.y;
+		double y2 = a.y - c.y;
+		double x1 = a.x - b.x;
+		double x2 = a.x - c.x;
+		return y2*x1-y1*x2;
 	}
 
 	//**********************************************************************
@@ -451,6 +574,7 @@ public final class View
 		drawCurrentNetworkName(drawable);	// Draw the current network name that is not displayed as a node
 		drawNodes(gl);	// Draw all current nodes
 		drawPolyline(gl);						// Draw the user's sketch
+		drawHull(gl);
 	}
 
 	//**********************************************************************
@@ -604,6 +728,17 @@ public final class View
 		}
 		gl.glEnd();
 		gl.glLineWidth(1.0f);
+	}
+
+	private void drawHull(GL2 gl)
+	{
+		gl.glColor3f(0.9f, 0.9f, 0.9f);
+		gl.glBegin(GL2.GL_LINE_LOOP);
+		for (int i = 0; i < hullPoints.size(); i++)
+		{
+			gl.glVertex2d(hullPoints.get(i).x, hullPoints.get(i).y);
+		}
+		gl.glEnd();
 	}
 }
 

@@ -172,6 +172,10 @@ public final class KeyHandler extends KeyAdapter
 				}
 				break;
 
+			case KeyEvent.VK_L:
+				System.out.println("Layout nodes in line");
+				view.layoutLine();
+				break;
 		}
 
 		view.setOrigin(p);
