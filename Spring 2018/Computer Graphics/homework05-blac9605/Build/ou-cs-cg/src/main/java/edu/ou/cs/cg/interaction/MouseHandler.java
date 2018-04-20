@@ -62,10 +62,12 @@ public final class MouseHandler extends MouseAdapter
 	{
 		Point2D.Double	v = calcCoordinatesInView(e.getX(), e.getY());
 
-		if (Utilities.isShiftDown(e))
-			view.setOrigin(v);
-		else
-			view.add(v);
+		view.checkAndSelectNode(v);
+
+		// if (Utilities.isShiftDown(e))
+		// {
+		//
+		// }
 	}
 
 	public void		mouseEntered(MouseEvent e)

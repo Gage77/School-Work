@@ -163,14 +163,13 @@ public final class View
 			if (dif > 0) {
 				// Check to see if going to the next index would go out of bounds
 				if (indexUp != networkNames.length) {
-					if (!networkNames[indexUp].equals("XXXXX")) {
-						networkNameIndex++;
-					}
+					networkNameIndex++;
 				}
 				else {
 					networkNameIndex = 0;
 				}
 			}
+
 			// Moving backwards in the array of names
 			else {
 				// Check to see if going to the next index would go out of bounds
@@ -178,7 +177,7 @@ public final class View
 					networkNameIndex--;
 				}
 				else {
-					networkNameIndex = numNodes - 2;
+					networkNameIndex = networkNames.length - 1;
 				}
 			}
 		}
@@ -202,7 +201,7 @@ public final class View
 			}
 
 			// Change current network name index to display next name that is not a node
-			networkNames[networkNameIndex] = "----";
+			networkNames[networkNameIndex] = "XXXXX";
 			updateNetworkNameIndex(1);
 
 			// Add new node to global array list of nodes
@@ -224,6 +223,11 @@ public final class View
 	public void setSelectedNode(int dif)
 	{
 		System.out.println("change selected node");
+
+		if (dif == 200)
+		{
+			nodeIndex = 0;
+		}
 
 		if (numNodes > 0) {
 
@@ -259,6 +263,110 @@ public final class View
 		}
 		else {
 			System.out.println("No nodes in the network");
+		}
+	}
+
+	public void deleteSelectedNode()
+	{
+		System.out.println("Delete node entered");
+		if (numNodes == 0) {
+			System.out.println("No nodes to delete");
+		}
+		else {
+			allNodes.remove(nodeIndex);
+			numNodes--;
+			setSelectedNode(200);
+		}
+	}
+
+	public void updateNodePos(int dir)
+	{
+		System.out.println("update node pos entered");
+
+		if (numNodes != 0)
+		{
+			double curX = allNodes.get(nodeIndex).getPosX();
+			double curY = allNodes.get(nodeIndex).getPosY();
+			double offset = allNodes.get(nodeIndex).getRadius() * 0.1;
+			// Move up
+			if (dir == 1)
+			{
+				allNodes.get(nodeIndex).setPosY(curY + offset);
+			}
+			// Move down
+			else if (dir == 2)
+			{
+				allNodes.get(nodeIndex).setPosY(curY - offset);
+			}
+			// Move right
+			else if (dir == 3)
+			{
+				allNodes.get(nodeIndex).setPosX(curX + offset);
+			}
+			// Move left
+			else if (dir == 4)
+			{
+				allNodes.get(nodeIndex).setPosX(curX - offset);
+			}
+		}
+		else
+		{
+			System.out.println("No nodes selected");
+		}
+	}
+
+	public void updateNodeScale(int dir)
+	{
+		System.out.println("update node scale entered");
+
+		if (numNodes != 0)
+		{
+			// Increase size
+			if (dir == 1)
+			{
+				double offset = allNodes.get(nodeIndex).getRadius() * 1.1;
+				allNodes.get(nodeIndex).setRadius(offset);
+			}
+			// Decrease size
+			else if (dir == 2)
+			{
+				double offset = allNodes.get(nodeIndex).getRadius() * 0.9;
+				allNodes.get(nodeIndex).setRadius(offset);
+			}
+		}
+		else
+		{
+			System.out.println("No nodes selected");
+		}
+	}
+
+	public void checkAndSelectNode(Point2D.Double v)
+	{
+		// Check to see if nodes exist to select
+		if (numNodes != 0)
+		{
+			Node testerNode;
+			double curX;
+			double curY;
+			double curR;
+			double res1;
+			double res2;
+			// Run through all nodes and check their pos in relation to mouse
+			for (int i = 0; i < allNodes.size(); i++)
+			{
+				testerNode = allNodes.get(i);
+				curX = testerNode.getPosX();
+				curY = testerNode.getPosY();
+				curR = testerNode.getRadius();
+
+				res1 = Math.sqrt(Math.pow((v.x - curX), 2) + Math.pow((v.y - curY), 2));
+				res2 = Math.sqrt(Math.pow((curR - curX), 2) + Math.pow((curR - curY), 2));
+
+				if (res1 <= res2)
+				{
+					System.out.println("mouse clicked inside node");
+				}
+			}
 		}
 	}
 
