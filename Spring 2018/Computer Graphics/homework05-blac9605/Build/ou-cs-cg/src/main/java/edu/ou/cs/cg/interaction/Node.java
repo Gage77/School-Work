@@ -10,14 +10,14 @@ public final class Node
   // Private Class Members
   //**********************************************************************
 
-  private static String name;
-  private static int sides;
-  private static double r;
-  private static Color color;
-  private static double posX;
-  private static double posY;
-  private static boolean isItemSelected;
-  private static boolean isNode;
+  private  String name;
+  private  int sides;
+  private  double r;
+  private  Color color;
+  private  double posX;
+  private  double posY;
+  private  boolean isItemSelected;
+  private  boolean isNode;
 
   //**********************************************************************
 	// Constructor(s)

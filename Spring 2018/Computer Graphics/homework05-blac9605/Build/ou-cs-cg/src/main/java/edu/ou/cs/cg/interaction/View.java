@@ -75,6 +75,7 @@ public final class View
 	private ArrayList<Node> allNodes = new ArrayList<Node>();	// Arraylist of all Nodes
 	private int nodeIndex = 0;	// Index of the currently selected node
 	private int numNodes = 0;	// Total number of nodes active in the network
+	private Node node;
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -162,7 +163,7 @@ public final class View
 			if (dif > 0) {
 				// Check to see if going to the next index would go out of bounds
 				if (indexUp != networkNames.length) {
-					if (!networkNames[indexUp].equals("----")) {
+					if (!networkNames[indexUp].equals("XXXXX")) {
 						networkNameIndex++;
 					}
 				}
@@ -177,7 +178,7 @@ public final class View
 					networkNameIndex--;
 				}
 				else {
-					networkNameIndex = networkNames.length - 1;
+					networkNameIndex = numNodes - 2;
 				}
 			}
 		}
@@ -185,16 +186,19 @@ public final class View
 
 	public void createNode()
 	{
-		if (numNames > 0) {
+		if (numNames > 0 && !(networkNames[networkNameIndex].equals("XXXXX"))) {
 			nodeNames.add(networkNames[networkNameIndex]);
 
 			Color c = Network.getColor(networkNames[networkNameIndex]);
 			int s = Network.getSides(networkNames[networkNameIndex]);
 
-			Node node = new Node(networkNames[networkNameIndex], s, 0.1, c);
+			node = new Node(networkNames[networkNameIndex], s, 0.1, c);
 
 			if (numNodes == 0) {
 				node.setSelected(true);
+			}
+			else {
+				node.setSelected(false);
 			}
 
 			// Change current network name index to display next name that is not a node
@@ -207,19 +211,26 @@ public final class View
 			// Change number of names and number of nodes
 			numNames--;
 			numNodes++;
+
+			for (int i = 0; i < allNodes.size(); i++) {
+				System.out.println(allNodes.get(i).getName() + " SELECTED: " + allNodes.get(i).isSelected());
+			}
 		}
 		else {
-			System.out.println("No new names to add");
+			System.out.println("No new names to add / cannot add name already in network");
 		}
 	}
 
 	public void setSelectedNode(int dif)
 	{
 		System.out.println("change selected node");
+
 		if (numNodes > 0) {
+
+			// change forward
 			if (dif > 0) {
 				int difup = nodeIndex + 1;
-				if (difup <= numNodes) {
+				if (difup <= numNodes - 1) {
 					allNodes.get(nodeIndex).setSelected(false);
 					nodeIndex = difup;
 					allNodes.get(nodeIndex).setSelected(true);
@@ -230,16 +241,18 @@ public final class View
 					allNodes.get(nodeIndex).setSelected(true);
 				}
 			}
+
+			// change backward
 			else {
 				int difdown = nodeIndex -1;
-				if (difdown > 0) {
+				if (difdown >= 0) {
 					allNodes.get(nodeIndex).setSelected(false);
 					nodeIndex = difdown;
 					allNodes.get(nodeIndex).setSelected(true);
 				}
 				else {
 					allNodes.get(nodeIndex).setSelected(false);
-					nodeIndex = numNodes;
+					nodeIndex = numNodes - 1;
 					allNodes.get(nodeIndex).setSelected(true);
 				}
 			}
@@ -468,19 +481,21 @@ public final class View
 		}
 		gl.glEnd();
 
+		// Draw the outline of the polygon
 		if (node.isSelected()) {
-			drawNodeOutline(gl, sides, r, xoffset, yoffset);
+			gl.glColor3f(1.0f, 1.0f, 1.0f);
+			gl.glLineWidth(3.0f);
 		}
-	}
-
-	private void drawNodeOutline(GL2 gl, double sides, double r, double xoffset, double yoffset)
-	{
+		else {
+			gl.glColor3f(0.7f, 0.7f, 0.7f);
+			gl.glLineWidth(1.0f);
+		}
 		gl.glBegin(GL2.GL_LINE_LOOP);
-		gl.glColor3f(1.0f, 1.0f, 1.0f);
 		for (double i = 1.0; i < sides + 1; i++) {
 			gl.glVertex2d(((r * Math.cos(2*Math.PI*(i/sides))) + xoffset), ((r * Math.sin(2*Math.PI*(i/sides))) + yoffset));
 		}
 		gl.glEnd();
+		gl.glLineWidth(1.0f);
 	}
 }
 
