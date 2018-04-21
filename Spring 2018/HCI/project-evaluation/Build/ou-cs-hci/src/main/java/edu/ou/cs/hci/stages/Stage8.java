@@ -16,6 +16,11 @@
 package edu.ou.cs.hci.stages;
 
 //import java.lang.*;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedWriter;
@@ -194,12 +199,17 @@ public final class Stage8
 		"Leftover"
 	};
 
+	// Current time
+	private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+	private static LocalDateTime timeNow = LocalDateTime.now();
+
 	//**********************************************************************
 	// Main
 	//**********************************************************************
 
 	public static void main(String[] args)
 	{
+		System.out.println(timeNow);
 		//MAIN WINDOW creates the base JFrame on which everything will be displayed
 		JFrame			frame = new JFrame("FridgTrackr");
 
@@ -897,8 +907,6 @@ public final class Stage8
 	// Save to CSV
 	private static void saveToCSV() {
 		JFileChooser fc = new JFileChooser();
-		//fc.setSelectedFile(new File(".csv"));
-		// fc.setSelectedFile(new File(".csv"));
 		int status = fc.showSaveDialog(fc);
 
 		if (status == JFileChooser.APPROVE_OPTION) {
@@ -1005,9 +1013,7 @@ public final class Stage8
 
 		// Create new food item, then add the food item to the food collection
 		Food food = new Food(name, amount, expDate, isFavorite, isLeftover);
-		System.out.println("Before adding to list === " + food.getName());
 		foodCollection.add(food);
-		System.out.println("After adding to list === " + foodCollection.get(foodCollection.size() - 1).getName());
 	}
 
 	// ID 1 was read, create grocery item
@@ -1050,6 +1056,7 @@ public final class Stage8
 			fridgeOptions[i][1] = foodCollection.get(i).getName();
 			fridgeOptions[i][2] = foodCollection.get(i).getAmount();
 			fridgeOptions[i][3] = foodCollection.get(i).getExpDate();
+
 			if (foodCollection.get(i).isLeftover()) {
 				fridgeOptions[i][4] = "Yes";
 			}

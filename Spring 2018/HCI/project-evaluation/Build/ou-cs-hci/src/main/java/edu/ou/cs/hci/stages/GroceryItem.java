@@ -10,8 +10,8 @@ public class GroceryItem
   // Private Class Members
   //**********************************************************************
 
-  private static String name;
-  private static String amount;
+  private String name;
+  private String amount;
 
   //**********************************************************************
   // Constructor(s)

@@ -10,11 +10,11 @@ public class Food
   // Private Class Members
   //**********************************************************************
 
-  private static String name;
-  private static String amount;
-  private static String expDate;
-  private static boolean isFavorite;
-  private static boolean isLeftover;
+  private String name;
+  private String amount;
+  private String expDate;
+  private boolean isFavorite;
+  private boolean isLeftover;
 
   //**********************************************************************
   // Constructor(s)

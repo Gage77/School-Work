@@ -13,9 +13,9 @@ public class Recipe
   // Private Class Members
   //**********************************************************************
 
-  private static String name;
-  private static String descriptionPath;
-  private static String[] ingredients;
+  private String name;
+  private String descriptionPath;
+  private String[] ingredients;
 
   //**********************************************************************
   // Constructor(s)
