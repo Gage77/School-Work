@@ -29,6 +29,15 @@ idRead = False
 gradeRead = False
 fNameRead = False
 
+# Variables for assigning letter grade
+numStudents = 0
+aGrade = 0
+bGrade = 0
+cGrade = 0
+dGrade = 0
+eGrade = 0
+fGrade = 0
+
 # Open the file using a context manager
 with open('input.txt', 'r') as f:
     # Iterate through all lines in the file
@@ -70,12 +79,15 @@ for w in splitLine:
         if len(w) == 1:
             stype.append(w)
         elif idRead and not gradeRead:
+            # Last name
             if fNameRead:
                 lname.append(w)
                 idRead = False
+            # First name
             else:
                 fname.append(w)
                 fNameRead = True
+        # Address (not needed here)
         else:
             pass
 
@@ -83,15 +95,16 @@ for w in splitLine:
 for i, val in enumerate(ids, 0):
     newStudent = Student(ids[i], fname[i], lname[i], sgrade[i], stype[i])
     students.append(newStudent)
+    numStudents = numStudents + 1
+
+# Figure out letter grade sections
 
 for s in students:
     print(s)
 
-# Sort students by last name
-sortedStudents = sorted(students, key = lambda student: student.first)
-sortedStudents = sorted(sortedStudents, key = lambda student: student.last)
+print('----------------------')
 
-print("----------------------")
-
-for s in sortedStudents:
+# Sort students by grade and type (E or L)
+students = sorted(students, key = lambda student: (student.grade, student.type), reverse = True)
+for s in students:
     print(s)
