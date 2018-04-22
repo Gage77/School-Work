@@ -14,6 +14,9 @@ class Student:
     def __repr__(self):
         return '{}: {} {} {} {} {} {}'.format(self.__class__.__name__, self.id, self.first, self.last, self.grade, self.type, self.letterGrade)
 
+    def __lt__(self, other):
+        return self.type < other.type
+
 splitLine = []      # Will hold all info read in from file, split by white space
 students = []       # Will hold all students that get created
 sortedStudents = [] # List of sorted students for html printing
@@ -31,12 +34,6 @@ fNameRead = False
 
 # Variables for assigning letter grade
 numStudents = 0
-aGrade = 0
-bGrade = 0
-cGrade = 0
-dGrade = 0
-eGrade = 0
-fGrade = 0
 
 # Open the file using a context manager
 with open('input.txt', 'r') as f:
@@ -56,9 +53,6 @@ def isInt(word):
         return True
     except:
         return False
-
-def getKeyForSort(student):
-    return student.last
 
 # Create student objects
 for w in splitLine:
@@ -97,14 +91,53 @@ for i, val in enumerate(ids, 0):
     students.append(newStudent)
     numStudents = numStudents + 1
 
-# Figure out letter grade sections
-
 for s in students:
     print(s)
-
 print('----------------------')
 
 # Sort students by grade and type (E or L)
-students = sorted(students, key = lambda student: (student.grade, student.type), reverse = True)
+students.sort(key = lambda student: (student.type))
 for s in students:
     print(s)
+print('----------------------')
+
+students.sort(key = lambda student: (student.grade), reverse = True)
+for s in students:
+    print(s)
+print('----------------------')
+
+# Assign letter grade to each student based on ranking
+for i, s in enumerate(students, 1):
+    # A grade
+    if i >= 1 and i <= ((numStudents//3)):
+        s.letterGrade = 'A'
+        print(s.first + ': ' + s.letterGrade)
+    # B grade
+    elif i >= (numStudents//3) and i <= (2*(numStudents//3)):
+        s.letterGrade = 'B'
+        print(s.first + ': ' + s.letterGrade)
+    # F grade
+    elif i > numStudents - ((numStudents//10) + 1):
+        s.letterGrade = 'F'
+        print(s.first + ': ' + s.letterGrade)
+    else:
+        # C grade
+        if s.type == 'E':
+            s.letterGrade = 'C'
+            print(s.first + ': ' + s.letterGrade)
+        # D grade
+        elif s.type == 'L':
+            s.letterGrade = 'D'
+            print(s.first + ': ' + s.letterGrade)
+
+print('----------------------')
+
+# Sort students by last name, then first name, then id
+students.sort(key = lambda student: student.id)
+students.sort(key = lambda student: student.first)
+students.sort(key = lambda student: student.last)
+for s in students:
+    print(s)
+print('----------------------')
+
+# Output students to html table
