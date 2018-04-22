@@ -140,4 +140,34 @@ for s in students:
     print(s)
 print('----------------------')
 
-# Output students to html table
+# Output students to HTML table
+f = open('output.html', 'w')
+
+# HTML setup
+messageBegin = """<html>
+<head></head>
+<body><p>Haskell's Classroom Statistics:</p>
+<table style="border-collapse: collapse; border: 1px solid black;">
+<tr style="background-color: #0055f4;">
+<th style="border: 1px solid black;">ID</th>
+<th style="border: 1px solid black;">First</th>
+<th style="border: 1px solid black;">Last</th>
+<th style="border: 1px solid black;">Grade</th>
+</tr>"""
+
+# Create HTML table elements
+for s in students:
+    id = s.id
+    first = s.first
+    last = s.last
+    grade = s.letterGrade
+    messageBegin = messageBegin + """<tr style="border: 1px solid black;"><td>""" + id + """</td><td style="border: 1px solid black;">""" + first + """</td><td style="border: 1px solid black;">""" + last + """</td><td style="border: 1px solid black;">""" + grade + """</td>"""
+
+# Finish up HTML
+messageEnd = """</table></body>
+</html>"""
+
+# Write to HTML and close file
+finalMessage = messageBegin + messageEnd
+f.write(finalMessage)
+f.close
